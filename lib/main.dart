@@ -22,12 +22,12 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
      initialRoute:SignInScreen.RouteScreen,
-     routes:{
-      SignInScreen.RouteScreen : (context)=> SignInScreen(),
-      MyHomePage.RouteScreen : (context)=> MyHomePage(),
-      SignUpScreen.RouteScreen : (context)=> SignUpScreen(),
-      SplashScreen.RouteScreen : (context)=> SplashScreen(),
-      TabBarExample.RouteScreen : (context)=> TabBarExample(),
+     routes:<String, WidgetBuilder>{
+      SignInScreen.RouteScreen : (context)=> const SignInScreen(),
+      MyHomePage.RouteScreen : (context)=> const MyHomePage(),
+      SignUpScreen.RouteScreen : (context)=> const SignUpScreen(),
+      SplashScreen.RouteScreen : (context)=> const SplashScreen(),
+      TabBarExample.RouteScreen : (context)=> const TabBarExample(),
 
      
      },
