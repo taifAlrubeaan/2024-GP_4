@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sleepwell/screens/alarm_screen.dart';
+import 'package:sleepwell/screens/profile_screen.dart';
 
 class MyHomePage extends StatefulWidget {
    static String RouteScreen ='home_screen';
@@ -35,7 +36,7 @@ late User signInUser ;
   }
   int index =2;
   final pages =[
-    const Center(child: Text('Hello  profile ')),
+    ProfileScreen(),
     const Center(child: Text('Hello  statistic  ')),
     AlarmScreen(),
     const Center(child: Text('Hello Dashboard')),
