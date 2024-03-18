@@ -15,11 +15,11 @@ import 'package:sleepwell/screens/splash_screen.dart';
 
 Future<void> main() async {
 //
-final WidgetsBinding= WidgetsFlutterBinding.ensureInitialized();
+  final WidgetsBinding = WidgetsFlutterBinding.ensureInitialized();
 // GetX local storege
-await GetStorage.init();
-//coenact to fire base 
-await Firebase.initializeApp( options: DefaultFirebaseOptions.currentPlatform);
+  await GetStorage.init();
+//coenact to fire base
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 //.then( (FirebaseApp value ) => Get.put(AuthenticationRepository()),)
 
 // await Splash until other items loaded
@@ -40,19 +40,15 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-     initialRoute:SplashScreen.RouteScreen,
-     routes:{
-      SignInScreen.RouteScreen : (context)=> SignInScreen(),
-      MyHomePage.RouteScreen : (context)=> MyHomePage(),
-      SignUpScreen.RouteScreen : (context)=> SignUpScreen(),
-      SplashScreen.RouteScreen : (context)=> SplashScreen(),
-      AlarmScreen.RouteScreen : (context)=> AlarmScreen(),
-      ProfileScreen.RouteScreen : (context)=> ProfileScreen(),
-
-
-     
-     },
-
+      initialRoute: SplashScreen.RouteScreen,
+      routes: {
+        SignInScreen.RouteScreen: (context) => SignInScreen(),
+        MyHomePage.RouteScreen: (context) => MyHomePage(),
+        SignUpScreen.RouteScreen: (context) => SignUpScreen(),
+        SplashScreen.RouteScreen: (context) => SplashScreen(),
+        AlarmScreen.RouteScreen: (context) => AlarmScreen(),
+        ProfileScreen.RouteScreen: (context) => ProfileScreen(),
+      },
     );
   }
 }
