@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="NONE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="3dbcb8be-8616-48fb-96ac-69507afc128b" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/sleepwell/lib/screens/signin_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/sleepwell/lib/screens/signin_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sleepwell/macos/Flutter/GeneratedPluginRegistrant.swift" beforeDir="false" afterPath="$PROJECT_DIR$/sleepwell/macos/Flutter/GeneratedPluginRegistrant.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sleepwell/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/sleepwell/pubspec.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sleepwell/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/sleepwell/pubspec.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sleepwell/windows/flutter/generated_plugin_registrant.cc" beforeDir="false" afterPath="$PROJECT_DIR$/sleepwell/windows/flutter/generated_plugin_registrant.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sleepwell/windows/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/sleepwell/windows/flutter/generated_plugins.cmake" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2dDdg3M8YHjSHeaIbWdZnvv55zJ" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "dart.analysis.tool.window.visible": "false",
+    "settings.editor.selected.configurable": "AndroidSdkUpdater",
+    "show.migrate.to.gradle.popup": "false"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="3dbcb8be-8616-48fb-96ac-69507afc128b" name="Changes" comment="" />
+      <created>1709546692260</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1709546692260</updated>
+    </task>
+    <servers />
+  </component>
+</project>
