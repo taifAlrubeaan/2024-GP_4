@@ -46,13 +46,13 @@ late User signInUser ;
   Widget build(BuildContext context) {
     return  Scaffold(
         appBar: AppBar(
-          backgroundColor: Color.fromARGB(255, 162, 165, 180),
+          backgroundColor:const  Color.fromARGB(255, 162, 165, 180),
           title: Text(''),
         ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: index,
         onDestinationSelected: (index) => setState(()=> this.index = index) ,
-        backgroundColor: Color.fromARGB(255, 162, 165, 180),
+        backgroundColor:Color.fromARGB(255, 162, 165, 180),
         height: 70,
         destinations: const [
           NavigationDestination(

@@ -1,11 +1,8 @@
 //import 'dart:html';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
-=======
 import 'package:get_storage/get_storage.dart';
 import 'package:sleepwell/firebase_options.dart';
->>>>>>> a5772954afbe167ad5addf62c64194358466bcd6
 import 'package:sleepwell/screens/alarm_screen.dart';
 import 'package:sleepwell/screens/home_screen.dart';
 import 'package:sleepwell/screens/profile_screen.dart';

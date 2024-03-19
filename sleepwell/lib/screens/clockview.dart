@@ -20,8 +20,8 @@ class _ClockViewState extends State<ClockView> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 150,
-      height: 150,
+      width: 160,
+      height: 140,
       child: Transform.rotate(
         angle: -pi / 2,
         child: CustomPaint(
@@ -42,15 +42,18 @@ class ClockPainter extends CustomPainter {
     var center = Offset(centerX, centerY);
     var radius = min(centerX, centerY);
 
-    var fillBrush = Paint()..color = Color.fromARGB(255, 103, 20, 181);
+    var fillBrush = Paint()..color = Color.fromARGB(255, 2, 9, 45);
     var outlineBrush = Paint()
       ..color = Color.fromARGB(255, 157, 185, 222)
       ..style = PaintingStyle.stroke
       ..strokeWidth = size.width / 20;
-    var centerDotBrush = Paint()..color = Color.fromARGB(255, 80, 149, 240);
+    var centerDotBrush = Paint()..color = Color.fromARGB(255, 26, 67, 121);
 
     var secHandBrush = Paint()
-      ..color = Color.fromARGB(255, 93, 128, 178)
+      ..shader = RadialGradient(colors: [
+        Color.fromRGBO(222, 140, 240, 1.0),
+        Color.fromRGBO(214, 97, 143, 1.0)
+      ]).createShader(Rect.fromCircle(center: center, radius: radius))
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round
       ..strokeWidth = size.width / 60;
