@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:sleepwell/screens/signin_screen.dart';
-import 'package:sleepwell/screens/signup_screen.dart';
+import 'package:get/get.dart';
+import 'package:sleepwell/screens/auth/signin_screen.dart';
+import 'package:sleepwell/screens/auth/signup_screen.dart';
 import 'package:sleepwell/widget/regsterbutton.dart';
 
 class welcome extends StatelessWidget {
@@ -63,10 +64,11 @@ class welcome extends StatelessWidget {
                 color: Color(0xffd5defe),
                 title: 'SIGN UP',
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SignUpScreen()),
-                  );
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) => SignUpScreen()),
+                  // );
+                   Get.offAll(const SignUpScreen());
                 },
               ),
               const SizedBox(
@@ -76,10 +78,11 @@ class welcome extends StatelessWidget {
                 color: Color(0xffd5defe),
                 title: 'SIGN IN',
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SignInScreen()),
-                  );
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) => SignInScreen()),
+                  // );
+                   Get.offAll(const SignInScreen());
                 },
               )
             ],

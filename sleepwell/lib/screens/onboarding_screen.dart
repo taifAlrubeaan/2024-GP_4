@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:sleepwell/screens/onboarding_data.dart';
 import 'package:sleepwell/screens/welcoming_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -81,11 +82,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             prefs.setBool("onboarding", true);
 
                             if (!mounted) return;
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => welcome()),
-                            );
+                            // Navigator.pushReplacement(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //       builder: (context) => welcome()),
+                            // );
+                            Get.offAll(const welcome());
                           },
                           child: const Text(
                             "Skip",
@@ -142,8 +144,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           prefs.setBool("onboarding", true);
 
           if (!mounted) return;
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => welcome()));
+          // Navigator.pushReplacement(
+          //     context, MaterialPageRoute(builder: (context) => welcome()));
+          Get.offAll(const welcome());
         },
         child: const Text("Get Started",
             style: TextStyle(color: Color(0xFF040E3B), fontSize: 20)),

@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:sleepwell/screens/signin_screen.dart';
+import 'package:get/get.dart';
+import 'package:sleepwell/screens/auth/signin_screen.dart';
 
 class QuestionScreen extends StatefulWidget {
   static String RouteScreen = 'question';
@@ -173,8 +174,8 @@ class _QuestionScreenState extends State<QuestionScreen> {
         showSpinner = true;
       });
 
- await _firestore.collection('User behavior').doc(userId).set({ 
-         'UserId':userId,
+      await _firestore.collection('User behavior').doc(userId).set({
+        'UserId': userId,
         'answerQ1': answers[0],
         'answerQ2': answers[1],
         'answerQ3': answers[2],
@@ -195,7 +196,6 @@ class _QuestionScreenState extends State<QuestionScreen> {
         'question8': questions[7],
         'question9': questions[8],
         'question10': questions[9],
-        
       });
 
       // Show a dialog to inform the user that their answer is saved
@@ -210,7 +210,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
               TextButton(
                 child: const Text('OK'),
                 onPressed: () {
-                  Navigator.pushNamed(context, SignInScreen.RouteScreen);
+                  Get.to(SignInScreen());
                 },
               ),
             ],

@@ -4,15 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_settings_screens/flutter_settings_screens.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
-import 'package:sleepwell/feedback/feedback_page.dart';
+import 'package:sleepwell/screens/feedback/feedback_page.dart';
 import 'package:sleepwell/main.dart';
-import 'package:sleepwell/profile/about_you_screen.dart';
-import 'package:sleepwell/profile/more_about_you.dart';
+import 'package:sleepwell/screens/profile/about_you_screen.dart';
+import 'package:sleepwell/screens/profile/more_about_you.dart';
 import 'package:sleepwell/screens/account_screen.dart';
 import 'package:sleepwell/screens/edite_alarm_screen.dart';
-import 'package:sleepwell/screens/signin_screen.dart';
+import 'package:sleepwell/screens/auth/signin_screen.dart';
+import 'package:sleepwell/widget/bed_time_reminder.dart';
 import 'package:sleepwell/widget/counter_widget.dart';
 import 'package:sleepwell/widget/iconwidget.dart';
+
+import '../widget/custom_bottom_bar.dart';
 
 class ProfileScreen extends StatefulWidget {
   static const String RouteScreen = 'profile_screen';
@@ -159,6 +162,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 editeAlaram(),
                                 Snooze(),
                                 //Feedback(),
+                                BedTime(),
                               ],
                             ),
                           ),
@@ -186,6 +190,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
       ),
+      bottomNavigationBar: CustomBottomBar(),
     );
   }
 
@@ -217,7 +222,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   TextButton(
                     child: const Text('Cancel'),
                     onPressed: () {
-                      Navigator.of(context).pop(); // Close the dialog
+                      // Navigator.of(context).pop()                     // Close the dialog
+                      Get.back();
                     },
                   ),
                   TextButton(
@@ -225,7 +231,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     onPressed: () {
                       _auth.signOut();
                       prefs.setBool("isLogin", false);
-                      Navigator.pushNamed(context, SignInScreen.RouteScreen);
+                      Get.offAll(SignInScreen());
+
                       //prefs.remove("isLogin");
                       //Get.offAllNamed(SignInScreen.RouteScreen);
                       //Navigator.pushReplacementNamed(
@@ -243,10 +250,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
         title: 'Account',
         leading: const IconWidget(icon: Icons.person, color: Color(0xFF040E3B)),
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const AccountScreen()),
-          );
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => const AccountScreen()),
+          // );
+          Get.to(const AccountScreen());
         },
       );
 
@@ -255,10 +263,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
         leading: const IconWidget(
             icon: Icons.assessment_outlined, color: Color(0xFF040E3B)),
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => AboutYouPage()),
-          );
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => AboutYouPage()),
+          // );
+          Get.to(AboutYouPage());
         },
       );
 
@@ -279,14 +288,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
             context,
             MaterialPageRoute(builder: (context) => FeedbackPage()),
           ); // Handle alarm sound logic here
+          Get.to(const FeedbackPage());
         },
       );
   Widget MoreAboutYou() => SimpleSettingsTile(
         title: 'More About You',
-        leading: IconWidget(
-            icon: Icons.question_answer, color: const Color(0xFF040E3B)),
+        leading: const IconWidget(
+            icon: Icons.question_answer, color: Color(0xFF040E3B)),
         onTap: () {
-          Navigator.pushNamed(context, MoreAboutYouScreen.RouteScreen);
+          // Navigator.pushNamed(context, MoreAboutYouScreen.RouteScreen);
+          Get.to(MoreAboutYouScreen());
         },
       );
   Widget Snooze() => SimpleSettingsTile(
@@ -296,6 +307,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
           // Handle snooze logic
           Get.dialog(const Dialog(
             child: CounterWidget(),
+          ));
+        },
+      );
+  Widget BedTime() => SimpleSettingsTile(
+        title: 'BedTime',
+        leading:
+            const IconWidget(icon: Icons.bedtime, color: Color(0xFF040E3B)),
+        onTap: () {
+          // Handle snooze logic
+          Get.dialog(Dialog(
+            child: BedTimeReminder(),
           ));
         },
       );

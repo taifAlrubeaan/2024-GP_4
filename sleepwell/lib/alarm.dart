@@ -9,8 +9,8 @@ import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sleepwell/models/list_of_music.dart';
-import 'package:sleepwell/screens/alarm_ring_screen.dart';
-import 'package:sleepwell/screens/alarm_ring_with_equation_screen.dart';
+import 'package:sleepwell/screens/alarm/alarm_ring_screen.dart';
+import 'package:sleepwell/screens/alarm/alarm_ring_with_equation_screen.dart';
 
 class AppAlarm {
   static StreamSubscription<AlarmSettings>? subscription;

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:get/get.dart';
 import 'package:sleepwell/screens/onboarding_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -22,10 +23,11 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void _navigateToSignInScreen() {
     // Navigate to the SignInScreen()
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => OnboardingScreen()),
-    );
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(builder: (context) => OnboardingScreen()),
+    // );
+    Get.to(const OnboardingScreen());
   }
 
   @override

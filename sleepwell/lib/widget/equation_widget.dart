@@ -2,11 +2,13 @@ import 'dart:async';
 
 import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
-import 'package:sleepwell/feedback/feedback_page.dart';
+import 'package:get/get.dart';
+import 'package:sleepwell/screens/dashboard_screen.dart';
+import 'package:sleepwell/screens/feedback/feedback_page.dart';
 import 'package:sleepwell/models/difficult_equation_model.dart';
 import 'package:sleepwell/models/easy_equation_model.dart';
 import 'package:sleepwell/models/equation_abstrat_model.dart';
-import 'package:sleepwell/screens/home_screen.dart';
+// import 'package:sleepwell/screens/home_screen.dart';
 
 class EquationWidget extends StatefulWidget {
   final bool showEasyEquation;
@@ -55,7 +57,7 @@ class _EquationWidgetState extends State<EquationWidget> {
             alignment: AlignmentDirectional.center,
             height: 50,
             decoration: BoxDecoration(
-              color: Color.fromARGB(255, 223, 224, 248),
+              color: const Color.fromARGB(255, 223, 224, 248),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: Colors.grey),
             ),
@@ -91,27 +93,30 @@ class _EquationWidgetState extends State<EquationWidget> {
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(
-                              title: Text('Daily Feedback'),
-                              content: Text(
+                              title: const Text('Daily Feedback'),
+                              content: const Text(
                                   'Do you want to give your feedback now?'),
                               actions: [
                                 TextButton(
-                                  child: Text('Remind me later'),
+                                  child: const Text('Remind me later'),
                                   onPressed: () {
-                                    Navigator.pop(context, false);
+                                    // Navigator.pop(context, false);
+                                    Get.back(result: false);
                                     _showFeedbackDialog = false;
                                     _startReminderTimer();
                                   },
                                 ),
                                 TextButton(
-                                  child: Text('Yes'),
+                                  child: const Text('Yes'),
                                   onPressed: () {
-                                    Navigator.pop(context, true);
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => FeedbackPage()),
-                                    );
+                                    // Navigator.pop(context, true);
+                                    // Navigator.push(
+                                    //   context,
+                                    //   MaterialPageRoute(
+                                    //       builder: (context) => FeedbackPage()),
+                                    // );
+                                    Get.back(result: true);
+                                    Get.to(const FeedbackPage());
                                   },
                                 ),
                               ],
@@ -119,12 +124,13 @@ class _EquationWidgetState extends State<EquationWidget> {
                           },
                         );
                         if (!(shouldShowFeedbackDialog ?? false)) {
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => MyHomePage()),
-                            (route) => false,
-                          );
+                          // Navigator.pushAndRemoveUntil(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //       builder: (context) => MyHomePage()),
+                          //   (route) => false,
+                          // );
+                          Get.offAll(DashboardScreen());
                         }
                       } else {
                         print(":::::::::::::::::: Wrong chosen");
@@ -157,18 +163,21 @@ class _EquationWidgetState extends State<EquationWidget> {
                 TextButton(
                   child: Text('Remind me later'),
                   onPressed: () {
-                    Navigator.pop(context);
+                    // Navigator.pop(context);
+                    Get.back();
                     _startReminderTimer();
                   },
                 ),
                 TextButton(
                   child: Text('Yes'),
                   onPressed: () {
-                    Navigator.pop(context);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => FeedbackPage()),
-                    );
+                    // Navigator.pop(context);
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(builder: (context) => FeedbackPage()),
+                    // );
+                    Get.back();
+                    Get.to(const FeedbackPage());
                   },
                 ),
               ],
