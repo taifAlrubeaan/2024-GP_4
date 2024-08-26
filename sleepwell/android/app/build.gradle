@@ -2,8 +2,7 @@ plugins {
     id "com.android.application"
     id "kotlin-android"
     id "dev.flutter.flutter-gradle-plugin"
-    // id 'com.google.gms.google-services' version '4.4.1' apply false
-   id 'com.google.gms.google-services' // Add the Google services Gradle plugin
+    id 'com.google.gms.google-services'
 }
 
 def localProperties = new Properties()
@@ -27,13 +26,10 @@ if (flutterVersionName == null) {
 android {
     namespace "com.example.sleepwell"
     compileSdk flutter.compileSdkVersion
-    ndkVersion flutter.ndkVersion
-    defaultConfig {
-        multiDexEnabled true
-    }
+    ndkVersion "25.1.8937393"
+    // ndkVersion flutter.ndkVersion
 
     compileOptions {
-        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -47,21 +43,15 @@ android {
     }
 
     defaultConfig {
+        multiDexEnabled true
+        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.example.sleepwell"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion flutter.minSdkVersion
+        minSdkVersion 21
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
-
-        // minSdkVersion 21
-        // targetSdkVersion 33
-        // versionCode 1
-        // versionName "1.0"
-
-       multiDexEnabled true // Add this line if you need multidex support
-       testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -78,21 +68,7 @@ flutter {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    // implementation 'androidx.core:core-ktx:1.8.0'
-    // implementation 'androidx.appcompat:appcompat:1.4.2'
-    // implementation 'com.google.android.material:material:1.6.1'
-    // implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    // implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.1'
-    // implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1'
-    // implementation 'com.google.firebase:firebase-analytics-ktx:20.1.0'
-    // implementation 'com.google.firebase:firebase-messaging:23.0.0'
+    implementation 'com.android.support:multidex:2.0.1'
     implementation platform('com.google.firebase:firebase-bom:32.7.2')
-    implementation 'androidx.multidex:multidex:2.0.1'
-    // implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3"
-    // implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3"
-    // Add other dependencies as needed
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.2.2'
-}
 
-//apply plugin: 'com.google.gms.google-services' // Move this line to the end of the file
+}

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sleepwell/screens/alarm_screen.dart';
-import 'package:sleepwell/screens/statistic_screen.dart';
 import '../screens/dashboard_screen.dart';
 import '../screens/profile_screen.dart';
+import '../screens/statistic/statistic_sleepwell_screen.dart';
 
 class CustomBottomBar extends StatefulWidget {
   @override
@@ -22,7 +22,7 @@ class _CustomBottomBarState extends State<CustomBottomBar> {
       Get.off(() => const ProfileScreen());
       // (index) => setState(() => this.index = index);
     } else if (index == 1) {
-      Get.off(() => const StatisticScreen());
+      Get.off(() => const StatisticSleepWellScreen());
       // (index) => setState(() => this.index = index);
     } else if (index == 2) {
       Get.off(() => AlarmScreen());

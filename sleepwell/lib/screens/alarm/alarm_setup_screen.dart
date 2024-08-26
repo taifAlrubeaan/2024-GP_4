@@ -7,6 +7,8 @@ import 'package:intl/intl.dart';
 import 'package:sleepwell/alarm.dart';
 import 'package:sleepwell/screens/alarm_screen.dart';
 import 'package:sleepwell/screens/clockview.dart';
+import 'package:intl/intl.dart';
+import '../../push_notification_service.dart';
 
 class AlarmSetupScreen extends StatefulWidget {
   static String RouteScreen = 'alarm_screen';
@@ -26,6 +28,7 @@ class _AlarmSetupScreenState extends State<AlarmSetupScreen> {
   String printedBedtime = '';
   String printedWakeUpTime = '';
   String printednumOfCycles = '';
+  int intervalSechend = 0;
   int numOfCycles = 0;
 
   late DateTime _now;
@@ -130,6 +133,10 @@ class _AlarmSetupScreenState extends State<AlarmSetupScreen> {
 
       int optimalWakeUpMinutes =
           bedtimeMinutes + (numberOfCycles * sleepCycleMinutes);
+
+      int optimalWakeUpSechend = optimalWakeUpMinutes * 60;
+      print(
+          "============================::::::::::::optimalWakeUpSechend is:::::: $optimalWakeUpSechend");
       String optimalWakeUpTime = calculateTimeFromMinutes(
           optimalWakeUpMinutes, wakeUpTimeController.text);
 
@@ -150,35 +157,187 @@ class _AlarmSetupScreenState extends State<AlarmSetupScreen> {
 
         printedBedtime = '$hour:${minute.toString().padLeft(2, '0')} $period';
         printedWakeUpTime = optimalWakeUpTime;
+        // string durationhours=
         printednumOfCycles = numberOfCycles.toString();
       });
 
       await AppAlarm.saveAlarm(selectedBedtime, optimalWakeUpTime);
       AppAlarm.getAlarms();
-
+      calculateSleepDuration(printedBedtime, printedWakeUpTime);
       int currentDay = DateTime.now().day;
 
       await FirebaseFirestore.instance.collection('alarms').add({
         'bedtime': printedBedtime,
         'wakeup_time': printedWakeUpTime,
         'num_of_cycles': printednumOfCycles,
-        'added_day': currentDay,
+        'added_day': DateTime.now().day,
+        'added_month': DateTime.now().month,
+        'added_year': DateTime.now().year,
         'timestamp': FieldValue.serverTimestamp(),
       });
       var timestamp = FieldValue.serverTimestamp();
       print("=================================$timestamp");
+      print("====================================================");
+      print(optimalWakeUpTime);
+      print("====================================================");
+
+      await PushNotificationService.showNotification(
+        title: 'Your Time To Go To Sleep',
+        body: 'Your Sleep Time Is Now. Go To Sleep',
+        schedule: true,
+        interval: printSechendTime(optimalWakeUpTime),
+      );
+      print("=======================OptimaL tIME=============================");
+      printTimeDifference(optimalWakeUpTime);
+      print("==========================End==========================");
+
+      print(
+          "=======================Sleep duration Hur=============================");
+      // printTimeDifference();
+      print("==========================End==========================");
+
+      print("=======================Wake up time=============================");
+      printTimeDifference(printedBedtime);
+      print("==========================End==========================");
+
+      print("=======================OptimaL tIME=============================");
+      printTimeDifference(printednumOfCycles);
+      print("==========================End==========================");
       Get.off(() => AlarmScreen());
     }
   }
+
+  Future<void> calculateSleepDuration(
+      String selectedBedtimeStr, String optimalWakeUpTimeStr) async {
+    try {
+      // Define the date format
+      DateFormat format = DateFormat.jm(); // 'jm' is the format for '1:00 PM'
+
+      // Parse the time strings to DateTime
+      DateTime selectedBedtime = format.parse(selectedBedtimeStr);
+      DateTime optimalWakeUpTime = format.parse(optimalWakeUpTimeStr);
+
+      // Get the current date
+      DateTime now = DateTime.now();
+
+      // Adjust DateTime to include current date
+      selectedBedtime = DateTime(now.year, now.month, now.day,
+          selectedBedtime.hour, selectedBedtime.minute);
+      optimalWakeUpTime = DateTime(now.year, now.month, now.day,
+          optimalWakeUpTime.hour, optimalWakeUpTime.minute);
+
+      // If the wakeup time is before the bedtime, assume it's the next day
+      if (optimalWakeUpTime.isBefore(selectedBedtime)) {
+        optimalWakeUpTime = optimalWakeUpTime.add(Duration(days: 1));
+      }
+
+      // Calculate the sleep duration
+      Duration sleepDuration = optimalWakeUpTime.difference(selectedBedtime);
+      int sleepHours = sleepDuration.inHours;
+      int sleepMinutes = sleepDuration.inMinutes % 60;
+
+      // Print the sleep duration
+      print(
+          ":::::::::::::::::::::::::::::::::AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA:::::::::::::::::::::::::::::::::::::::::::::::::");
+      print('Sleep Duration: $sleepHours hours and $sleepMinutes minutes');
+      print(
+          ":::::::::::::::::::::::::::::::::AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA:::::::::::::::::::::::::::::::::::::::::::::::::");
+    } catch (e) {
+      print('Error parsing time strings: $e');
+    }
+  }
+
+  // Future<void> calculateSleepDuration(
+  //     String selectedBedtimeStr, String optimalWakeUpTimeStr) async {
+  //   // Define the date format
+  //   DateFormat format = DateFormat.jm(); // 'jm' is the format for '1:00 PM'
+
+  //   // Parse the time strings to DateTime
+  //   DateTime selectedBedtime = format.parse(selectedBedtimeStr);
+  //   DateTime optimalWakeUpTime = format.parse(optimalWakeUpTimeStr);
+
+  //   // Get the current date
+  //   DateTime now = DateTime.now();
+
+  //   // Adjust DateTime to include current date
+  //   selectedBedtime = DateTime(now.year, now.month, now.day,
+  //       selectedBedtime.hour, selectedBedtime.minute);
+  //   optimalWakeUpTime = DateTime(now.year, now.month, now.day,
+  //       optimalWakeUpTime.hour, optimalWakeUpTime.minute);
+
+  //   // If the wakeup time is before the bedtime, assume it's the next day
+  //   if (optimalWakeUpTime.isBefore(selectedBedtime)) {
+  //     optimalWakeUpTime = optimalWakeUpTime.add(Duration(days: 1));
+  //   }
+
+  //   // Calculate the sleep duration
+  //   Duration sleepDuration = optimalWakeUpTime.difference(selectedBedtime);
+  //   int sleepHours = sleepDuration.inHours;
+  //   int sleepMinutes = sleepDuration.inMinutes % 60;
+
+  //   // Print the sleep duration
+  //   print(
+  //       ":::::::::::::::::::::::::::::::::AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA:::::::::::::::::::::::::::::::::::::::::::::::::");
+  //   print('Sleep Duration: $sleepHours hours and $sleepMinutes minutes');
+  //   print(
+  //       ":::::::::::::::::::::::::::::::::AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA:::::::::::::::::::::::::::::::::::::::::::::::::");
+  // }
 
   String calculateTimeFromMinutes(int minutes, String referenceTime) {
     int hours = minutes ~/ 60;
     int mins = minutes % 60;
     TimeOfDay timeOfDay = TimeOfDay(hour: hours, minute: mins);
     DateTime dateTime = DateFormat('hh:mm a').parse(referenceTime);
+
     dateTime = DateTime(dateTime.year, dateTime.month, dateTime.day,
         timeOfDay.hour, timeOfDay.minute);
     return DateFormat('hh:mm a').format(dateTime);
+  }
+
+  Duration calculateTimeDifference(String optimalWakeUpTime) {
+    // Current time
+    DateTime now = DateTime.now();
+
+    // Parse optimalWakeUpTime
+    DateTime optimalWakeUpDateTime =
+        DateFormat('hh:mm').parse(optimalWakeUpTime, false);
+
+    // Combine date and optimalWakeUpTime
+    optimalWakeUpDateTime = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      optimalWakeUpDateTime.hour,
+      optimalWakeUpDateTime.minute,
+    );
+
+    // Calculate difference
+    Duration difference = optimalWakeUpDateTime.difference(now);
+
+    return difference;
+  }
+
+  void printTimeDifference(String optimalWakeUpTime) {
+    optimalWakeUpTime = optimalWakeUpTime.trim().replaceAll('\u00A0', ' ');
+
+    Duration difference = calculateTimeDifference(optimalWakeUpTime);
+
+    print(
+        "Time difference: ${difference.inHours} hours and ${difference.inMinutes.remainder(60)} minutes");
+    final CalcSechend = difference.inHours * 60 * 60 +
+        (difference.inMinutes.remainder(60) * 60);
+
+    print("::::::::::::::::CalcSechend::::::::::::::::::$CalcSechend");
+  }
+
+  int printSechendTime(String optimalWakeUpTime) {
+    optimalWakeUpTime = optimalWakeUpTime.trim().replaceAll('\u00A0', ' ');
+
+    Duration difference = calculateTimeDifference(optimalWakeUpTime);
+    final CalcSechend = difference.inHours * 60 * 60 +
+        (difference.inMinutes.remainder(60) * 60);
+
+    return CalcSechend;
   }
 
   int calculateMinutesFromTime(String time) {
@@ -501,4 +660,3 @@ class _AlarmSetupScreenState extends State<AlarmSetupScreen> {
     );
   }
 }
-

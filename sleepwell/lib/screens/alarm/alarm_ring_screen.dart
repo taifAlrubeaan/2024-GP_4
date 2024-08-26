@@ -1,11 +1,11 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:alarm/alarm.dart';
-import 'package:alarm/model/alarm_settings.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sleepwell/main.dart';
-
+import '../../push_notification_service.dart';
 import '../feedback/feedback_page.dart';
 
 class AlarmRingScreen extends StatelessWidget {
@@ -66,9 +66,19 @@ class AlarmRingScreen extends StatelessWidget {
                           actions: [
                             TextButton(
                               child: const Text('Remiend me later'),
-                              onPressed: () {
+                              onPressed: () async {
                                 Alarm.stop(alarmSettings.id)
                                     .then((_) => Navigator.pop(context, false));
+                                await PushNotificationService.showNotification(
+                                    title: 'Daily Feedback',
+                                    body: 'You must  given your feedback now',
+                                    schedule: true,
+                                    interval: 3600,
+                                    actionButtons: [
+                                      NotificationActionButton(
+                                          key: 'FeedBak',
+                                          label: 'Go To Feedback Now')
+                                    ]);
                               },
                             ),
                             TextButton(

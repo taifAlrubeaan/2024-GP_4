@@ -1,15 +1,15 @@
 import 'dart:convert';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:sleepwell/screens/alarm_screen.dart';
+import '../../push_notification_service.dart';
 
 // late String predictedQuality;
 class FeedbackPage extends StatefulWidget {
-  static String RouteScreen = 'feedback';
-
   const FeedbackPage({super.key});
 
   @override
@@ -19,16 +19,15 @@ class FeedbackPage extends StatefulWidget {
 class _FeedbackPageState extends State<FeedbackPage> {
   List<String> answers = List.filled(7, ''); // Initialize with empty strings
   bool showError = false;
-  // Existing variables...
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   int _currentQuestionIndex = 0;
   bool _canProceed = false;
-  /////////Taif Edite this part ///////////////
   final _auth = FirebaseAuth.instance;
   bool showSpinner = false;
   late String userId;
   late String email;
+
   @override
   void initState() {
     super.initState();
@@ -38,7 +37,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
   void getCurrentUser() async {
     try {
       setState(() {
-        showSpinner = true; // Show spinner while fetching user
+        showSpinner = true;
       });
 
       final user = await _auth.currentUser;
@@ -50,23 +49,18 @@ class _FeedbackPageState extends State<FeedbackPage> {
       }
 
       setState(() {
-        showSpinner = false; // Hide spinner after fetching user
+        showSpinner = false;
       });
     } catch (e) {
       print(e);
       setState(() {
-        showSpinner = false; // Hide spinner in case of an error
+        showSpinner = false;
       });
     }
   }
 
-  final String apiUrl =
-      "https://my-sleep-quality-api-5903a0effd39.herokuapp.com/predict/";
-  final String apiToken =
-      'HRKU-da62ae22-3861-4deb-95c6-059e8a9b8425'; // Replace with your token
-
   List<String> questions = [
-    'Did you experience high levels of stress or anxiety before bedtime?',
+    'Did you experience high levels of stress or anxiety before bedtime?'.tr,
     'Did you use nicotine products close to bedtime?',
     'Did you use electronic devices before bedtime?',
     'Is your bedroom?',
@@ -117,157 +111,207 @@ class _FeedbackPageState extends State<FeedbackPage> {
     });
   }
 
-  Future<String> queryModel(Map<String, dynamic> payload) async {
-    print('queryModel: Starting to send payload to API: $payload');
-
-    try {
-      var response = await http.post(
-        Uri.parse(apiUrl),
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer $apiToken",
-        },
-        body: json.encode(payload),
+  Future<void> showSleepQualityDialog(
+      BuildContext context,
+      String predictedQuality,
+      List<String> reasons,
+      List<String> recommendations) async {
+    // Prepare notification message
+    String notificationMessage = 'Your Sleep Quality is: $predictedQuality \n';
+    // if (predictedQuality == 'Poor' || predictedQuality == 'Average') {
+    //   notificationMessage +=
+    //       '\nReason: ${reasons.join(', ')}\nAdvice: ${recommendations.join(', ')}';
+    // }
+    Get.offAll(AlarmScreen());
+    if (predictedQuality == 'Poor' || predictedQuality == 'Average') {
+      await PushNotificationService
+          .showNotificationWithReasonsAndRecommendations(
+        title: notificationMessage,
+        // body: 'Your Sleep Quality is: $predictedQuality',
+        reasons: reasons, // تمرير القائمة هنا
+        recommendations: recommendations, // تمرير القائمة هنا
+        schedule: true,
+        interval: 60,
+        actionButton: [
+          NotificationActionButton(key: 'FeedBak', label: 'Go To Feedback Now')
+        ],
       );
 
-      print('queryModel: Response status code: ${response.statusCode}');
-      print('queryModel: Response body: ${response.body}');
-
-      if (response.statusCode == 200) {
-        var jsonResponse = json.decode(response.body);
-        if (jsonResponse.containsKey('predicted_sleep_quality') &&
-            jsonResponse['predicted_sleep_quality'] != null) {
-          return jsonResponse['predicted_sleep_quality'];
-        } else {
-          throw Exception(
-              'Missing or null predicted_sleep_quality in response');
-        }
-      } else {
-        print('queryModel: Failed to query model: ${response.statusCode}');
-        print('queryModel: Response body: ${response.body}');
-        throw Exception(
-            'queryModel: Failed to query model: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('queryModel: Exception occurred while querying model: $e');
-      throw e;
+      // await PushNotificationService.showNotification(
+      //   title: notificationMessage,
+      //   body: '\nReason: ${reasons.join(', \n')}',
+      //   summary: '\nAdvice: ${recommendations.join(', \n')}',
+      //   schedule: true,
+      //   interval: 60,
+      // );
+    } else {
+      await PushNotificationService.showNotification(
+        title: 'Sleep Well Quality',
+        body: notificationMessage,
+        schedule: true,
+        interval: 60,
+      );
     }
+
+    // Show notification
+    // await PushNotificationService.showNotification(
+    //   title: 'Sleep Well Quality',
+    //   body: notificationMessage,
+    //   interval: 60,
+    // );
+
+    // Show dialog
+    // showDialog(
+    //   context: context,
+    //   builder: (BuildContext context) {
+    //     return AlertDialog(
+    //       title: Text('Predicted Sleep Quality: $predictedQuality'),
+    //       content: Column(
+    //         mainAxisSize: MainAxisSize.min,
+    //         crossAxisAlignment: CrossAxisAlignment.start,
+    //         children: [
+    //           if (predictedQuality == 'Poor' ||
+    //               predictedQuality == 'Average') ...[
+    //             const Text(
+    //                 "Your sleep was not good, it could be due to the following reasons:"),
+    //             for (var reason in reasons) Text("- $reason"),
+    //             const Text(
+    //                 "\nHere are some tips to consider for better sleep:"),
+    //             for (var recommendation in recommendations)
+    //               Text("- $recommendation"),
+    //           ]
+    //         ],
+    //       ),
+    //       actions: [
+    //         ElevatedButton(
+    //           child: const Text('OK'),
+    //           onPressed: () {
+    //             Get.to(AlarmScreen());
+    //           },
+    //         ),
+    //       ],
+    //     );
+    //   },
+    // );
   }
 
-  void _getFeedback() async {
-    Map<String, dynamic> payload = {
-      "Q1": answers[0],
-      "Q2": answers[1],
-      "Q3": answers[2],
-      "Q4": answers[3],
-      "Q5": answers[4],
-      "Q6": answers[5],
-      "Q7": answers[6],
-    };
+  void evaluateSleepQuality(BuildContext context) {
+    // بناء البيانات الخاصة بجودة النوم، الأسباب، والنصائح
+    String predictedQuality = 'Poor'; // أو 'Average' أو 'Good'
+    List<String> reasons = [
+      'Too much screen time before bed',
+      'Stress or anxiety',
+      'Late caffeine intake'
+    ];
+    List<String> recommendations = [
+      'Avoid screens 1 hour before bed',
+      'Practice relaxation techniques',
+      'Limit caffeine intake in the evening'
+    ];
 
-    print('Getting feedback with payload: $payload');
+    // استدعاء الدالة لعرض الإشعار بناءً على البيانات
+    showSleepQualityDialog(context, predictedQuality, reasons, recommendations);
+  }
 
-    try {
-      String predictedQuality = await queryModel(payload);
-      print('Predicted sleep quality: $predictedQuality');
+  // Future<void> showSleepQualityDialog(
+  //     BuildContext context,
+  //     String predictedQuality,
+  //     List<String> reasons,
+  //     List<String> recommendations) async {
+  //   // Prepare notification message
+  //   String notificationMessage = 'Your Sleep Quality is: $predictedQuality \n';
+  //   // if (predictedQuality == 'Poor' || predictedQuality == 'Average') {
+  //   //   notificationMessage +=
+  //   //       '\nReason: ${reasons.join(', ')}\nAdvice: ${recommendations.join(', ')}';
+  //   // }
+  //   Get.offAll(AlarmScreen());
+  //   if (predictedQuality == 'Poor' || predictedQuality == 'Average') {
+  //     await PushNotificationService.showNotification(
+  //       title: notificationMessage,
+  //       body: '\nReason: ${reasons.join(', \n')}',
+  //       summary: '\nAdvice: ${recommendations.join(', \n')}',
+  //       schedule: true,
+  //       interval: 60,
+  //     );
+  //   } else {
+  //     await PushNotificationService.showNotification(
+  //       title: 'Sleep Well Quality',
+  //       body: notificationMessage,
+  //       interval: 60,
+  //     );
+  //   }
+
+  //   // Show notification
+  //   // await PushNotificationService.showNotification(
+  //   //   title: 'Sleep Well Quality',
+  //   //   body: notificationMessage,
+  //   //   interval: 60,
+  //   // );
+
+  //   // Show dialog
+  //   // showDialog(
+  //   //   context: context,
+  //   //   builder: (BuildContext context) {
+  //   //     return AlertDialog(
+  //   //       title: Text('Predicted Sleep Quality: $predictedQuality'),
+  //   //       content: Column(
+  //   //         mainAxisSize: MainAxisSize.min,
+  //   //         crossAxisAlignment: CrossAxisAlignment.start,
+  //   //         children: [
+  //   //           if (predictedQuality == 'Poor' ||
+  //   //               predictedQuality == 'Average') ...[
+  //   //             const Text(
+  //   //                 "Your sleep was not good, it could be due to the following reasons:"),
+  //   //             for (var reason in reasons) Text("- $reason"),
+  //   //             const Text(
+  //   //                 "\nHere are some tips to consider for better sleep:"),
+  //   //             for (var recommendation in recommendations)
+  //   //               Text("- $recommendation"),
+  //   //           ]
+  //   //         ],
+  //   //       ),
+  //   //       actions: [
+  //   //         ElevatedButton(
+  //   //           child: const Text('OK'),
+  //   //           onPressed: () {
+  //   //             Get.to(AlarmScreen());
+  //   //           },
+  //   //         ),
+  //   //       ],
+  //   //     );
+  //   //   },
+  //   // );
+  // }
+
+  Future<void> _getFeedback() async {
+    final url = Uri.parse(
+        'https://my-sleep-quality-api-5903a0effd39.herokuapp.com/predict');
+
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'answers': answers}),
+    );
+
+    if (response.statusCode == 200) {
+      final result = jsonDecode(response.body);
+      final String predictedQuality = result['predicted_quality'];
+
+      // Casting dynamic list to List<String>
+      final List<String> reasons = List<String>.from(result['reasons'] ?? []);
+      final List<String> recommendations =
+          List<String>.from(result['recommendations'] ?? []);
       _firestore.collection('feedback').add({
-        //Taif add user Id
         'UserId': userId,
         'answers': answers,
         'timestamp': DateTime.now(),
         'predictedQuality': predictedQuality,
       });
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Predicted Sleep Quality'),
-            content: Text('The predicted sleep quality is: $predictedQuality'),
-            // title: const Text('Feedback Submitted'),
-            // content: const Text('Thank you for your feedback!'),
-            actions: [
-              ElevatedButton(
-                onPressed: () {
-                  Get.offAll(AlarmScreen());
-                  // Navigator.pop(context);
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
-
-      // showDialog(
-      //   context: context,
-      //   builder: (BuildContext context) {
-      //     return AlertDialog(
-      //       title: const Text('Feedback Submitted'),
-      //       content: const Text('Thank you for your feedback!'),
-      //       actions: [
-      //         ElevatedButton(
-      //             child: const Text('OK'),
-      //             onPressed: () {
-      //               // Navigator.push(
-      //               //   context,
-      //               //   MaterialPageRoute(builder: (context) => const MyHomePage()),
-      //               // );
-      //               // _getFeedback();
-
-      //               Get.to(AlarmScreen());
-      //             }),
-      //       ],
-      //     );
-      //   },
-      // );
-    } catch (e) {
-      print('Error querying model: $e');
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Error'),
-            content: const Text(
-                'Failed to predict sleep quality. Please try again.'),
-            actions: [
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
+      showSleepQualityDialog(
+          context, predictedQuality, reasons, recommendations);
+    } else {
+      print('Failed to get a response. Status code: ${response.statusCode}');
     }
-  }
-
-  Future<void> _submitFeedback() async {
-    _getFeedback();
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Feedback Submitted'),
-          content: const Text('Thank you for your feedback!'),
-          actions: [
-            ElevatedButton(
-                child: const Text('OK'),
-                onPressed: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) => const MyHomePage()),
-                  // );
-                  // _getFeedback();
-
-                  Get.to(AlarmScreen());
-                }),
-          ],
-        );
-      },
-    );
   }
 
   @override

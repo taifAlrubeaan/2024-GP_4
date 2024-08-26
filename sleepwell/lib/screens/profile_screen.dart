@@ -65,9 +65,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
           .doc(userId)
           .get();
       if (userData.exists) {
+        final data = userData.data() as Map<String, dynamic>;
         setState(() {
-          firstName = userData['Fname'] ?? '';
-          lastName = userData['Lname'] ?? '';
+          firstName = data['Fname'] ?? '';
+          lastName = data['Lname'] ?? '';
         });
       } else {
         print('User data does not exist');
@@ -76,6 +77,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
       print('Error fetching user data: $e');
     }
   }
+
+  // void _fetchUserData() async {
+  //   try {
+  //     final userData = await FirebaseFirestore.instance
+  //         .collection('Users')
+  //         .doc(userId)
+  //         .get();
+  //     if (userData.exists) {
+  //       setState(() {
+  //         firstName = userData['Fname'] ?? '';
+  //         lastName = userData['Lname'] ?? '';
+  //       });
+  //     } else {
+  //       print('User data does not exist');
+  //     }
+  //   } catch (e) {
+  //     print('Error fetching user data: $e');
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -222,8 +242,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   TextButton(
                     child: const Text('Cancel'),
                     onPressed: () {
-                      // Navigator.of(context).pop()                     // Close the dialog
-                      Get.back();
+                      Navigator.of(context).pop(); // Close the dialog
                     },
                   ),
                   TextButton(
@@ -231,12 +250,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     onPressed: () {
                       _auth.signOut();
                       prefs.setBool("isLogin", false);
-                      Get.offAll(SignInScreen());
-
-                      //prefs.remove("isLogin");
-                      //Get.offAllNamed(SignInScreen.RouteScreen);
-                      //Navigator.pushReplacementNamed(
-                      //context, SignInScreen.RouteScreen);
+                      Get.offAll(() => SignInScreen());
                     },
                   ),
                 ],
@@ -245,6 +259,58 @@ class _ProfileScreenState extends State<ProfileScreen> {
           );
         },
       );
+
+  // Widget buildLogOut() => SimpleSettingsTile(
+  //       title: 'Sign Out',
+  //       leading: const IconWidget(
+  //           icon: Icons.logout, color: Color.fromARGB(241, 230, 158, 3)),
+  //       onTap: () {
+  //         showDialog(
+  //           context: context,
+  //           builder: (BuildContext context) {
+  //             return AlertDialog(
+  //               title: const Text(
+  //                 'Confirm Sign Out',
+  //                 style: TextStyle(
+  //                   color: Color.fromARGB(255, 152, 15, 5),
+  //                   fontSize: 24,
+  //                   fontWeight: FontWeight.bold,
+  //                 ),
+  //               ),
+  //               content: const Text(
+  //                 'Are you sure you want to sign out?',
+  //                 style: TextStyle(
+  //                   color: Colors.black,
+  //                   fontSize: 18,
+  //                 ),
+  //               ),
+  //               actions: <Widget>[
+  //                 TextButton(
+  //                   child: const Text('Cancel'),
+  //                   onPressed: () {
+  //                     // Navigator.of(context).pop()                     // Close the dialog
+  //                     Get.back();
+  //                   },
+  //                 ),
+  //                 TextButton(
+  //                   child: const Text('Sign Out'),
+  //                   onPressed: () {
+  //                     _auth.signOut();
+  //                     prefs.setBool("isLogin", false);
+  //                     Get.offAll(SignInScreen());
+
+  //                     //prefs.remove("isLogin");
+  //                     //Get.offAllNamed(SignInScreen.RouteScreen);
+  //                     //Navigator.pushReplacementNamed(
+  //                     //context, SignInScreen.RouteScreen);
+  //                   },
+  //                 ),
+  //               ],
+  //             );
+  //           },
+  //         );
+  //       },
+  //     );
 
   Widget Account() => SimpleSettingsTile(
         title: 'Account',

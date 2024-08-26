@@ -69,7 +69,7 @@ class ClockPainter extends CustomPainter {
     var centerDotBrush = Paint()..color = Color.fromARGB(255, 26, 67, 121);
 
     var secHandBrush = Paint()
-      ..shader = RadialGradient(colors: [
+      ..shader = const RadialGradient(colors: [
         Color.fromRGBO(222, 140, 240, 1.0),
         Color.fromRGBO(214, 97, 143, 1.0)
       ]).createShader(Rect.fromCircle(center: center, radius: radius))
@@ -78,7 +78,7 @@ class ClockPainter extends CustomPainter {
       ..strokeWidth = size.width / 60;
 
     var minHandBrush = Paint()
-      ..shader = RadialGradient(colors: [
+      ..shader = const RadialGradient(colors: [
         Color.fromARGB(255, 50, 18, 106),
         Color.fromARGB(255, 106, 134, 190)
       ]).createShader(Rect.fromCircle(center: center, radius: radius))

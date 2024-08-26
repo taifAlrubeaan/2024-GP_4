@@ -1,0 +1,230 @@
+#include <math.h>
+
+//Start Wifi
+#include <WiFi.h>
+#include <Firebase_ESP_Client.h>
+// Insert your network credentials
+#define WIFI_SSID "pc"
+#define WIFI_PASSWORD "12341234"
+
+//Start Firebase
+#include "addons/TokenHelper.h" //Provide the token generation process info.
+#include "addons/RTDBHelper.h"  //Provide the RTDB payload printing info and other helper functions.
+#define API_KEY "AIzaSyBun53CttUKoTpq2tmqqrvz5hpLkp2GTMw"
+
+// Insert RTDB URL
+#define DATABASE_URL "https://sleepwell-2d0c4-default-rtdb.asia-southeast1.firebasedatabase.app/" 
+
+FirebaseData FirebaseData;  //Firebase data object
+FirebaseAuth auth;  //Firebase authentication object
+FirebaseConfig config;  //Firebase configuration object
+
+TaskHandle_t PostToFirebase;
+bool signupOK = false;
+// End Firebase
+
+// Start Function Declaration
+void SendReadingsToFirebase();
+void InitializeWifi();
+void SignUpToFirebase();
+void InitializePOX();
+// End Function Declaration
+
+// Start Pulse Oximeter
+#include <Wire.h>
+#include "MAX30100_PulseOximeter.h"
+#define POX_REPORTING_PERIOD_MS  1000
+
+PulseOximeter pox;  // Create a PulseOximeter object
+
+TaskHandle_t GetReadings;
+uint8_t _spo2;
+uint8_t _heartRate;
+
+uint32_t poxLastReport = 0;
+uint32_t prevMillis = 0;
+// End Pulse Oximeter
+
+
+TaskHandle_t ReadingstoTemperate;
+uint8_t _temp;
+#include <Adafruit_MLX90614.h>
+Adafruit_MLX90614 mlx = Adafruit_MLX90614(); //Se declara una variable u objeto para el sensor  
+uint32_t tempLastReport = 0;
+
+void setup() {
+  
+  Serial.begin(115200); //Begin serial communication
+
+  InitializeWifi();
+
+  SignUpToFirebase();
+
+  InitializePOX();
+
+  mlx.begin();
+
+  xTaskCreatePinnedToCore(SensorReadings, "GetReadings", 1724, NULL, 0, &GetReadings, 0);
+  
+  xTaskCreatePinnedToCore(SendReadingsToFirebase, "PostToFirebase", 6268, NULL, 0, &PostToFirebase, 1);
+
+  xTaskCreatePinnedToCore(SensorReadingstoTemperat, "ReadingstoTemperate", 1724, NULL, 0, &ReadingstoTemperate, 0);
+}
+ 
+
+void SensorReadings(void * parameter)
+{
+  for(;;)
+  {
+    pox.update();
+
+    if (millis() - poxLastReport > POX_REPORTING_PERIOD_MS) {
+      _heartRate = round(pox.getHeartRate());
+      _spo2 = round(pox.getSpO2());
+
+      if (_heartRate > 0 && _spo2 > 0) {
+        Serial.print("Heart rate: ");
+        Serial.print(_heartRate);
+        Serial.print(" bpm / SpO2: ");
+        Serial.print(_spo2);
+        Serial.println(" %");
+      } else {
+        Serial.println("Invalid sensor readings.");
+      }
+
+      poxLastReport = millis();
+    }
+  }
+}
+void SendHeartRateData()
+{
+  if (Firebase.RTDB.setInt(&FirebaseData, "data/Heart rate", _heartRate)){
+    Serial.println("Heart rate data sent successfully.");
+  } else {
+    Serial.println("Failed to send Heart rate. REASON: " + FirebaseData.errorReason());
+  }
+}
+
+void SendSpO2Data()
+{
+  if (Firebase.RTDB.setInt(&FirebaseData, "data/SpO2", _spo2)){
+    Serial.println("SpO2 data sent successfully.");
+  } else {
+    Serial.println("Failed to send SpO2. REASON: " + FirebaseData.errorReason());
+  }
+}
+
+void SendTemperatureData()
+{
+  if (Firebase.RTDB.setInt(&FirebaseData, "data/Temperature", _temp)){
+    Serial.println("Temperature data sent successfully.");
+  } else {
+    Serial.println("Failed to send Temperature. REASON: " + FirebaseData.errorReason());
+  }
+}
+
+ void SendReadingsToFirebase(void * parameter)
+{
+  for(;;)
+  {
+    Serial.println("Checking Firebase status and signup...");
+
+    if (Firebase.ready() && signupOK){
+      Serial.println("Firebase is ready, attempting to send data...");
+      
+      // محاولة إرسال البيانات إلى Firebase مع طباعة النتائج.
+      SendHeartRateData();
+      SendSpO2Data();
+      SendTemperatureData();
+      
+    } else {
+      Serial.println("Firebase is not ready or signup failed.");
+      vTaskDelay(5000 / portTICK_PERIOD_MS); // إضافة فترة انتظار بين المحاولات.
+    }
+
+    vTaskDelay(10000 / portTICK_PERIOD_MS); // تأخير بين عمليات الإرسال لتجنب تحميل زائد.
+  }
+}
+
+
+ void SensorReadingstoTemperat(void * parameter)
+{
+  for(;;)
+  {
+    if (millis() - tempLastReport > POX_REPORTING_PERIOD_MS)
+    {
+      _temp = mlx.readObjectTempC();
+
+      if (!isnan(_temp)) {
+        Serial.print("Temperature: ");
+        Serial.print(_temp);
+        Serial.println(" C");
+      } else {
+        Serial.println("Failed to read temperature from sensor.");
+      }
+
+      tempLastReport = millis();
+    }
+  }
+}
+
+
+void InitializeWifi()
+{
+  // Wifi Initialize ...
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  Serial.print("Connecting to Wi-Fi");
+  
+  while (WiFi.status() != WL_CONNECTED){
+    Serial.print(".");
+    delay(300);
+  }
+  
+  Serial.println();
+  Serial.print("Connected with IP: ");
+  Serial.println(WiFi.localIP());
+  Serial.println();
+}
+void SignUpToFirebase()
+{
+  Serial.println("Signing up to Firebase...");
+
+  config.api_key = API_KEY;
+  config.database_url = DATABASE_URL;
+
+  if (Firebase.signUp(&config, &auth, "", "")) {
+    Serial.println("Firebase signup successful.");
+    signupOK = true;
+  } else {
+    Serial.println("Firebase signup failed.");
+    Serial.printf("Error: %s\n", config.signer.signupError.message.c_str());
+    vTaskDelay(5000 / portTICK_PERIOD_MS); // فترة انتظار في حال حدوث فشل.
+  }
+
+  config.token_status_callback = tokenStatusCallback;
+
+  Firebase.begin(&config, &auth);
+  Firebase.reconnectWiFi(true);
+}
+
+
+void InitializePOX()
+{
+  Serial.print("Initializing pulse oximeter...");
+
+  // Initialize sensor
+  if (!pox.begin()) {
+    Serial.println("Pulse oximeter initialization FAILED");
+    for(;;);  // Stop here if initialization failed
+  } else {
+    Serial.println("Pulse oximeter initialization SUCCESS");
+  }
+
+  // Configure sensor to use 7.6mA for LED drive
+  //pox.setIRLedCurrent(MAX30100_LED_CURR_7_6MA);
+}
+
+void loop()
+{
+  delay(1);  
+}
