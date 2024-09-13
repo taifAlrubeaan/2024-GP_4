@@ -260,8 +260,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sleepwell/main.dart';
 import 'package:sleepwell/screens/auth/signup_screen.dart';
+import 'package:sleepwell/screens/home_screen.dart';
 import 'package:sleepwell/widget/regsterbutton.dart';
 import '../../controllers/auth/auth_service.dart';
 import '../../widget/square_tile.dart';
@@ -279,6 +281,43 @@ class _SignInScreenState extends State<SignInScreen> {
   bool showSpinner = false;
   late String email;
   late String password;
+
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  String? userid;
+
+  void getCurrentUser() async {
+    try {
+      final user = auth.currentUser;
+      if (user != null) {
+        setState(() {
+          userid = user.uid; // تهيئة userid
+        });
+        // قم بتخزين الـ userid في SharedPreferences
+        await storeUserIdInSharedPreferences(userid!);
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+// دالة لتخزين الـ userid في SharedPreferences
+  Future<void> storeUserIdInSharedPreferences(String userid) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('userid', userid);
+    print('User ID stored in SharedPreferences: $userid');
+  }
+
+  // دالة لاسترجاع الـ userid من SharedPreferences
+  Future<String?> getUserIdFromSharedPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('userid');
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getCurrentUser();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -389,7 +428,11 @@ class _SignInScreenState extends State<SignInScreen> {
                       );
                       if (user != null) {
                         // الانتقال إلى الشاشة التالية بعد تسجيل الدخول بنجاح
+<<<<<<< HEAD
                         Get.offAll(AlarmScreen());
+=======
+                        Get.to(const HomeScreen());
+>>>>>>> 57a32500fe48722d7f984497618ff113dac572fc
                         prefs.setBool("isLogin", true);
                       }
                     } catch (e) {
@@ -474,7 +517,11 @@ class _SignInScreenState extends State<SignInScreen> {
                         });
                         try {
                           await AuthService().signInWithGoogle();
+<<<<<<< HEAD
                           Get.offAll(AlarmScreen());
+=======
+                          Get.offAll(const HomeScreen());
+>>>>>>> 57a32500fe48722d7f984497618ff113dac572fc
                         } catch (e) {
                           String errorMessage =
                               'An error occurred! Please try again.';

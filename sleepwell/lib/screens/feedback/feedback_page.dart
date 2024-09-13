@@ -123,6 +123,10 @@ class _FeedbackPageState extends State<FeedbackPage> {
     //       '\nReason: ${reasons.join(', ')}\nAdvice: ${recommendations.join(', ')}';
     // }
     Get.offAll(AlarmScreen());
+<<<<<<< HEAD
+=======
+
+>>>>>>> 57a32500fe48722d7f984497618ff113dac572fc
     if (predictedQuality == 'Poor' || predictedQuality == 'Average') {
       await PushNotificationService
           .showNotificationWithReasonsAndRecommendations(
@@ -132,9 +136,15 @@ class _FeedbackPageState extends State<FeedbackPage> {
         recommendations: recommendations, // تمرير القائمة هنا
         schedule: true,
         interval: 60,
+<<<<<<< HEAD
         actionButton: [
           NotificationActionButton(key: 'FeedBak', label: 'Go To Feedback Now')
         ],
+=======
+        // actionButton: [
+        //   NotificationActionButton(key: 'FeedBak', label: 'Go To Feedback Now')
+        // ],
+>>>>>>> 57a32500fe48722d7f984497618ff113dac572fc
       );
 
       // await PushNotificationService.showNotification(
@@ -286,7 +296,12 @@ class _FeedbackPageState extends State<FeedbackPage> {
   Future<void> _getFeedback() async {
     final url = Uri.parse(
         'https://my-sleep-quality-api-5903a0effd39.herokuapp.com/predict');
+<<<<<<< HEAD
 
+=======
+    // final urll = Uri.parse(
+    //     'https://my-sleep-quality-api-5903a0effd39.herokuapp.com/predict');
+>>>>>>> 57a32500fe48722d7f984497618ff113dac572fc
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},

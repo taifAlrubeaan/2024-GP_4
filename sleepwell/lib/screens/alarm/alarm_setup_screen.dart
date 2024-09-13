@@ -1,20 +1,21 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sleepwell/alarm.dart';
-import 'package:sleepwell/screens/alarm_screen.dart';
+
 import 'package:sleepwell/screens/clockview.dart';
 import 'package:intl/intl.dart';
 import '../../push_notification_service.dart';
 
+import '../../push_notification_service.dart';
+import '../home_screen.dart';
+
 class AlarmSetupScreen extends StatefulWidget {
-  static String RouteScreen = 'alarm_screen';
-
-  const AlarmSetupScreen({Key? key}) : super(key: key);
-
   @override
   State<AlarmSetupScreen> createState() => _AlarmSetupScreenState();
 }
@@ -34,15 +35,25 @@ class _AlarmSetupScreenState extends State<AlarmSetupScreen> {
   late DateTime _now;
   late Timer _timer;
 
+  String? userid;
+
+  Future<void> getUserId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userid = prefs.getString('userid'); // استرجاع الـ userid
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    getUserId();
     bedtimeController = TextEditingController();
     wakeUpTimeController = TextEditingController();
     selectedBedtime = TimeOfDay.now();
     selectedWakeUpTime = TimeOfDay.now();
     _now = DateTime.now();
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
         _now = DateTime.now();
       });
@@ -174,6 +185,7 @@ class _AlarmSetupScreenState extends State<AlarmSetupScreen> {
         'added_month': DateTime.now().month,
         'added_year': DateTime.now().year,
         'timestamp': FieldValue.serverTimestamp(),
+        'uid': userid,
       });
       var timestamp = FieldValue.serverTimestamp();
       print("=================================$timestamp");
@@ -203,7 +215,11 @@ class _AlarmSetupScreenState extends State<AlarmSetupScreen> {
       print("=======================OptimaL tIME=============================");
       printTimeDifference(printednumOfCycles);
       print("==========================End==========================");
+<<<<<<< HEAD
       Get.off(() => AlarmScreen());
+=======
+      Get.offAll(() => const HomeScreen());
+>>>>>>> 57a32500fe48722d7f984497618ff113dac572fc
     }
   }
 
@@ -300,7 +316,11 @@ class _AlarmSetupScreenState extends State<AlarmSetupScreen> {
 
     // Parse optimalWakeUpTime
     DateTime optimalWakeUpDateTime =
+<<<<<<< HEAD
         DateFormat('hh:mm').parse(optimalWakeUpTime, false);
+=======
+        DateFormat('hh:mm ').parse(optimalWakeUpTime, false);
+>>>>>>> 57a32500fe48722d7f984497618ff113dac572fc
 
     // Combine date and optimalWakeUpTime
     optimalWakeUpDateTime = DateTime(
@@ -616,14 +636,26 @@ class _AlarmSetupScreenState extends State<AlarmSetupScreen> {
                 ))),
             const SizedBox(height: 20),
             TextButton(
-                onPressed: () {
-                  Get.to(AlarmScreen());
-                },
-                child: const Text(
-                  "GoTo Alarm Screen",
-                  style: TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold),
-                )),
+              onPressed: () {
+                Get.offAll(const HomeScreen());
+              },
+              child: const Text(
+                "GoTo Alarm Screen",
+                style:
+                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              ),
+            ),
+            FloatingActionButton(
+              onPressed: () async {
+                DateTime now = DateTime.now();
+                final nowTime = TimeOfDay.fromDateTime(now);
+                await AppAlarm.saveAlarm(
+                    nowTime, "${nowTime.hour}:${nowTime.minute + 1} AM");
+                AppAlarm.getAlarms();
+                Get.to(const HomeScreen());
+              },
+              child: const Icon(Icons.alarm),
+            ),
           ],
         ),
       ),
@@ -647,16 +679,17 @@ class _AlarmSetupScreenState extends State<AlarmSetupScreen> {
       //   child: const Icon(Icons.alarm),
       // ),
 
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          DateTime now = DateTime.now();
-          final nowTime = TimeOfDay.fromDateTime(now);
-          await AppAlarm.saveAlarm(
-              nowTime, "${nowTime.hour}:${nowTime.minute + 1} AM");
-          AppAlarm.getAlarms();
-        },
-        child: const Icon(Icons.alarm),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () async {
+      //     DateTime now = DateTime.now();
+      //     final nowTime = TimeOfDay.fromDateTime(now);
+      //     await AppAlarm.saveAlarm(
+      //         nowTime, "${nowTime.hour}:${nowTime.minute + 1} AM");
+      //     AppAlarm.getAlarms();
+      //     Get.to(const HomeScreen());
+      //   },
+      //   child: const Icon(Icons.alarm),
+      // ),
     );
   }
 }

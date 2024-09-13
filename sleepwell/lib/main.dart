@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sleepwell/firebase_options.dart';
 import 'package:sleepwell/screens/dashboard_screen.dart';
+import 'package:sleepwell/screens/home_screen.dart';
 import 'package:sleepwell/screens/splash_screen.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:sleepwell/push_notification_service.dart';
@@ -67,8 +68,11 @@ class _MainAppScreenState extends State<MainAppScreen> {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home: loginStatus ? DashboardScreen() : const SplashScreen(),
+      home: loginStatus ? const HomeScreen() : const SplashScreen(),
       // home: DashboardScreen(),
+      // home: HomeScreen(),
+      // sleep@gmail.com
+      // S1234567
     );
   }
 }

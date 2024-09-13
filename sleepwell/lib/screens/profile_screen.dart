@@ -210,7 +210,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: CustomBottomBar(),
+      // bottomNavigationBar: CustomBottomBar(),
     );
   }
 

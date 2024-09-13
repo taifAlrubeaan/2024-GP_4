@@ -1,6 +1,11 @@
+<<<<<<< HEAD
+=======
+import 'package:firebase_auth/firebase_auth.dart';
+>>>>>>> 57a32500fe48722d7f984497618ff113dac572fc
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sleepwell/screens/alarm/alarm_setup_screen.dart';
 import 'dart:core';
 
@@ -16,17 +21,29 @@ class _AlarmScreenState extends State<AlarmScreen> {
   String printedBedtime = '';
   String printedWakeUpTime = '';
   int numOfCycles = 0;
+// final userid = FirebaseFirestore.instance.doc('documentPath');
+  // final userids = FirebaseFirestore.instance.collection('Users').doc('userId');
+  String? userid;
 
   @override
   void initState() {
     super.initState();
     checkIfAlarmAddedToday();
+    getUserId();
+  }
+
+  Future<void> getUserId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userid = prefs.getString('userid'); // استرجاع الـ userid
+    });
   }
 
   void checkIfAlarmAddedToday() async {
     try {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('alarms')
+          .where('uid', isEqualTo: userid)
           .where('added_day', isEqualTo: DateTime.now().day)
           .orderBy('timestamp', descending: true)
           .limit(1)
@@ -53,6 +70,7 @@ class _AlarmScreenState extends State<AlarmScreen> {
       // Query the alarm document to delete
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('alarms')
+          .where('uid', isEqualTo: userid)
           .where('added_day', isEqualTo: DateTime.now().day)
           .orderBy('timestamp', descending: true)
           .limit(1)
@@ -65,8 +83,15 @@ class _AlarmScreenState extends State<AlarmScreen> {
         // Delete the alarm document
         await FirebaseFirestore.instance
             .collection('alarms')
-            .doc(documentID)
-            .delete();
+            .where('uid', isEqualTo: userid)
+            .get()
+            .then((querySnapshot) {
+          for (var doc in querySnapshot.docs) {
+            if (doc.id == documentID) {
+              doc.reference.delete();
+            }
+          }
+        });
 
         // Update the UI
         setState(() {
@@ -208,15 +233,28 @@ class _AlarmScreenState extends State<AlarmScreen> {
                     const SizedBox(height: 50),
                     FloatingActionButton(
                       onPressed: () {
-                        Get.off(() => const AlarmSetupScreen());
+                        Get.to(() => AlarmSetupScreen());
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => const AlarmSetupScreen(),
+                        //   ),
+                        // );
                       },
                       child: const Icon(Icons.add),
                     ),
+                    // FloatingActionButton(
+                    //   onPressed: () {
+                    //     print(":::::::::::::::;");
+                    //     print(userid);
+                    //   },
+                    //   child: const Icon(Icons.ad_units),
+                    // ),
                   ],
                 ),
               ),
       ),
-      bottomNavigationBar: CustomBottomBar(),
+      // bottomNavigationBar: CustomBottomBar(),
     );
   }
 }

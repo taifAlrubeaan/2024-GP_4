@@ -5,6 +5,7 @@ import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:sleepwell/signup/question.dart';
 import 'package:sleepwell/widget/regsterbutton.dart';
 import 'package:get/get.dart';
+
 class SignUpScreen extends StatefulWidget {
   static String RouteScreen = 'signup_screen';
   const SignUpScreen({
@@ -264,7 +265,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       //   context,
                                       //   QuestionScreen.RouteScreen,
                                       // );
-                                       Get.offAll(QuestionScreen());
+                                      Get.offAll(QuestionScreen());
                                     },
                                     child: const Text('OK'),
                                   ),
