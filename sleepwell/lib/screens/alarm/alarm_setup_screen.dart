@@ -215,11 +215,7 @@ class _AlarmSetupScreenState extends State<AlarmSetupScreen> {
       print("=======================OptimaL tIME=============================");
       printTimeDifference(printednumOfCycles);
       print("==========================End==========================");
-<<<<<<< HEAD
-      Get.off(() => AlarmScreen());
-=======
       Get.offAll(() => const HomeScreen());
->>>>>>> 57a32500fe48722d7f984497618ff113dac572fc
     }
   }
 
@@ -316,11 +312,7 @@ class _AlarmSetupScreenState extends State<AlarmSetupScreen> {
 
     // Parse optimalWakeUpTime
     DateTime optimalWakeUpDateTime =
-<<<<<<< HEAD
-        DateFormat('hh:mm').parse(optimalWakeUpTime, false);
-=======
         DateFormat('hh:mm ').parse(optimalWakeUpTime, false);
->>>>>>> 57a32500fe48722d7f984497618ff113dac572fc
 
     // Combine date and optimalWakeUpTime
     optimalWakeUpDateTime = DateTime(

@@ -70,9 +70,6 @@ class _MainAppScreenState extends State<MainAppScreen> {
       debugShowCheckedModeBanner: false,
       home: loginStatus ? const HomeScreen() : const SplashScreen(),
       // home: DashboardScreen(),
-      // home: HomeScreen(),
-      // sleep@gmail.com
-      // S1234567
     );
   }
 }

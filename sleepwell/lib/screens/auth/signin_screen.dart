@@ -428,11 +428,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       );
                       if (user != null) {
                         // الانتقال إلى الشاشة التالية بعد تسجيل الدخول بنجاح
-<<<<<<< HEAD
-                        Get.offAll(AlarmScreen());
-=======
                         Get.to(const HomeScreen());
->>>>>>> 57a32500fe48722d7f984497618ff113dac572fc
                         prefs.setBool("isLogin", true);
                       }
                     } catch (e) {
@@ -517,11 +513,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         });
                         try {
                           await AuthService().signInWithGoogle();
-<<<<<<< HEAD
-                          Get.offAll(AlarmScreen());
-=======
                           Get.offAll(const HomeScreen());
->>>>>>> 57a32500fe48722d7f984497618ff113dac572fc
                         } catch (e) {
                           String errorMessage =
                               'An error occurred! Please try again.';

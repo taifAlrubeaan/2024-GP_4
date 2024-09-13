@@ -108,15 +108,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sleepwell/screens/alarm_screen.dart';
-<<<<<<< HEAD
-import '../screens/dashboard_screen.dart';
-import '../screens/profile_screen.dart';
-import '../screens/statistic/statistic_sleepwell_screen.dart';
-=======
 import 'package:sleepwell/screens/dashboard_screen.dart';
 import 'package:sleepwell/screens/profile_screen.dart';
 import 'package:sleepwell/screens/statistic/statistic_sleepwell_screen.dart';
->>>>>>> 57a32500fe48722d7f984497618ff113dac572fc
 
 class CustomBottomBar extends StatefulWidget {
   const CustomBottomBar({Key? key}) : super(key: key);
@@ -137,11 +131,7 @@ class _CustomBottomBarState extends State<CustomBottomBar> {
       Get.offAll(() => const ProfileScreen());
       // (index) => setState(() => this.index = index);
     } else if (index == 1) {
-<<<<<<< HEAD
-      Get.off(() => const StatisticSleepWellScreen());
-=======
       Get.offAll(() => const StatisticSleepWellScreen());
->>>>>>> 57a32500fe48722d7f984497618ff113dac572fc
       // (index) => setState(() => this.index = index);
     } else if (index == 2) {
       Get.offAll(() => AlarmScreen());

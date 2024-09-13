@@ -3,13 +3,11 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sleepwell/main.dart';
-<<<<<<< HEAD
-=======
 import 'package:sleepwell/screens/alarm/alarm_ring_screen.dart';
 import 'package:sleepwell/screens/alarm/alarm_setup_screen.dart';
 import 'package:sleepwell/screens/dashboard_screen.dart';
->>>>>>> 57a32500fe48722d7f984497618ff113dac572fc
 import 'package:sleepwell/screens/feedback/feedback_page.dart';
+import 'package:sleepwell/screens/home_screen.dart';
 
 class PushNotificationService {
   static Future<void> initializeNotifications() async {
@@ -46,10 +44,6 @@ class PushNotificationService {
         }
       },
     );
-<<<<<<< HEAD
-=======
-
->>>>>>> 57a32500fe48722d7f984497618ff113dac572fc
     await AwesomeNotifications().setListeners(
       onActionReceivedMethod: onActionReceivedMethod,
       onDismissActionReceivedMethod: onDismissActionReceivedMethod,
@@ -63,23 +57,13 @@ class PushNotificationService {
     // debugPrint('onActionReceivedMethod');
     final payload = receivedAction.payload ?? {};
     if (payload["navigate"] == true) {
-<<<<<<< HEAD
-      Get.to(const MainAppScreen());
-    }
-    if (receivedAction.buttonKeyPressed == '') {
-      // Navigate or perform some action
-      Get.to(const MainAppScreen()); // Example of navigation
-    } else if (receivedAction.buttonKeyPressed == 'FeedBak') {
-      Get.offAll(const FeedbackPage());
-=======
       Get.to(AlarmSetupScreen());
     }
     if (receivedAction.buttonKeyPressed == 'FeedBak') {
       Get.offAll(const FeedbackPage());
     } else {
       // Navigate or perform some action
-      Get.to(DashboardScreen()); // Example of navigation
->>>>>>> 57a32500fe48722d7f984497618ff113dac572fc
+      Get.to(const HomeScreen()); // Example of navigation
     }
   }
 
@@ -211,15 +195,6 @@ class PushNotificationService {
         interval: interval > 0
             ? interval
             : interval + 86400, // 86400 seconds in a day
-<<<<<<< HEAD
-        actionButtons: [
-          NotificationActionButton(
-            key: 'MARK_DONE',
-            label: 'Mark as Done',
-            // Add other properties if needed, like autoDismissible
-          ),
-        ],
-=======
         // actionButtons: [
         //   NotificationActionButton(
         //     key: 'MARK_DONE',
@@ -227,7 +202,6 @@ class PushNotificationService {
         //     // Add other properties if needed, like autoDismissible
         //   ),
         // ],
->>>>>>> 57a32500fe48722d7f984497618ff113dac572fc
       );
     }
   }
