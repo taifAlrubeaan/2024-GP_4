@@ -6,15 +6,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sleepwell/alarm.dart';
-<<<<<<< HEAD
-
-import 'package:sleepwell/screens/clockview.dart';
-import 'package:intl/intl.dart';
-import '../../push_notification_service.dart';
-
-=======
 import 'package:sleepwell/widget/clockview.dart';
->>>>>>> 24bd2ad0dec0c99405d2fc1469864aff61a82d68
 import '../../push_notification_service.dart';
 import '../home_screen.dart';
 
