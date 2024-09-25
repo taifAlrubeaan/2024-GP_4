@@ -123,35 +123,35 @@ class _FeedbackPageState extends State<FeedbackPage> {
     //       '\nReason: ${reasons.join(', ')}\nAdvice: ${recommendations.join(', ')}';
     // }
     Get.offAll(AlarmScreen());
-    if (predictedQuality == 'Poor' || predictedQuality == 'Average') {
-      await PushNotificationService
-          .showNotificationWithReasonsAndRecommendations(
-        title: notificationMessage,
-        // body: 'Your Sleep Quality is: $predictedQuality',
-        reasons: reasons, // تمرير القائمة هنا
-        recommendations: recommendations, // تمرير القائمة هنا
-        schedule: true,
-        interval: 60,
-        // actionButton: [
-        //   NotificationActionButton(key: 'FeedBak', label: 'Go To Feedback Now')
-        // ],
-      );
+    //if (predictedQuality == 'Poor' || predictedQuality == 'Average') {
+    //await PushNotificationService
+    //  .showNotificationWithReasonsAndRecommendations(
+    //title: notificationMessage,
+    // body: 'Your Sleep Quality is: $predictedQuality',
+    //reasons: reasons, // تمرير القائمة هنا
+    //recommendations: recommendations, // تمرير القائمة هنا
+    //schedule: true,
+    //interval: 60,
+    // actionButton: [
+    //   NotificationActionButton(key: 'FeedBak', label: 'Go To Feedback Now')
+    // ],
+    //);
 
-      // await PushNotificationService.showNotification(
-      //   title: notificationMessage,
-      //   body: '\nReason: ${reasons.join(', \n')}',
-      //   summary: '\nAdvice: ${recommendations.join(', \n')}',
-      //   schedule: true,
-      //   interval: 60,
-      // );
-    } else {
-      await PushNotificationService.showNotification(
-        title: 'Sleep Well Quality',
-        body: notificationMessage,
-        schedule: true,
-        interval: 60,
-      );
-    }
+    // await PushNotificationService.showNotification(
+    //   title: notificationMessage,
+    //   body: '\nReason: ${reasons.join(', \n')}',
+    //   summary: '\nAdvice: ${recommendations.join(', \n')}',
+    //   schedule: true,
+    //   interval: 60,
+    // );
+    //} else {
+    //  await PushNotificationService.showNotification(
+    //  title: 'Sleep Well Quality',
+    //  body: notificationMessage,
+    //  schedule: true,
+    //   interval: 60,
+    //  );
+    // }
 
     // Show notification
     // await PushNotificationService.showNotification(
@@ -161,38 +161,38 @@ class _FeedbackPageState extends State<FeedbackPage> {
     // );
 
     // Show dialog
-    // showDialog(
-    //   context: context,
-    //   builder: (BuildContext context) {
-    //     return AlertDialog(
-    //       title: Text('Predicted Sleep Quality: $predictedQuality'),
-    //       content: Column(
-    //         mainAxisSize: MainAxisSize.min,
-    //         crossAxisAlignment: CrossAxisAlignment.start,
-    //         children: [
-    //           if (predictedQuality == 'Poor' ||
-    //               predictedQuality == 'Average') ...[
-    //             const Text(
-    //                 "Your sleep was not good, it could be due to the following reasons:"),
-    //             for (var reason in reasons) Text("- $reason"),
-    //             const Text(
-    //                 "\nHere are some tips to consider for better sleep:"),
-    //             for (var recommendation in recommendations)
-    //               Text("- $recommendation"),
-    //           ]
-    //         ],
-    //       ),
-    //       actions: [
-    //         ElevatedButton(
-    //           child: const Text('OK'),
-    //           onPressed: () {
-    //             Get.to(AlarmScreen());
-    //           },
-    //         ),
-    //       ],
-    //     );
-    //   },
-    // );
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Predicted Sleep Quality: $predictedQuality'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (predictedQuality == 'Poor' ||
+                  predictedQuality == 'Average') ...[
+                const Text(
+                    "Your sleep was not good, it could be due to the following reasons:"),
+                for (var reason in reasons) Text("- $reason"),
+                const Text(
+                    "\nHere are some tips to consider for better sleep:"),
+                for (var recommendation in recommendations)
+                  Text("- $recommendation"),
+              ]
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Get.to(AlarmScreen());
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void evaluateSleepQuality(BuildContext context) {
