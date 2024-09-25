@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,9 +5,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sleepwell/screens/alarm/alarm_setup_screen.dart';
 import 'dart:core';
 
-import '../widget/custom_bottom_bar.dart';
+import 'settings_screen.dart';
 
 class AlarmScreen extends StatefulWidget {
+  const AlarmScreen({super.key});
+
   @override
   State<AlarmScreen> createState() => _AlarmScreenState();
 }
@@ -122,6 +123,17 @@ class _AlarmScreenState extends State<AlarmScreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
+        // actions: [
+        //   IconButton(
+        //     onPressed: () {
+        //       Get.to(() => const SettingsScreen());
+        //     },
+        //     icon: Icon(
+        //       Icons.settings,
+        //       color: Colors.grey[300],
+        //     ),
+        //   ),
+        // ],
         backgroundColor: const Color(0xFF004AAD),
       ),
       body: Container(
@@ -196,6 +208,13 @@ class _AlarmScreenState extends State<AlarmScreen> {
                           },
                           child: const Text('Delete Alarm'),
                         ),
+                        FloatingActionButton(
+                          onPressed: () {
+                            print(":::::::::::::::;");
+                            print(userid);
+                          },
+                          child: const Icon(Icons.ad_units),
+                        ),
                       ],
                     ),
                   ),
@@ -230,7 +249,7 @@ class _AlarmScreenState extends State<AlarmScreen> {
                     const SizedBox(height: 50),
                     FloatingActionButton(
                       onPressed: () {
-                        Get.to(() => AlarmSetupScreen());
+                        Get.to(() => const AlarmSetupScreen());
                         // Navigator.push(
                         //   context,
                         //   MaterialPageRoute(
@@ -240,13 +259,6 @@ class _AlarmScreenState extends State<AlarmScreen> {
                       },
                       child: const Icon(Icons.add),
                     ),
-                    // FloatingActionButton(
-                    //   onPressed: () {
-                    //     print(":::::::::::::::;");
-                    //     print(userid);
-                    //   },
-                    //   child: const Icon(Icons.ad_units),
-                    // ),
                   ],
                 ),
               ),

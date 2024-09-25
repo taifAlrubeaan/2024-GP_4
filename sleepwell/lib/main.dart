@@ -2,23 +2,20 @@
 import 'package:alarm/alarm.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sleepwell/firebase_options.dart';
-import 'package:sleepwell/screens/dashboard_screen.dart';
 import 'package:sleepwell/screens/home_screen.dart';
 import 'package:sleepwell/screens/splash_screen.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:sleepwell/push_notification_service.dart';
 
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  print("Handling a background message: ${message.messageId}");
+// Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+//   print("Handling a background message: ${message.messageId}");
 
-  //call awesomenotification to how the push notification.
-  AwesomeNotifications().createNotificationFromJsonData(message.data);
-}
+//   //call awesomenotification to how theا push notification.
+//   AwesomeNotifications().createNotificationFromJsonData(message.data);
+// }
 
 late SharedPreferences prefs;
 
@@ -27,7 +24,7 @@ Future<void> main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   tz.initializeTimeZones();
   PushNotificationService.initializeNotifications();
-
+  // FeedbackNotificationService.sendWeeklyNotification();
   // GetX local storege
   //await GetStorage.init();
   prefs = await SharedPreferences.getInstance();
@@ -69,7 +66,7 @@ class _MainAppScreenState extends State<MainAppScreen> {
       ),
       debugShowCheckedModeBanner: false,
       home: loginStatus ? const HomeScreen() : const SplashScreen(),
-      // home: DashboardScreen(),
+      // home: const SplashScreen(),
     );
   }
 }

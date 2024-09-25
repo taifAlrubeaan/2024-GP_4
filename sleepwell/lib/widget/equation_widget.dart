@@ -1,23 +1,21 @@
 import 'dart:async';
-
 import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sleepwell/screens/dashboard_screen.dart';
 import 'package:sleepwell/screens/feedback/feedback_page.dart';
 import 'package:sleepwell/models/difficult_equation_model.dart';
 import 'package:sleepwell/models/easy_equation_model.dart';
 import 'package:sleepwell/models/equation_abstrat_model.dart';
-// import 'package:sleepwell/screens/home_screen.dart';
+import '../screens/beneficiaries_screen.dart';
 
 class EquationWidget extends StatefulWidget {
   final bool showEasyEquation;
   final int alarmId;
   const EquationWidget({
-    Key? key,
+    super.key,
     required this.alarmId,
     this.showEasyEquation = false,
-  }) : super(key: key);
+  });
 
   @override
   State<EquationWidget> createState() => _EquationWidgetState();
@@ -109,12 +107,6 @@ class _EquationWidgetState extends State<EquationWidget> {
                                 TextButton(
                                   child: const Text('Yes'),
                                   onPressed: () {
-                                    // Navigator.pop(context, true);
-                                    // Navigator.push(
-                                    //   context,
-                                    //   MaterialPageRoute(
-                                    //       builder: (context) => FeedbackPage()),
-                                    // );
                                     Get.back(result: true);
                                     Get.to(const FeedbackPage());
                                   },
@@ -124,13 +116,7 @@ class _EquationWidgetState extends State<EquationWidget> {
                           },
                         );
                         if (!(shouldShowFeedbackDialog ?? false)) {
-                          // Navigator.pushAndRemoveUntil(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //       builder: (context) => MyHomePage()),
-                          //   (route) => false,
-                          // );
-                          Get.offAll(DashboardScreen());
+                          Get.offAll(const BeneficiariesScreen());
                         }
                       } else {
                         print(":::::::::::::::::: Wrong chosen");
@@ -151,17 +137,17 @@ class _EquationWidgetState extends State<EquationWidget> {
   }
 
   void _startReminderTimer() {
-    _reminderTimer = Timer(Duration(minutes: 1), () {
+    _reminderTimer = Timer(const Duration(minutes: 1), () {
       if (_showFeedbackDialog) {
         showDialog(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('Daily Feedback Reminder'),
-              content: Text('Do you want to give your feedback now?'),
+              title: const Text('Daily Feedback Reminder'),
+              content: const Text('Do you want to give your feedback now?'),
               actions: [
                 TextButton(
-                  child: Text('Remind me later'),
+                  child: const Text('Remind me later'),
                   onPressed: () {
                     // Navigator.pop(context);
                     Get.back();
@@ -169,13 +155,9 @@ class _EquationWidgetState extends State<EquationWidget> {
                   },
                 ),
                 TextButton(
-                  child: Text('Yes'),
+                  child: const Text('Yes'),
                   onPressed: () {
-                    // Navigator.pop(context);
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(builder: (context) => FeedbackPage()),
-                    // );
+                    
                     Get.back();
                     Get.to(const FeedbackPage());
                   },

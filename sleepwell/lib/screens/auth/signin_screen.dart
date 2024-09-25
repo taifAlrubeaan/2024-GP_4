@@ -262,12 +262,12 @@ import 'package:get/get.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sleepwell/main.dart';
+import 'package:sleepwell/screens/auth/reset_password_screen.dart';
 import 'package:sleepwell/screens/auth/signup_screen.dart';
 import 'package:sleepwell/screens/home_screen.dart';
 import 'package:sleepwell/widget/regsterbutton.dart';
 import '../../controllers/auth/auth_service.dart';
 import '../../widget/square_tile.dart';
-import '../alarm_screen.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -372,7 +372,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 25),
+                const SizedBox(height: 15),
                 TextField(
                   keyboardType: TextInputType.emailAddress,
                   onChanged: (value) {
@@ -412,7 +412,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   ),
                 ),
                 const SizedBox(
-                  height: 30,
+                  height: 15,
                 ),
                 regsterbutton(
                   color: const Color(0xffd5defe),
@@ -426,12 +426,19 @@ class _SignInScreenState extends State<SignInScreen> {
                         email: email,
                         password: password,
                       );
+<<<<<<< HEAD
                       if (user != null) {
                         // الانتقال إلى الشاشة التالية بعد تسجيل الدخول بنجاح
                         Get.to(const HomeScreen());
                         prefs.setBool("isLogin", true);
                       }
                     } catch (e) {
+=======
+                      // الانتقال إلى الشاشة التالية بعد تسجيل الدخول بنجاح
+                      Get.offAll(const HomeScreen());
+                      prefs.setBool("isLogin", true);
+                                        } catch (e) {
+>>>>>>> 24bd2ad0dec0c99405d2fc1469864aff61a82d68
                       String errorMessage = 'An error occurred';
                       if (e is FirebaseAuthException) {
                         switch (e.code) {
@@ -466,8 +473,19 @@ class _SignInScreenState extends State<SignInScreen> {
                     }
                   },
                 ),
-                const SizedBox(
-                  height: 15,
+                const SizedBox(height: 10),
+                TextButton(
+                  onPressed: () {
+                    Get.to(() => ResetPasswordScreen());
+                  },
+                  child: Text(
+                    'Forget Password?'.tr,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -492,7 +510,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   ],
                 ),
                 const Divider(),
-                const SizedBox(height: 10),
+                const SizedBox(height: 5),
                 const Text(
                   'Or sign in with Google',
                   textAlign: TextAlign.center,

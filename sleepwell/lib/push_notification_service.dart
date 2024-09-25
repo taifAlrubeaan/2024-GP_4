@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sleepwell/main.dart';
-import 'package:sleepwell/screens/alarm/alarm_ring_screen.dart';
 import 'package:sleepwell/screens/alarm/alarm_setup_screen.dart';
-import 'package:sleepwell/screens/dashboard_screen.dart';
 import 'package:sleepwell/screens/feedback/feedback_page.dart';
-import 'package:sleepwell/screens/home_screen.dart';
+import 'package:sleepwell/screens/feedback/notifications/feedback_notification_daily_screen.dart';
+import 'package:sleepwell/screens/feedback/notifications/feedback_notification_weekly_screen.dart';
+
+import 'screens/home_screen.dart';
 
 class PushNotificationService {
   static Future<void> initializeNotifications() async {
@@ -61,6 +61,10 @@ class PushNotificationService {
     }
     if (receivedAction.buttonKeyPressed == 'FeedBak') {
       Get.offAll(const FeedbackPage());
+    } else if (receivedAction.buttonKeyPressed == 'DailyNotification') {
+      Get.to(const FeedbackNotificationDailyScreen());
+    } else if (receivedAction.buttonKeyPressed == 'WeeklyNotification') {
+      Get.to(const FeedbackNotificationWeeklyScreen());
     } else {
       // Navigate or perform some action
       Get.to(const HomeScreen()); // Example of navigation
@@ -116,7 +120,9 @@ class PushNotificationService {
       actionButtons: actionButtons,
       schedule: schedule
           ? NotificationInterval(
-              interval: actualInterval! + 10,
+              interval: (actualInterval! + 10 > 5)
+                  ? actualInterval + 10
+                  : 6, // Set a default minimum value
               timeZone:
                   await AwesomeNotifications().getLocalTimeZoneIdentifier(),
               preciseAlarm: true,
@@ -205,40 +211,4 @@ class PushNotificationService {
       );
     }
   }
-
-//  static Future<void> scheduleBedtimeNotification() async {
-//     final prefs = await SharedPreferences.getInstance();
-//     final int? hour = prefs.getInt('bedtime_hour');
-//     final int? minute = prefs.getInt('bedtime_minute');
-//     print("=====================================::::::::");
-//     print(":::::::::::::::::::::::::::::::::$hour hours");
-//     print("=====================================::::::::");
-//     print("=====================================::::::::");
-//     print(":::::::::::::::::::::::::::::::::$minute minute");
-//     print("=====================================::::::::");
-//     if (hour != null && minute != null) {
-//       final now = DateTime.now();
-//       final bedtime = DateTime(now.year, now.month, now.day, hour, minute);
-//       final interval = bedtime.difference(now).inSeconds;
-//       bool intervalValue = interval > 0;
-//       print(intervalValue);
-//       final val = interval + 86400;
-//       if (interval > 0) {
-//         print(interval);
-//       } else {
-//         print(":::::::::::::::interval < 0 $interval");
-//       }
-//       print(":::::::::::::::::::::::::::::::::$interval ::::::::::::interval");
-//       await PushNotificationService.showNotification(
-//         title: 'Bed Time Reminder',
-//         body: 'It\'s time to go to bed',
-//         schedule: true,
-//         interval: intervalValue ? interval + 5 : val, // 86400 seconds in a day
-//       );
-//       print("=====================================::::::::");
-//       print(":::::::::::::::::::::::::::::::::$val interval");
-//       print("=====================================::::::::");
-//       print(24 * 60 * 60);
-//     }
-//   }
 }

@@ -1,21 +1,26 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sleepwell/alarm.dart';
+<<<<<<< HEAD
 
 import 'package:sleepwell/screens/clockview.dart';
 import 'package:intl/intl.dart';
 import '../../push_notification_service.dart';
 
+=======
+import 'package:sleepwell/widget/clockview.dart';
+>>>>>>> 24bd2ad0dec0c99405d2fc1469864aff61a82d68
 import '../../push_notification_service.dart';
 import '../home_screen.dart';
 
 class AlarmSetupScreen extends StatefulWidget {
+  const AlarmSetupScreen({super.key});
+
   @override
   State<AlarmSetupScreen> createState() => _AlarmSetupScreenState();
 }
@@ -105,118 +110,115 @@ class _AlarmSetupScreenState extends State<AlarmSetupScreen> {
   void _saveTimes() async {
     TimeOfDay? selectedTime = selectedBedtime;
 
-    if (selectedTime != null) {
-      List<Map<String, int>> myHourList = timeAndHeart(selectedTime);
+    List<Map<String, int>> myHourList = timeAndHeart(selectedTime);
 
-      int bedtimeIndex = 0;
-      int bedtimeMinutes = 0;
-      int sleepCycleMinutes = 90; // Duration of each sleep cycle in minutes
+    int bedtimeIndex = 0;
+    int bedtimeMinutes = 0;
+    int sleepCycleMinutes = 90; // Duration of each sleep cycle in minutes
 
-      int? firstRead = myHourList[0]['heartRate'];
-      int? diff = (firstRead! * 0.2).toInt();
-      int? toComp = firstRead - diff;
+    int? firstRead = myHourList[0]['heartRate'];
+    int? diff = (firstRead! * 0.2).toInt();
+    int? toComp = firstRead - diff;
 
-      for (int i = 0; i < myHourList.length; i++) {
-        if (myHourList[i]['heartRate']! < toComp) {
-          bedtimeIndex = i;
-          break;
-        }
+    for (int i = 0; i < myHourList.length; i++) {
+      if (myHourList[i]['heartRate']! < toComp) {
+        bedtimeIndex = i;
+        break;
       }
-
-      if (bedtimeIndex > 0) {
-        bedtimeMinutes = myHourList[bedtimeIndex]['hour']! * 60 +
-            myHourList[bedtimeIndex]['minute']!;
-      } else {
-        bedtimeMinutes = myHourList[myHourList.length - 1]['hour']! * 60 +
-            myHourList[myHourList.length - 1]['minute']!;
-      }
-
-      int wakeUpTimeMinutes =
-          selectedWakeUpTime.hour * 60 + selectedWakeUpTime.minute;
-
-      if (wakeUpTimeMinutes < bedtimeMinutes) {
-        wakeUpTimeMinutes += 24 * 60;
-      }
-
-      int totalSleepTimeMinutes = wakeUpTimeMinutes - bedtimeMinutes;
-      int numberOfCycles = (totalSleepTimeMinutes / 90).floor();
-      numOfCycles = numberOfCycles;
-
-      int optimalWakeUpMinutes =
-          bedtimeMinutes + (numberOfCycles * sleepCycleMinutes);
-
-      int optimalWakeUpSechend = optimalWakeUpMinutes * 60;
-      print(
-          "============================::::::::::::optimalWakeUpSechend is:::::: $optimalWakeUpSechend");
-      String optimalWakeUpTime = calculateTimeFromMinutes(
-          optimalWakeUpMinutes, wakeUpTimeController.text);
-
-      String moreTime = calculateTimeFromMinutes(
-          optimalWakeUpMinutes + 15, wakeUpTimeController.text);
-
-      bool compare =
-          compareTimeStringAndTimeOfDay(moreTime, selectedWakeUpTime);
-      if (compare) {
-        optimalWakeUpTime = moreTime;
-      }
-
-      setState(() {
-        int? hour = myHourList[bedtimeIndex]['hour'];
-        int? minute = myHourList[bedtimeIndex]['minute'];
-        String period = (hour! < 12) ? 'AM' : 'PM';
-        hour = (hour > 12) ? hour - 12 : hour;
-
-        printedBedtime = '$hour:${minute.toString().padLeft(2, '0')} $period';
-        printedWakeUpTime = optimalWakeUpTime;
-        // string durationhours=
-        printednumOfCycles = numberOfCycles.toString();
-      });
-
-      await AppAlarm.saveAlarm(selectedBedtime, optimalWakeUpTime);
-      AppAlarm.getAlarms();
-      calculateSleepDuration(printedBedtime, printedWakeUpTime);
-      int currentDay = DateTime.now().day;
-
-      await FirebaseFirestore.instance.collection('alarms').add({
-        'bedtime': printedBedtime,
-        'wakeup_time': printedWakeUpTime,
-        'num_of_cycles': printednumOfCycles,
-        'added_day': DateTime.now().day,
-        'added_month': DateTime.now().month,
-        'added_year': DateTime.now().year,
-        'timestamp': FieldValue.serverTimestamp(),
-        'uid': userid,
-      });
-      var timestamp = FieldValue.serverTimestamp();
-      print("=================================$timestamp");
-      print("====================================================");
-      print(optimalWakeUpTime);
-      print("====================================================");
-
-      await PushNotificationService.showNotification(
-        title: 'Your Time To Go To Sleep',
-        body: 'Your Sleep Time Is Now. Go To Sleep',
-        schedule: true,
-        interval: printSechendTime(optimalWakeUpTime),
-      );
-      print("=======================OptimaL tIME=============================");
-      printTimeDifference(optimalWakeUpTime);
-      print("==========================End==========================");
-
-      print(
-          "=======================Sleep duration Hur=============================");
-      // printTimeDifference();
-      print("==========================End==========================");
-
-      print("=======================Wake up time=============================");
-      printTimeDifference(printedBedtime);
-      print("==========================End==========================");
-
-      print("=======================OptimaL tIME=============================");
-      printTimeDifference(printednumOfCycles);
-      print("==========================End==========================");
-      Get.offAll(() => const HomeScreen());
     }
+
+    if (bedtimeIndex > 0) {
+      bedtimeMinutes = myHourList[bedtimeIndex]['hour']! * 60 +
+          myHourList[bedtimeIndex]['minute']!;
+    } else {
+      bedtimeMinutes = myHourList[myHourList.length - 1]['hour']! * 60 +
+          myHourList[myHourList.length - 1]['minute']!;
+    }
+
+    int wakeUpTimeMinutes =
+        selectedWakeUpTime.hour * 60 + selectedWakeUpTime.minute;
+
+    if (wakeUpTimeMinutes < bedtimeMinutes) {
+      wakeUpTimeMinutes += 24 * 60;
+    }
+
+    int totalSleepTimeMinutes = wakeUpTimeMinutes - bedtimeMinutes;
+    int numberOfCycles = (totalSleepTimeMinutes / 90).floor();
+    numOfCycles = numberOfCycles;
+
+    int optimalWakeUpMinutes =
+        bedtimeMinutes + (numberOfCycles * sleepCycleMinutes);
+
+    int optimalWakeUpSechend = optimalWakeUpMinutes * 60;
+    print(
+        "============================::::::::::::optimalWakeUpSechend is:::::: $optimalWakeUpSechend");
+    String optimalWakeUpTime = calculateTimeFromMinutes(
+        optimalWakeUpMinutes, wakeUpTimeController.text);
+
+    String moreTime = calculateTimeFromMinutes(
+        optimalWakeUpMinutes + 15, wakeUpTimeController.text);
+
+    bool compare = compareTimeStringAndTimeOfDay(moreTime, selectedWakeUpTime);
+    if (compare) {
+      optimalWakeUpTime = moreTime;
+    }
+
+    setState(() {
+      int? hour = myHourList[bedtimeIndex]['hour'];
+      int? minute = myHourList[bedtimeIndex]['minute'];
+      String period = (hour! < 12) ? 'AM' : 'PM';
+      hour = (hour > 12) ? hour - 12 : hour;
+
+      printedBedtime = '$hour:${minute.toString().padLeft(2, '0')} $period';
+      printedWakeUpTime = optimalWakeUpTime;
+      // string durationhours=
+      printednumOfCycles = numberOfCycles.toString();
+    });
+
+    await AppAlarm.saveAlarm(selectedBedtime, optimalWakeUpTime);
+    AppAlarm.getAlarms();
+    calculateSleepDuration(printedBedtime, printedWakeUpTime);
+    int currentDay = DateTime.now().day;
+
+    await FirebaseFirestore.instance.collection('alarms').add({
+      'bedtime': printedBedtime,
+      'wakeup_time': printedWakeUpTime,
+      'num_of_cycles': printednumOfCycles,
+      'added_day': DateTime.now().day,
+      'added_month': DateTime.now().month,
+      'added_year': DateTime.now().year,
+      'timestamp': FieldValue.serverTimestamp(),
+      'uid': userid,
+    });
+    var timestamp = FieldValue.serverTimestamp();
+    print("=================================$timestamp");
+    print("====================================================");
+    print(optimalWakeUpTime);
+    print("====================================================");
+
+    await PushNotificationService.showNotification(
+      title: 'Your Time To Go To Sleep',
+      body: 'Your Sleep Time Is Now. Go To Sleep',
+      schedule: true,
+      interval: printSechendTime(optimalWakeUpTime),
+    );
+    print("=======================OptimaL tIME=============================");
+    printTimeDifference(optimalWakeUpTime);
+    print("==========================End==========================");
+
+    print(
+        "=======================Sleep duration Hur=============================");
+    // printTimeDifference();
+    print("==========================End==========================");
+
+    print("=======================Wake up time=============================");
+    printTimeDifference(printedBedtime);
+    print("==========================End==========================");
+
+    print("=======================OptimaL tIME=============================");
+    printTimeDifference(printednumOfCycles);
+    print("==========================End==========================");
+    Get.offAll(() => const HomeScreen());
   }
 
   Future<void> calculateSleepDuration(
@@ -240,7 +242,7 @@ class _AlarmSetupScreenState extends State<AlarmSetupScreen> {
 
       // If the wakeup time is before the bedtime, assume it's the next day
       if (optimalWakeUpTime.isBefore(selectedBedtime)) {
-        optimalWakeUpTime = optimalWakeUpTime.add(Duration(days: 1));
+        optimalWakeUpTime = optimalWakeUpTime.add(const Duration(days: 1));
       }
 
       // Calculate the sleep duration
@@ -258,42 +260,6 @@ class _AlarmSetupScreenState extends State<AlarmSetupScreen> {
       print('Error parsing time strings: $e');
     }
   }
-
-  // Future<void> calculateSleepDuration(
-  //     String selectedBedtimeStr, String optimalWakeUpTimeStr) async {
-  //   // Define the date format
-  //   DateFormat format = DateFormat.jm(); // 'jm' is the format for '1:00 PM'
-
-  //   // Parse the time strings to DateTime
-  //   DateTime selectedBedtime = format.parse(selectedBedtimeStr);
-  //   DateTime optimalWakeUpTime = format.parse(optimalWakeUpTimeStr);
-
-  //   // Get the current date
-  //   DateTime now = DateTime.now();
-
-  //   // Adjust DateTime to include current date
-  //   selectedBedtime = DateTime(now.year, now.month, now.day,
-  //       selectedBedtime.hour, selectedBedtime.minute);
-  //   optimalWakeUpTime = DateTime(now.year, now.month, now.day,
-  //       optimalWakeUpTime.hour, optimalWakeUpTime.minute);
-
-  //   // If the wakeup time is before the bedtime, assume it's the next day
-  //   if (optimalWakeUpTime.isBefore(selectedBedtime)) {
-  //     optimalWakeUpTime = optimalWakeUpTime.add(Duration(days: 1));
-  //   }
-
-  //   // Calculate the sleep duration
-  //   Duration sleepDuration = optimalWakeUpTime.difference(selectedBedtime);
-  //   int sleepHours = sleepDuration.inHours;
-  //   int sleepMinutes = sleepDuration.inMinutes % 60;
-
-  //   // Print the sleep duration
-  //   print(
-  //       ":::::::::::::::::::::::::::::::::AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA:::::::::::::::::::::::::::::::::::::::::::::::::");
-  //   print('Sleep Duration: $sleepHours hours and $sleepMinutes minutes');
-  //   print(
-  //       ":::::::::::::::::::::::::::::::::AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA:::::::::::::::::::::::::::::::::::::::::::::::::");
-  // }
 
   String calculateTimeFromMinutes(int minutes, String referenceTime) {
     int hours = minutes ~/ 60;
@@ -408,10 +374,10 @@ class _AlarmSetupScreenState extends State<AlarmSetupScreen> {
     Random random = Random();
     while (currentTime.isBefore(endTime)) {
       int heartRate;
-      if (currentTime.isBefore(startTime.add(Duration(minutes: 30)))) {
+      if (currentTime.isBefore(startTime.add(const Duration(minutes: 30)))) {
         // Decrease heart rate gradually from initialHeartRate to 95 bpm
         double progress = currentTime.difference(startTime).inMinutes /
-            (startTime.add(Duration(minutes: 30)).difference(startTime))
+            (startTime.add(const Duration(minutes: 30)).difference(startTime))
                 .inMinutes;
 
         int decreaseAmount = (progress * (initialHeartRate - 95)).round();
@@ -534,7 +500,7 @@ class _AlarmSetupScreenState extends State<AlarmSetupScreen> {
                     ],
                   ),
                 ),
-                Align(
+                const Align(
                   alignment: Alignment.centerRight,
                   child: ClockView(),
                 ),
@@ -651,37 +617,6 @@ class _AlarmSetupScreenState extends State<AlarmSetupScreen> {
           ],
         ),
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () async {
-      //     DateTime now = DateTime.now();
-      //     final nowTime = TimeOfDay.fromDateTime(now);
-      //     // Adding one minute to the current time
-      //     final newTime = nowTime.replacing(
-      //       hour: nowTime.hourOfPeriod,
-      //       minute: nowTime.minute + 1,
-      //     );
-      //     // Saving the alarm with the updated time
-      //     await AppAlarm.saveAlarm(
-      //       newTime,
-      //       "${newTime.hour}:${newTime.minute} ${newTime.period == DayPeriod.am ? 'PM' : 'AM'}",
-      //     );
-      //     // Getting all alarms
-      //     AppAlarm.getAlarms();
-      //   },
-      //   child: const Icon(Icons.alarm),
-      // ),
-
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () async {
-      //     DateTime now = DateTime.now();
-      //     final nowTime = TimeOfDay.fromDateTime(now);
-      //     await AppAlarm.saveAlarm(
-      //         nowTime, "${nowTime.hour}:${nowTime.minute + 1} AM");
-      //     AppAlarm.getAlarms();
-      //     Get.to(const HomeScreen());
-      //   },
-      //   child: const Icon(Icons.alarm),
-      // ),
     );
   }
 }

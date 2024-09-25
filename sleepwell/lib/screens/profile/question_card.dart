@@ -8,7 +8,11 @@ class QuestionCard extends StatelessWidget {
   final ValueChanged<String> onChanged;
   final String feedback;
 
+<<<<<<< HEAD
   const QuestionCard({
+=======
+  const QuestionCard({super.key, 
+>>>>>>> 24bd2ad0dec0c99405d2fc1469864aff61a82d68
     required this.question,
     required this.options,
     required this.answer,

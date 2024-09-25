@@ -6,6 +6,8 @@ import 'package:sleepwell/signup/question.dart';
 import 'package:sleepwell/widget/regsterbutton.dart';
 import 'package:get/get.dart';
 
+import 'signin_screen.dart';
+
 class SignUpScreen extends StatefulWidget {
   static String RouteScreen = 'signup_screen';
   const SignUpScreen({
@@ -34,7 +36,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 0, 74, 173),
-        title: const Text(''),
+        title: const Text(
+          'SignUp',
+          style: TextStyle(color: Colors.white),
+        ),
       ),
       body: ModalProgressHUD(
         inAsyncCall: showSpinner,
@@ -232,49 +237,47 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         final newUser =
                             await _auth.createUserWithEmailAndPassword(
                                 email: email, password: password);
-                        if (newUser != null) {
-                          final userId = newUser.user
-                              ?.uid; // Access the UID of the newly created user
-                          await _firestore.collection('Users').doc(userId).set({
-                            'UserId': userId,
-                            'Email': email,
-                            'Fname': name,
-                            'Lname': Lname,
-                            'Age': age,
-                            'Password': password,
-                          });
+                        final userId = newUser.user
+                            ?.uid; // Access the UID of the newly created user
+                        await _firestore.collection('Users').doc(userId).set({
+                          'UserId': userId,
+                          'Email': email,
+                          'Fname': name,
+                          'Lname': Lname,
+                          'Age': age,
+                          'Password': password,
+                        });
 
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: const Text('Great job!'),
-                                titleTextStyle: const TextStyle(
-                                  color: Colors.green,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text('Great job!'),
+                              titleTextStyle: const TextStyle(
+                                color: Colors.green,
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              content: const Text(
+                                  'Your are almost there! Just a few more steps and you will be completely signed up with us.'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    // Navigator.of(context).pop();
+                                    Get.back();
+                                    // Navigator.pushNamed(
+                                    //   context,
+                                    //   QuestionScreen.RouteScreen,
+                                    // );
+                                    Get.offAll(const QuestionScreen());
+                                  },
+                                  child: const Text('OK'),
                                 ),
-                                content: const Text(
-                                    'Your are almost there! Just a few more steps and you will be completely signed up with us.'),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      // Navigator.of(context).pop();
-                                      Get.back();
-                                      // Navigator.pushNamed(
-                                      //   context,
-                                      //   QuestionScreen.RouteScreen,
-                                      // );
-                                      Get.offAll(QuestionScreen());
-                                    },
-                                    child: const Text('OK'),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        }
-                        setState(() {
+                              ],
+                            );
+                          },
+                        );
+                                              setState(() {
                           showSpinner = false;
                         });
                       } catch (e) {
@@ -313,6 +316,34 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       );
                     }
                   },
+                ),
+                const SizedBox(height: 10.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Already have an account?'.tr,
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(width: 10),
+                    InkWell(
+                      onTap: () {
+                        Get.offAll(const SignInScreen());
+                        // Get.back();
+                        // Get.back();
+                      },
+                      child: Text(
+                        "Login".tr,
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    )
+                  ],
                 ),
               ],
             ),

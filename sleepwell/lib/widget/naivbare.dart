@@ -5,7 +5,7 @@ class NavigationDestination extends StatelessWidget {
   final Icon selectedIcon;
   final String label;
 
-  NavigationDestination({
+  const NavigationDestination({super.key, 
     required this.icon,
     required this.selectedIcon,
     required this.label,
@@ -13,8 +13,8 @@ class NavigationDestination extends StatelessWidget {
 
   factory NavigationDestination.fromJson(Map<String, dynamic> json) {
     return NavigationDestination(
-      icon: json['icon'] ?? Icon(Icons.dashboard_customize_outlined, color: Colors.white),
-      selectedIcon: json['selectedIcon'] ?? Icon(Icons.dashboard_customize, color: Colors.white),
+      icon: json['icon'] ?? const Icon(Icons.dashboard_customize_outlined, color: Colors.white),
+      selectedIcon: json['selectedIcon'] ?? const Icon(Icons.dashboard_customize, color: Colors.white),
       label: json['label'] ?? 'Destination',
     );
   }
@@ -41,6 +41,6 @@ class NavigationDestination extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(label, style: TextStyle(color: Colors.white));
+    return Text(label, style: const TextStyle(color: Colors.white));
   }
 }

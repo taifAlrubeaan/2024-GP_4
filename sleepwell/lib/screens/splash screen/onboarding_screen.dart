@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sleepwell/screens/onboarding_data.dart';
-import 'package:sleepwell/screens/welcoming_screen.dart';
+import 'package:sleepwell/screens/splash%20screen/onboarding_data.dart';
+import 'package:sleepwell/screens/splash%20screen/welcoming_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class OnboardingScreen extends StatefulWidget {
   static String RouteScreen = 'onboarding_screen';
-  const OnboardingScreen({Key? key}) : super(key: key);
+  const OnboardingScreen({super.key});
 
   @override
   _OnboardingScreenState createState() => _OnboardingScreenState();
@@ -22,7 +22,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [Color(0xFF004AAD), Color(0xFF040E3B)],
             begin: Alignment.topCenter,
@@ -48,14 +48,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       const SizedBox(height: 50),
                       Text(
                         controller.items[index].title,
-                        style: TextStyle(
+                        style: const TextStyle(
                             color: Colors.white,
                             fontSize: 30,
                             fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 15),
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Text(
                           controller.items[index].descriptions,
                           style: const TextStyle(

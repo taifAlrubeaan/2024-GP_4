@@ -7,6 +7,8 @@ import 'package:sleepwell/models/list_of_music.dart';
 import 'package:sleepwell/widget/sounds_widget.dart';
 
 class EditAlarmScreen extends StatefulWidget {
+  const EditAlarmScreen({super.key});
+
   @override
   _EditAlarmScreenState createState() => _EditAlarmScreenState();
 }
@@ -55,7 +57,7 @@ class _EditAlarmScreenState extends State<EditAlarmScreen> {
           'Edit Alarm',
           style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
         ),
-        backgroundColor: Color(0xFF004AAD),
+        backgroundColor: const Color(0xFF004AAD),
       ),
       body: Container(
         decoration: const BoxDecoration(
@@ -224,7 +226,7 @@ Widget getRadioListTile({
         children: [
           Icon(
             icon,
-            color: Color.fromARGB(255, 188, 178, 178),
+            color: const Color.fromARGB(255, 188, 178, 178),
           ),
           const SizedBox(width: 10),
           Text(
@@ -232,7 +234,7 @@ Widget getRadioListTile({
             style: TextStyle(
               fontSize: fontSize,
               fontWeight: FontWeight.bold,
-              color: Color.fromARGB(255, 255, 255, 255),
+              color: const Color.fromARGB(255, 255, 255, 255),
             ),
           ),
         ],

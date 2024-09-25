@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+
 class regsterbutton extends StatelessWidget {
- regsterbutton({required this.color, required this.title,required this.onPressed});
- final Color color;
- final String title;
- final VoidCallback onPressed;
+  const regsterbutton(
+      {super.key, required this.color, required this.title, required this.onPressed});
+  final Color color;
+  final String title;
+  final VoidCallback onPressed;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -12,18 +14,19 @@ class regsterbutton extends StatelessWidget {
         elevation: 5,
         color: color,
         borderRadius: BorderRadius.circular(10),
-        child: MaterialButton (
+        child: MaterialButton(
           onPressed: onPressed,
           minWidth: 220,
           height: 42,
-          child: Text( 
-            title, 
-            style: TextStyle(color: Colors.black ,fontSize:20 ,),
-            
+          child: Text(
+            title,
+            style: const TextStyle(
+              color: Colors.black,
+              fontSize: 20,
             ),
-      
+          ),
         ),
-        ),
+      ),
     );
   }
 }

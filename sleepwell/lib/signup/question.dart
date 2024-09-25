@@ -6,7 +6,7 @@ import 'package:sleepwell/screens/auth/signin_screen.dart';
 
 class QuestionScreen extends StatefulWidget {
   static String RouteScreen = 'question';
-  const QuestionScreen({Key? key}) : super(key: key);
+  const QuestionScreen({super.key});
 
   @override
   State<QuestionScreen> createState() => _QuestionScreenState();
@@ -34,7 +34,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
         showSpinner = true; // Show spinner while fetching user
       });
 
-      final user = await _auth.currentUser;
+      final user = _auth.currentUser;
       if (user != null) {
         setState(() {
           userId = user.uid;
@@ -210,7 +210,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
               TextButton(
                 child: const Text('OK'),
                 onPressed: () {
-                  Get.to(SignInScreen());
+                  Get.to(const SignInScreen());
                 },
               ),
             ],
@@ -295,14 +295,14 @@ class _QuestionScreenState extends State<QuestionScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ElevatedButton(
-                    child: const Text('Back'),
                     onPressed: _previousQuestion,
+                    child: const Text('Back'),
                   ),
                   ElevatedButton(
-                    child: const Text('Next'),
                     onPressed: answers[currentQuestionIndex].isEmpty
                         ? null
                         : _nextQuestion,
+                    child: const Text('Next'),
                   ),
                   if (showError &&
                       options[currentQuestionIndex].contains('Other'))

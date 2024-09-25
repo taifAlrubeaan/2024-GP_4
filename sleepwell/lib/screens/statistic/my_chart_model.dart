@@ -25,7 +25,7 @@ class AlarmModel {
         DateTime wakeupTime = DateFormat('HH:mm').parse(wakeupTimeString);
 
         if (wakeupTime.isBefore(bedtime)) {
-          wakeupTime = wakeupTime.add(Duration(days: 1));
+          wakeupTime = wakeupTime.add(const Duration(days: 1));
         }
 
         double sleepDuration =

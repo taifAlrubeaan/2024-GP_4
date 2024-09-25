@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:sleepwell/widget/custom_bottom_bar.dart';
 
 class StatisticScreen extends StatefulWidget {
   const StatisticScreen({super.key});
@@ -12,14 +10,14 @@ class StatisticScreen extends StatefulWidget {
 class _StatisticScreenState extends State<StatisticScreen> {
   @override
   Widget build(BuildContext context) {
-    int _selectedIndex = 0;
+    int selectedIndex = 0;
     return DefaultTabController(
       length: 3,
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: const Color(0xFF004AAD),
           bottom: PreferredSize(
-            preferredSize: Size.fromHeight(60.0),
+            preferredSize: const Size.fromHeight(60.0),
             child: Column(
               children: [
                 const Column(
@@ -37,7 +35,7 @@ class _StatisticScreenState extends State<StatisticScreen> {
                 TabBar(
                   onTap: (index) {
                     setState(() {
-                      _selectedIndex = index;
+                      selectedIndex = index;
                     });
                   },
                   indicatorColor: Colors.white,
@@ -55,7 +53,7 @@ class _StatisticScreenState extends State<StatisticScreen> {
         ),
         // bottomNavigationBar: CustomBottomBar(),
         body: IndexedStack(
-          index: _selectedIndex,
+          index: selectedIndex,
           children: [
             Container(
               height: MediaQuery.of(context).size.height,
