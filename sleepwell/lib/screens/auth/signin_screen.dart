@@ -10,6 +10,8 @@ import 'package:sleepwell/screens/auth/signup_screen.dart';
 import 'package:sleepwell/screens/home_screen.dart';
 import 'package:sleepwell/widget/regsterbutton.dart';
 import '../../controllers/auth/auth_service.dart';
+import '../../locale/local_controller.dart';
+import '../../widget/choice_chip_widget.dart';
 import '../../widget/square_tile.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -65,12 +67,48 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     Color myColor = const Color.fromARGB(255, 0, 74, 173);
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: myColor,
         title: const Text(''),
         automaticallyImplyLeading: false, // This removes the arrow
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: PopupMenuButton<int>(
+              icon: const Icon(
+                Icons.language,
+                color: Colors.white,
+              ),
+              itemBuilder: (BuildContext context) {
+                return [
+                  PopupMenuItem<int>(
+                    // value: 1,
+                    child: ChoiceChipWidget(
+                      choices: ["Arabic".tr, "English".tr],
+                      initialSelected: Get.locale?.languageCode == 'en' ? 1 : 0,
+                      changeSelected: (selectedValue) {
+                        print(":::::::::::::::::::::$selectedValue");
+                        final AppLocalelcontroller locallcontroller =
+                            Get.find();
+                        Get.back();
+                        if (selectedValue == 0 &&
+                            locallcontroller.language.languageCode == 'en') {
+                          locallcontroller.changeLanguage('ar');
+                        } else if (selectedValue == 1 &&
+                            locallcontroller.language.languageCode == 'ar') {
+                          locallcontroller.changeLanguage('en');
+                        }
+                      },
+                    ),
+                  ),
+                ];
+              },
+            ),
+          ),
+        ],
       ),
       body: ModalProgressHUD(
         inAsyncCall: showSpinner,
@@ -95,20 +133,20 @@ class _SignInScreenState extends State<SignInScreen> {
                     image: AssetImage('assets/logo2.png'),
                   ),
                 ),
-                const Center(
+                Center(
                   child: Text(
-                    'Welcome back!',
-                    style: TextStyle(
+                    'Welcome back!'.tr,
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 25,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-                const Center(
+                Center(
                   child: Text(
-                    '  start exploring our platform today!',
-                    style: TextStyle(
+                    'start exploring our platform today!'.tr,
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -126,7 +164,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     fillColor: Colors.white,
                     filled: true,
                     suffixIcon: const Icon(Icons.email),
-                    hintText: 'Email',
+                    hintText: 'Email'.tr,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -148,7 +186,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     suffixIcon: const Icon(
                       Icons.key,
                     ),
-                    hintText: 'Password',
+                    hintText: 'Password'.tr,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -159,7 +197,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
                 regsterbutton(
                   color: const Color(0xffd5defe),
-                  title: 'Sign In',
+                  title: 'Sign In'.tr,
                   onPressed: () async {
                     setState(() {
                       showSpinner = true;
@@ -224,18 +262,18 @@ class _SignInScreenState extends State<SignInScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
-                      'New user ?  ',
-                      style: TextStyle(color: Colors.white, fontSize: 22),
+                    Text(
+                      'New user ?'.tr,
+                      style: const TextStyle(color: Colors.white, fontSize: 22),
                     ),
                     GestureDetector(
                       onTap: () {
                         Get.offAll(const SignUpScreen());
                       },
-                      child: const Text(
-                        'Sign Up',
-                        style: TextStyle(
-                          color: Color.fromARGB(241, 230, 158, 3),
+                      child: Text(
+                        'Sign Up'.tr,
+                        style: const TextStyle(
+                          color: Color.fromARGB(240, 180, 168, 142),
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
@@ -245,10 +283,10 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
                 const Divider(),
                 const SizedBox(height: 5),
-                const Text(
-                  'Or sign in with Google',
+                Text(
+                  'Or sign in with Google'.tr,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 20,
                   ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sleepwell/screens/splash%20screen/onboarding_data.dart';
-import 'package:sleepwell/screens/splash%20screen/welcoming_screen.dart';
+import 'package:sleepwell/screens/splash screen/onboarding_data.dart';
+import 'package:sleepwell/screens/splash screen/welcoming_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -89,9 +89,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             // );
                             Get.offAll(const welcome());
                           },
-                          child: const Text(
-                            "Skip",
-                            style: TextStyle(color: Colors.white),
+                          child: Text(
+                            "Skip".tr,
+                            style: const TextStyle(color: Colors.white),
                           ),
                         ),
                         // Indicator
@@ -116,9 +116,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             duration: const Duration(milliseconds: 600),
                             curve: Curves.easeIn,
                           ),
-                          child: const Text(
-                            "Next",
-                            style: TextStyle(color: Colors.white),
+                          child: Text(
+                            "Next".tr,
+                            style: const TextStyle(color: Colors.white),
                           ),
                         )
                       ],
@@ -148,8 +148,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           //     context, MaterialPageRoute(builder: (context) => welcome()));
           Get.offAll(const welcome());
         },
-        child: const Text("Get Started",
-            style: TextStyle(color: Color(0xFF040E3B), fontSize: 20)),
+        child: Text("Get Started".tr,
+            style: const TextStyle(color: Color(0xFF040E3B), fontSize: 20)),
       ),
     );
   }

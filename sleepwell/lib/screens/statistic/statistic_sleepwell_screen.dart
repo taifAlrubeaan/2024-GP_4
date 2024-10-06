@@ -2,12 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sleepwell/widget/info_card.dart';
 import '../../widget/indicator.dart';
-import '../settings_screen.dart';
 import 'my_chart_model.dart';
 
 class StatisticSleepWellScreen extends StatefulWidget {
@@ -63,21 +60,15 @@ class _StatisticSleepWellScreenState extends State<StatisticSleepWellScreen> {
 
   List<FlSpot> sleepCycleDataLastDay = [];
 // END Var DAY
-  String? userid;
+  // String? userId;
+  String? userId = FirebaseAuth.instance.currentUser?.uid;
   @override
   void initState() {
     super.initState();
     loadDataForMonth();
     loadDataWeek();
     loadDayData();
-    getUserId();
-  }
-
-  Future<void> getUserId() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      userid = prefs.getString('userid'); // استرجاع الـ userid
-    });
+    // getUserId();
   }
 
 // Day
@@ -89,7 +80,7 @@ class _StatisticSleepWellScreenState extends State<StatisticSleepWellScreen> {
 
       final snapshot = await FirebaseFirestore.instance
           .collection('alarms')
-          .where('uid', isEqualTo: userid)
+          .where('uid', isEqualTo: userId)
           .where('timestamp', isGreaterThanOrEqualTo: startOfDay)
           .where('timestamp', isLessThan: endOfDay)
           .get();
@@ -227,7 +218,7 @@ class _StatisticSleepWellScreenState extends State<StatisticSleepWellScreen> {
 
       final snapshot = await _firestore
           .collection('alarms')
-          .where('uid', isEqualTo: userid)
+          .where('uid', isEqualTo: userId)
           .where('timestamp', isGreaterThanOrEqualTo: firstDayOfMonth)
           .where('timestamp', isLessThanOrEqualTo: lastDayOfMonth)
           .get();
@@ -400,11 +391,11 @@ class _StatisticSleepWellScreenState extends State<StatisticSleepWellScreen> {
                     children: [
                       Expanded(
                         child: InfoCard(
-                          title: 'Sleep hours',
+                          title: 'Num of Sleep Hours:',
                           value: sleepHoursDurationLastDay,
                         ),
                       ),
-                      const SizedBox(width: 16),
+                      const SizedBox(width: 8),
                       Expanded(
                         child: InfoCard(
                           title: ' Actual sleep time',
@@ -418,11 +409,11 @@ class _StatisticSleepWellScreenState extends State<StatisticSleepWellScreen> {
                     children: [
                       Expanded(
                         child: InfoCard(
-                          title: "Sleep cycles",
+                          title: "Num of Sleep Cycles:",
                           value: sleepCyclesLastDay,
                         ),
                       ),
-                      const SizedBox(width: 16),
+                      const SizedBox(width: 8),
                       Expanded(
                         child: InfoCard(
                           title: "Wake up time",

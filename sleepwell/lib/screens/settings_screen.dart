@@ -8,6 +8,7 @@ import 'package:sleepwell/main.dart';
 import 'package:sleepwell/screens/account_screen.dart';
 import 'package:sleepwell/screens/auth/signin_screen.dart';
 import 'package:sleepwell/screens/feedback/feedbacke_notification_screen.dart';
+import 'package:sleepwell/screens/settings/language_screen.dart';
 import 'package:sleepwell/widget/counter_widget.dart';
 import '../widget/bed_time_reminder.dart';
 import 'edite_alarm_screen.dart';
@@ -97,9 +98,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
       appBar: AppBar(
         backgroundColor: const Color(0xFF004AAD),
         elevation: 50,
-        title: const Text(
-          'Profile',
-          style: TextStyle(
+        title: Text(
+          'Profile'.tr,
+          style: const TextStyle(
               color: Colors.white, fontWeight: FontWeight.bold, fontSize: 22),
         ),
         iconTheme: const IconThemeData(color: Colors.white),
@@ -138,10 +139,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       firstName = userData['Fname'] ?? '';
                       lastName = userData['Lname'] ?? '';
                     }
+
                     return Column(
                       children: [
                         Text(
-                          'Hi $firstName!',
+                          'Hi $firstName!'.tr,
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 30,
@@ -156,9 +158,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              'PERSONAL',
-                              style: TextStyle(
+                            Text(
+                              'PERSONAL'.tr,
+                              style: const TextStyle(
                                 fontSize: 22,
                                 fontWeight: FontWeight.bold,
                                 color: Color.fromARGB(255, 92, 221, 169),
@@ -215,8 +217,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             // ),
                             // const SizedBox(height: 10),
                             ListTile(
-                              title: const Text('Notification',
-                                  style: TextStyle(
+                              title: Text('Notification'.tr,
+                                  style: const TextStyle(
                                       color: Colors.white, fontSize: 18)),
                               leading: const Icon(Icons.notifications,
                                   color: Colors.white),
@@ -227,9 +229,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ),
 
                             const Divider(color: Color.fromRGBO(9, 238, 13, 1)),
-                            const Text(
-                              'SETTINGS',
-                              style: TextStyle(
+                            Text(
+                              'SETTINGS'.tr,
+                              style: const TextStyle(
                                 fontSize: 22,
                                 fontWeight: FontWeight.bold,
                                 color: Color.fromARGB(255, 92, 221, 169),
@@ -237,8 +239,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ),
                             const SizedBox(height: 10),
                             ListTile(
-                                title: const Text('Sensor Connection',
-                                    style: TextStyle(
+                                title: Text('Language'.tr,
+                                    style: const TextStyle(
+                                        color: Colors.white, fontSize: 18)),
+                                leading: const Icon(Icons.language,
+                                    color: Colors.white),
+                                trailing: const Icon(Icons.arrow_forward_ios,
+                                    color: Colors.white, size: 18),
+                                onTap: () {
+                                  Get.to(const LangageScreen());
+                                }
+                                // => Get.to(() => NotificationScreen()),
+                                ),
+                            ListTile(
+                                title: Text('Sensor Connection'.tr,
+                                    style: const TextStyle(
                                         color: Colors.white, fontSize: 18)),
                                 leading:
                                     const Icon(Icons.usb, color: Colors.white),
@@ -318,9 +333,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             //   ),
                             // ),
 
-                            const Text(
-                              'Account Actions',
-                              style: TextStyle(
+                            Text(
+                              'Account Actions'.tr,
+                              style: const TextStyle(
                                 fontSize: 22,
                                 fontWeight: FontWeight.bold,
                                 color: Color.fromARGB(255, 92, 221, 169),

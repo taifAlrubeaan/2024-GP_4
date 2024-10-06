@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -16,13 +17,17 @@ class FeedbackNotificationDailyScreen extends StatefulWidget {
 class _FeedbackNotificationDailyScreenState
     extends State<FeedbackNotificationDailyScreen> {
   final notificationsController = Get.put(FeedbackeNotificationController());
-  String userid = 'Fz74uTkiBpSqt7zdF3C3ZTPjbhu1';
+  // String userId = 'Fz74uTkiBpSqt7zdF3C3ZTPjbhu1';
+  String userId = FirebaseAuth.instance.currentUser!.uid;
 
   @override
   void initState() {
     super.initState();
     // استدعاء البيانات مرة واحدة في initState
-    notificationsController.fetchNotifications(userid);
+    notificationsController.fetchNotifications(userId);
+    print(":::::::::::::::::::::::::::userId::::::::::::::::;");
+    print(userId);
+    print(":::::::::::::::::::::::::::userId::::::::::::::::;");
   }
 
   @override
@@ -47,7 +52,7 @@ class _FeedbackNotificationDailyScreenState
           ),
         ),
         child: FutureBuilder(
-          future: notificationsController.fetchNotifications(userid),
+          future: notificationsController.fetchNotifications(userId),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
@@ -57,7 +62,7 @@ class _FeedbackNotificationDailyScreenState
                 notificationsController.notifications.isEmpty) {
               return RefreshIndicator(
                 onRefresh: () =>
-                    notificationsController.fetchNotifications(userid),
+                    notificationsController.fetchNotifications(userId),
                 child: SingleChildScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),
                   child: Container(
@@ -72,7 +77,7 @@ class _FeedbackNotificationDailyScreenState
 
             return RefreshIndicator(
               onRefresh: () =>
-                  notificationsController.fetchNotifications(userid),
+                  notificationsController.fetchNotifications(userId),
               child: Obx(
                 () => ListView.separated(
                   shrinkWrap: true,

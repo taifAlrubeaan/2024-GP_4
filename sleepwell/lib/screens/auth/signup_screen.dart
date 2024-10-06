@@ -36,9 +36,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 0, 74, 173),
-        title: const Text(
-          'SignUp',
-          style: TextStyle(color: Colors.white),
+        title: Text(
+          'SignUp'.tr,
+          style: const TextStyle(color: Colors.white),
         ),
       ),
       body: ModalProgressHUD(
@@ -60,10 +60,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 const SizedBox(
                   height: 15,
                 ),
-                const Center(
+                Center(
                   child: Text(
-                    'Let’s create your account!',
-                    style: TextStyle(
+                    'Let’s create your account!'.tr,
+                    style: const TextStyle(
                         color: Colors.white,
                         fontSize: 20,
                         fontWeight: FontWeight.bold),
@@ -72,9 +72,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 const SizedBox(
                   height: 15,
                 ),
-                const Text(
-                  '  Names should be in English ',
-                  style: TextStyle(
+                Text(
+                  'Names should be in English'.tr,
+                  style: const TextStyle(
                       color: Color.fromARGB(241, 230, 158, 3),
                       fontSize: 15,
                       fontWeight: FontWeight.bold),
@@ -92,7 +92,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     fillColor: Colors.white,
                     filled: true,
                     suffixIcon: const Icon(Icons.person),
-                    hintText: ' First Name ',
+                    hintText: 'First Name'.tr,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -111,7 +111,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     fillColor: Colors.white,
                     filled: true,
                     suffixIcon: const Icon(Icons.person),
-                    hintText: ' Last Name ',
+                    hintText: 'Last Name'.tr,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -130,7 +130,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     fillColor: Colors.white,
                     filled: true,
                     suffixIcon: const Icon(Icons.date_range),
-                    hintText: ' your Age ',
+                    hintText: 'your Age'.tr,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -149,7 +149,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     fillColor: Colors.white,
                     filled: true,
                     suffixIcon: const Icon(Icons.email),
-                    hintText: 'Email Address',
+                    hintText: 'Email Address'.tr,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -169,7 +169,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     fillColor: Colors.white,
                     filled: true,
                     suffixIcon: const Icon(Icons.key),
-                    hintText: 'Password',
+                    hintText: 'Password'.tr,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -189,7 +189,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     fillColor: Colors.white,
                     filled: true,
                     suffixIcon: const Icon(Icons.key),
-                    hintText: 'Confirm Password',
+                    hintText: 'Confirm Password'.tr,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -198,23 +198,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 const SizedBox(
                   height: 10,
                 ),
-                const Text(
-                  '- Password should be Identical.',
-                  style: TextStyle(
+                Text(
+                  '- Password should be Identical.'.tr,
+                  style: const TextStyle(
                       color: Color.fromARGB(241, 230, 158, 3),
                       fontSize: 15,
                       fontWeight: FontWeight.bold),
                 ),
-                const Text(
-                  '- At least 8 characters long.',
-                  style: TextStyle(
+                Text(
+                  '- At least 8 characters long.'.tr,
+                  style: const TextStyle(
                       color: Color.fromARGB(241, 230, 158, 3),
                       fontSize: 15,
                       fontWeight: FontWeight.bold),
                 ),
-                const Text(
-                  '- Password should contain numbers & characters.',
-                  style: TextStyle(
+                Text(
+                  '- Password should contain numbers & characters.'.tr,
+                  style: const TextStyle(
                       color: Color.fromARGB(241, 230, 158, 3),
                       fontSize: 15,
                       fontWeight: FontWeight.bold),
@@ -224,7 +224,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
                 regsterbutton(
                   color: const Color(0xffd5defe),
-                  title: 'Create Account',
+                  title: 'Create Account'.tr,
                   onPressed: () async {
                     if (password.length >= 8 &&
                         password.contains(RegExp(r'[a-zA-Z]')) &&
@@ -252,14 +252,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(
-                              title: const Text('Great job!'),
+                              title: Text('Great job!'.tr),
                               titleTextStyle: const TextStyle(
                                 color: Colors.green,
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold,
                               ),
-                              content: const Text(
-                                  'Your are almost there! Just a few more steps and you will be completely signed up with us.'),
+                              content: Text(
+                                  'Your are almost there! Just a few more steps and you will be completely signed up with us.'
+                                      .tr),
                               actions: [
                                 TextButton(
                                   onPressed: () {
@@ -271,13 +272,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     // );
                                     Get.offAll(const QuestionScreen());
                                   },
-                                  child: const Text('OK'),
+                                  child: Text('OK'.tr),
                                 ),
                               ],
                             );
                           },
                         );
-                                              setState(() {
+                        setState(() {
                           showSpinner = false;
                         });
                       } catch (e) {
@@ -286,16 +287,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         });
                         String errorMessage = '';
                         if (e is FirebaseAuthException) {
-                          if (e.code == 'weak-password') {
-                            errorMessage = 'Cause: Password is too weak.';
-                          } else if (e.code == 'email-already-in-use') {
-                            errorMessage = ' Email is already in use.';
+                          if (e.code == 'weak-password'.tr) {
+                            errorMessage = 'Cause: Password is too weak.'.tr;
+                          } else if (e.code == 'email-already-in-use'.tr) {
+                            errorMessage = 'Email is already in use.'.tr;
                           } else {
-                            errorMessage = ' Emil format not correct';
+                            errorMessage = 'Emil format not correct'.tr;
                           }
                         } else {
                           errorMessage =
-                              ' An error occurred. Please try again later.';
+                              'An error occurred. Please try again later.'.tr;
                         }
                         print('Sign-up error: $errorMessage');
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -307,11 +308,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       }
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
+                        SnackBar(
                           content: Text(
-                            'Something went wrong with the password ! Make sure the conditions are met.',
+                            'Something went wrong with the password ! Make sure the conditions are met.'
+                                .tr,
                           ),
-                          duration: Duration(seconds: 3),
+                          duration: const Duration(seconds: 3),
                         ),
                       );
                     }

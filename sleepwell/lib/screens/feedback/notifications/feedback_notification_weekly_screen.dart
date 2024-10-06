@@ -17,7 +17,10 @@ class _FeedbackNotificationWeeklyScreenState
   final List<Map<String, dynamic>> notifications = [];
   List<PieChartSectionData> pieSectionsWeekly = [];
   List<Color> weeklyColors = [
+    const Color.fromRGBO(54, 244, 101, 1),
     Colors.red,
+    const Color.fromARGB(255, 155, 54, 244),
+    const Color.fromARGB(255, 7, 59, 245),
     Colors.green,
     Colors.blue,
     Colors.yellow
@@ -32,6 +35,9 @@ class _FeedbackNotificationWeeklyScreenState
 
   Future<void> _fetchNotifications() async {
     String? userId = FirebaseAuth.instance.currentUser?.uid;
+    print(":::::::::::::::::::::::::::userId::::::::::::::::;");
+    print(userId);
+    print(":::::::::::::::::::::::::::userId::::::::::::::::;");
     if (userId != null) {
       try {
         QuerySnapshot notificationSnapshot = await FirebaseFirestore.instance

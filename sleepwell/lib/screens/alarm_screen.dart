@@ -1,11 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sleepwell/screens/alarm/alarm_setup_screen.dart';
 import 'dart:core';
-
-import 'settings_screen.dart';
 
 class AlarmScreen extends StatefulWidget {
   const AlarmScreen({super.key});
@@ -21,27 +19,29 @@ class _AlarmScreenState extends State<AlarmScreen> {
   int numOfCycles = 0;
 // final userid = FirebaseFirestore.instance.doc('documentPath');
   // final userids = FirebaseFirestore.instance.collection('Users').doc('userId');
-  String? userid;
-
+  // String? userId;
+  String? userId = FirebaseAuth.instance.currentUser?.uid;
   @override
   void initState() {
     super.initState();
     checkIfAlarmAddedToday();
-    getUserId();
+    // getUserId();
+    print(userId);
   }
 
-  Future<void> getUserId() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      userid = prefs.getString('userid'); // استرجاع الـ userid
-    });
-  }
+  // Future<void> getUserId() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   setState(() {
+  //     userId = prefs.getString('userid'); // استرجاع الـ userid
+  //     print(userId);
+  //   });
+  // }
 
   void checkIfAlarmAddedToday() async {
     try {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('alarms')
-          .where('uid', isEqualTo: userid)
+          .where('uid', isEqualTo: userId)
           .where('added_day', isEqualTo: DateTime.now().day)
           .orderBy('timestamp', descending: true)
           .limit(1)
@@ -68,7 +68,7 @@ class _AlarmScreenState extends State<AlarmScreen> {
       // Query the alarm document to delete
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('alarms')
-          .where('uid', isEqualTo: userid)
+          .where('uid', isEqualTo: userId)
           .where('added_day', isEqualTo: DateTime.now().day)
           .orderBy('timestamp', descending: true)
           .limit(1)
@@ -81,7 +81,7 @@ class _AlarmScreenState extends State<AlarmScreen> {
         // Delete the alarm document
         await FirebaseFirestore.instance
             .collection('alarms')
-            .where('uid', isEqualTo: userid)
+            .where('uid', isEqualTo: userId)
             .get()
             .then((querySnapshot) {
           for (var doc in querySnapshot.docs) {
@@ -211,7 +211,7 @@ class _AlarmScreenState extends State<AlarmScreen> {
                         FloatingActionButton(
                           onPressed: () {
                             print(":::::::::::::::;");
-                            print(userid);
+                            print(userId);
                           },
                           child: const Icon(Icons.ad_units),
                         ),
@@ -249,13 +249,7 @@ class _AlarmScreenState extends State<AlarmScreen> {
                     const SizedBox(height: 50),
                     FloatingActionButton(
                       onPressed: () {
-                        Get.to(() => const AlarmSetupScreen());
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) => const AlarmSetupScreen(),
-                        //   ),
-                        // );
+                        Get.to(const AlarmSetupScreen());
                       },
                       child: const Icon(Icons.add),
                     ),

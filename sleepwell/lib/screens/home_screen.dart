@@ -3,6 +3,7 @@ import 'package:alarm/alarm.dart';
 import 'package:alarm/model/alarm_settings.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:sleepwell/alarm.dart';
 import 'package:sleepwell/screens/alarm_screen.dart';
 
@@ -45,10 +46,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   int index = 2;
   final pages = [
-    SettingsScreen(),
+    const SettingsScreen(),
     const StatisticSleepWellScreen(),
-    AlarmScreen(),
-    BeneficiariesScreen(),
+    const AlarmScreen(),
+    const BeneficiariesScreen(),
   ];
 
   @override
@@ -84,30 +85,32 @@ class _HomeScreenState extends State<HomeScreen> {
             backgroundColor: const Color(0xFF040E3B),
             height: 65,
             shadowColor: Colors.blue,
-            destinations: const [
+            destinations: [
               NavigationDestination(
-                icon: Icon(Icons.person_outlined, color: Colors.white),
-                selectedIcon: Icon(Icons.person, color: Colors.blue),
-                label: 'Profile',
+                icon: const Icon(Icons.person_outlined, color: Colors.white),
+                selectedIcon: const Icon(Icons.person, color: Colors.blue),
+                label: 'Profile'.tr,
               ),
               NavigationDestination(
-                icon: Icon(Icons.align_vertical_bottom_outlined,
+                icon: const Icon(Icons.align_vertical_bottom_outlined,
                     color: Colors.white),
                 selectedIcon:
-                    Icon(Icons.align_vertical_bottom, color: Colors.blue),
-                label: 'Statistic',
+                    const Icon(Icons.align_vertical_bottom, color: Colors.blue),
+                label: 'Statistic'.tr,
               ),
               NavigationDestination(
-                icon: Icon(Icons.access_alarm_outlined, color: Colors.white),
-                selectedIcon: Icon(Icons.access_alarm, color: Colors.blue),
-                label: 'Alarm',
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.dashboard_customize_outlined,
+                icon: const Icon(Icons.access_alarm_outlined,
                     color: Colors.white),
                 selectedIcon:
-                    Icon(Icons.dashboard_customize, color: Colors.blue),
-                label: 'Beneficiaries',
+                    const Icon(Icons.access_alarm, color: Colors.blue),
+                label: 'Alarm'.tr,
+              ),
+              NavigationDestination(
+                icon: const Icon(Icons.dashboard_customize_outlined,
+                    color: Colors.white),
+                selectedIcon:
+                    const Icon(Icons.dashboard_customize, color: Colors.blue),
+                label: 'Beneficiaries'.tr,
               ),
             ],
             labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,

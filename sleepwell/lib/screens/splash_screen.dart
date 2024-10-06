@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
-import 'package:sleepwell/screens/splash%20screen/onboarding_screen.dart';
+import 'package:sleepwell/screens/splash screen/onboarding_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   static String RouteScreen = 'splash_screen';

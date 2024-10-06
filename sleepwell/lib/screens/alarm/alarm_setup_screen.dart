@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -32,19 +33,45 @@ class _AlarmSetupScreenState extends State<AlarmSetupScreen> {
   late DateTime _now;
   late Timer _timer;
 
-  String? userid;
-
+  // late String userId;
+  // final _auth = FirebaseAuth.instance;
+  // late User signInUser;
+  // late String email;
   Future<void> getUserId() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      userid = prefs.getString('userid'); // استرجاع الـ userid
+      userId = prefs.getString('userid'); // استرجاع الـ userid
     });
+  }
+
+  String? userId = FirebaseAuth.instance.currentUser?.uid;
+  // void getCurrentUser() async {
+  //   try {
+  //     final user = _auth.currentUser;
+  //     if (user != null) {
+  //       setState(() {
+  //         signInUser = user;
+  //         userId = user.uid;
+  //         email = user.email!;
+  //       });
+  //       await saveUserIdToPrefs(userId);
+  //     }
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
+
+  Future<void> saveUserIdToPrefs(String userId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('userId', userId);
   }
 
   @override
   void initState() {
     super.initState();
     getUserId();
+    // getCurrentUser();
+    print(userId);
     bedtimeController = TextEditingController();
     wakeUpTimeController = TextEditingController();
     selectedBedtime = TimeOfDay.now();
@@ -180,7 +207,7 @@ class _AlarmSetupScreenState extends State<AlarmSetupScreen> {
       'added_month': DateTime.now().month,
       'added_year': DateTime.now().year,
       'timestamp': FieldValue.serverTimestamp(),
-      'uid': userid,
+      'uid': userId,
     });
     var timestamp = FieldValue.serverTimestamp();
     print("=================================$timestamp");
@@ -264,27 +291,62 @@ class _AlarmSetupScreenState extends State<AlarmSetupScreen> {
     return DateFormat('hh:mm a').format(dateTime);
   }
 
+//   Duration calculateTimeDifference(String optimalWakeUpTime) {
+//     // Current time
+//     DateTime now = DateTime.now();
+
+//     // Parse optimalWakeUpTime
+//     DateTime optimalWakeUpDateTime =
+//         DateFormat('HH:mm').
+// parse(optimalWakeUpTime, false);
+
+//     // Combine date and optimalWakeUpTime
+//     optimalWakeUpDateTime = DateTime(
+//       now.year,
+//       now.month,
+//       now.day,
+//       optimalWakeUpDateTime.hour,
+//       optimalWakeUpDateTime.minute,
+//     );
+
+//     // Calculate difference
+//     Duration difference = optimalWakeUpDateTime.difference(now);
+
+//     return difference;
+//   }
+
   Duration calculateTimeDifference(String optimalWakeUpTime) {
     // Current time
     DateTime now = DateTime.now();
 
-    // Parse optimalWakeUpTime
-    DateTime optimalWakeUpDateTime =
-        DateFormat('hh:mm ').parse(optimalWakeUpTime, false);
+    try {
+      // Parse optimalWakeUpTime with AM/PM
+      DateTime optimalWakeUpDateTime =
+          DateFormat('hh:mm a').parse(optimalWakeUpTime);
 
-    // Combine date and optimalWakeUpTime
-    optimalWakeUpDateTime = DateTime(
-      now.year,
-      now.month,
-      now.day,
-      optimalWakeUpDateTime.hour,
-      optimalWakeUpDateTime.minute,
-    );
+      // Combine date and optimalWakeUpTime
+      optimalWakeUpDateTime = DateTime(
+        now.year,
+        now.month,
+        now.day,
+        optimalWakeUpDateTime.hour,
+        optimalWakeUpDateTime.minute,
+      );
 
-    // Calculate difference
-    Duration difference = optimalWakeUpDateTime.difference(now);
+      // Check if it's AM or PM
+      if (optimalWakeUpDateTime.hour < 12) {
+        print("Optimal wake-up time is in the AM");
+      } else {
+        print("Optimal wake-up time is in the PM");
+      }
 
-    return difference;
+      // Calculate difference
+      Duration difference = optimalWakeUpDateTime.difference(now);
+      return difference;
+    } catch (e) {
+      print("Error parsing time: $e");
+      return Duration.zero; // Return zero duration in case of an error
+    }
   }
 
   void printTimeDifference(String optimalWakeUpTime) {
@@ -446,10 +508,21 @@ class _AlarmSetupScreenState extends State<AlarmSetupScreen> {
     //const color = Color.fromARGB(255, 255, 255, 255);
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 16, 95, 199),
+      appBar: AppBar(
+        title: const Text(
+          'SleepWell Cycle',
+          style: TextStyle(
+            color: Color.fromARGB(255, 255, 255, 255),
+            fontSize: 24,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        iconTheme: const IconThemeData(color: Colors.white),
+        backgroundColor: const Color(0xFF004AAD),
+      ),
       body: Container(
         height: MediaQuery.of(context).size.height,
-        padding: const EdgeInsets.all(30),
+        padding: const EdgeInsets.only(left: 30, bottom: 30, right: 30),
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [Color(0xFF004AAD), Color(0xFF040E3B)],
@@ -462,13 +535,6 @@ class _AlarmSetupScreenState extends State<AlarmSetupScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             SizedBox(height: MediaQuery.of(context).padding.top),
-            const Text(
-              'SleepWell Cycle',
-              style: TextStyle(
-                color: Color.fromARGB(255, 255, 255, 255),
-                fontSize: 20,
-              ),
-            ),
             Row(
               children: [
                 Expanded(
@@ -572,9 +638,9 @@ class _AlarmSetupScreenState extends State<AlarmSetupScreen> {
             ),
             const SizedBox(height: 10),
             Align(
-                alignment: Alignment.center,
-                child: Center(
-                    child: TextButton(
+              alignment: Alignment.center,
+              child: Center(
+                child: TextButton(
                   onPressed: _checkAndSaveTimes,
                   style: ButtonStyle(
                     backgroundColor:
@@ -583,18 +649,10 @@ class _AlarmSetupScreenState extends State<AlarmSetupScreen> {
                         MaterialStateProperty.all<Color>(Colors.white),
                   ),
                   child: const Text('Save'),
-                ))),
-            const SizedBox(height: 20),
-            TextButton(
-              onPressed: () {
-                Get.offAll(const HomeScreen());
-              },
-              child: const Text(
-                "GoTo Alarm Screen",
-                style:
-                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                ),
               ),
             ),
+            const SizedBox(height: 20),
             FloatingActionButton(
               onPressed: () async {
                 DateTime now = DateTime.now();
