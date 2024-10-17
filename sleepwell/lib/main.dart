@@ -1,26 +1,22 @@
-// import 'dart:convert';
 import 'package:alarm/alarm.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sleepwell/controllers/beneficiary_controller.dart';
 import 'package:sleepwell/firebase_options.dart';
 import 'package:sleepwell/screens/home_screen.dart';
 import 'package:sleepwell/screens/splash_screen.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:sleepwell/push_notification_service.dart';
-
 import 'locale/app_translation.dart';
 import 'locale/local_controller.dart';
 
-// Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-//   print("Handling a background message: ${message.messageId}");
-
-//   //call awesomenotification to how theا push notification.
-//   AwesomeNotifications().createNotificationFromJsonData(message.data);
-// }
+// fcm_token
 // too1423too@gmail.com
 late SharedPreferences prefs;
+String? selectedBeneficiaryId;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,11 +26,18 @@ Future<void> main() async {
   // FeedbackNotificationService.sendWeeklyNotification();
   // GetX local storege
   //await GetStorage.init();
-
+  // Get.put(BeneficiaryController());
   prefs = await SharedPreferences.getInstance();
   // initialize  Alarm
   await Alarm.init(showDebugLogs: true);
   runApp(const MainAppScreen());
+}
+
+Future<void> getToken() async {
+  final token = await FirebaseMessaging.instance.getToken();
+  print("=======================================================");
+  print(token);
+  print("=======================================================");
 }
 
 class MainAppScreen extends StatefulWidget {
@@ -49,13 +52,7 @@ class _MainAppScreenState extends State<MainAppScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    // getToken();
-    // runNotificationListening();
-    // if (AppNotifications.isUserSubscribeToPublicNotification == null) {
-    //   AppNotifications.subscribeToPublicNotification();
-    // }
-
-    //  AwesomeNotifications().isNotificationAllowed().then(isAllowed);
+    getToken();
   }
 
   // This widget is the root of your application.

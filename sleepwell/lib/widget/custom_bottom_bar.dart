@@ -4,7 +4,7 @@ import 'package:sleepwell/screens/alarm_screen.dart';
 import 'package:sleepwell/screens/beneficiaries_screen.dart';
 
 import 'package:sleepwell/screens/settings_screen.dart';
-import 'package:sleepwell/screens/statistic/statistic_sleepwell_screen.dart';
+import 'package:sleepwell/screens/statistic/user_statistics_screen.dart';
 
 class CustomBottomBar extends StatefulWidget {
   const CustomBottomBar({super.key});
@@ -25,10 +25,10 @@ class _CustomBottomBarState extends State<CustomBottomBar> {
       Get.offAll(() => SettingsScreen());
       // (index) => setState(() => this.index = index);
     } else if (index == 1) {
-      Get.offAll(() => const StatisticSleepWellScreen());
+      Get.offAll(() => const UserStatisticsScreen());
       // (index) => setState(() => this.index = index);
     } else if (index == 2) {
-      Get.offAll(() => AlarmScreen());
+      Get.offAll(() => const AlarmScreen());
       // (index) => setState(() => this.index = index);
     } else if (index == 3) {
       Get.offAll(() => BeneficiariesScreen());

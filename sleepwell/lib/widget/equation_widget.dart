@@ -2,19 +2,23 @@ import 'dart:async';
 import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sleepwell/models/equation_abstrat_model.dart';
 import 'package:sleepwell/screens/feedback/feedback_page.dart';
 import 'package:sleepwell/models/difficult_equation_model.dart';
 import 'package:sleepwell/models/easy_equation_model.dart';
-import 'package:sleepwell/models/equation_abstrat_model.dart';
-import '../screens/beneficiaries_screen.dart';
+import 'package:sleepwell/screens/home_screen.dart';
+import '../controllers/beneficiary_controller.dart';
 
 class EquationWidget extends StatefulWidget {
   final bool showEasyEquation;
   final int alarmId;
+  final bool isForBeneficiary;
+
   const EquationWidget({
     super.key,
     required this.alarmId,
     this.showEasyEquation = false,
+    required this.isForBeneficiary,
   });
 
   @override
@@ -22,8 +26,8 @@ class EquationWidget extends StatefulWidget {
 }
 
 class _EquationWidgetState extends State<EquationWidget> {
-  bool _showFeedbackDialog = true;
   Timer? _reminderTimer;
+  bool _showFeedbackDialog = true;
 
   @override
   void dispose() {
@@ -36,9 +40,7 @@ class _EquationWidgetState extends State<EquationWidget> {
     EquationModel equationModel = widget.showEasyEquation
         ? EasyEquationModel()
         : DifficultEquationModel();
-
     final width = MediaQuery.of(context).size.width;
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Column(
@@ -76,7 +78,6 @@ class _EquationWidgetState extends State<EquationWidget> {
                 final optionsCount = equationModel.options.length;
                 const margin = 10 * 2;
                 final allOptionsMargin = optionsCount * margin;
-
                 return Container(
                   width: (widthScreen - allOptionsMargin) / optionsCount,
                   margin: const EdgeInsets.symmetric(horizontal: margin / 2),
@@ -85,42 +86,55 @@ class _EquationWidgetState extends State<EquationWidget> {
                     onPressed: () async {
                       if (equationModel.options[index] ==
                           equationModel.result) {
-                        print(":::::::::::::::::: Success chosen");
+                        print("Correct answer");
+
+                        // Stop the alarm
                         await Alarm.stop(widget.alarmId);
-                        final shouldShowFeedbackDialog = await showDialog<bool>(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: const Text('Daily Feedback'),
-                              content: const Text(
-                                  'Do you want to give your feedback now?'),
-                              actions: [
-                                TextButton(
-                                  child: const Text('Remind me later'),
-                                  onPressed: () {
-                                    // Navigator.pop(context, false);
-                                    Get.back(result: false);
-                                    _showFeedbackDialog = false;
-                                    _startReminderTimer();
-                                  },
-                                ),
-                                TextButton(
-                                  child: const Text('Yes'),
-                                  onPressed: () {
-                                    Get.back(result: true);
-                                    Get.to(const FeedbackPage());
-                                  },
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                        if (!(shouldShowFeedbackDialog ?? false)) {
-                          Get.offAll(const BeneficiariesScreen());
+
+                        // If the alarm is for a beneficiary, reset data and navigate to the home screen
+                        if (!widget.isForBeneficiary) {
+                          print("Resetting beneficiary info");
+                          Get.delete<
+                              BeneficiaryController>(); // حذف controller من الذاكرة
+
+                          Get.offAll(() => const HomeScreen());
+                        } else {
+                          // For the main user, show the feedback dialog
+                          final shouldShowFeedbackDialog =
+                              await showDialog<bool>(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text('Daily Feedback'),
+                                content: const Text(
+                                    'Do you want to give your feedback now?'),
+                                actions: [
+                                  TextButton(
+                                    child: const Text('Remind me later'),
+                                    onPressed: () {
+                                      Get.back(result: false);
+                                      _showFeedbackDialog = false;
+                                      _startReminderTimer();
+                                    },
+                                  ),
+                                  TextButton(
+                                    child: const Text('Yes'),
+                                    onPressed: () {
+                                      Get.back(result: true);
+                                      Get.to(() => const FeedbackPage());
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+
+                          if (shouldShowFeedbackDialog ?? false) {
+                            Get.to(() => const FeedbackPage());
+                          }
                         }
                       } else {
-                        print(":::::::::::::::::: Wrong chosen");
-                        setState(() {});
+                        print("Wrong answer");
                       }
                     },
                     child: Text(equationModel.options[index].toString()),
@@ -149,7 +163,6 @@ class _EquationWidgetState extends State<EquationWidget> {
                 TextButton(
                   child: const Text('Remind me later'),
                   onPressed: () {
-                    // Navigator.pop(context);
                     Get.back();
                     _startReminderTimer();
                   },
@@ -157,9 +170,8 @@ class _EquationWidgetState extends State<EquationWidget> {
                 TextButton(
                   child: const Text('Yes'),
                   onPressed: () {
-                    
                     Get.back();
-                    Get.to(const FeedbackPage());
+                    Get.to(() => const FeedbackPage());
                   },
                 ),
               ],

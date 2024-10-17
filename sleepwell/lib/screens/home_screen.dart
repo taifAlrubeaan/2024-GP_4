@@ -8,9 +8,9 @@ import 'package:sleepwell/alarm.dart';
 import 'package:sleepwell/screens/alarm_screen.dart';
 
 import 'package:sleepwell/screens/settings_screen.dart';
+import 'package:sleepwell/screens/statistic/user_statistics_screen.dart';
 import 'beneficiaries_screen.dart';
-import 'statistic/statistic_sleepwell_screen.dart';
-
+ 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -47,9 +47,9 @@ class _HomeScreenState extends State<HomeScreen> {
   int index = 2;
   final pages = [
     const SettingsScreen(),
-    const StatisticSleepWellScreen(),
+    const UserStatisticsScreen(),
     const AlarmScreen(),
-    const BeneficiariesScreen(),
+      BeneficiariesScreen(),
   ];
 
   @override

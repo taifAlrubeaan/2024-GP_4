@@ -24,6 +24,9 @@ class _AlarmScreenState extends State<AlarmScreen> {
   @override
   void initState() {
     super.initState();
+    print('::::::::::::::::::::::::::uid:::::::::::::::::::');
+    print(userId);
+    print('::::::::::::::::::::::::::uid:::::::::::::::::::');
     checkIfAlarmAddedToday();
     // getUserId();
     print(userId);
@@ -42,6 +45,7 @@ class _AlarmScreenState extends State<AlarmScreen> {
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('alarms')
           .where('uid', isEqualTo: userId)
+          .where('isForBeneficiary', isEqualTo: true)
           .where('added_day', isEqualTo: DateTime.now().day)
           .orderBy('timestamp', descending: true)
           .limit(1)
@@ -253,11 +257,46 @@ class _AlarmScreenState extends State<AlarmScreen> {
                       },
                       child: const Icon(Icons.add),
                     ),
+                    // FloatingActionButton(
+                    //   onPressed: () {
+                    //     Get.to(const StatisticScreen());
+                    //   },
+                    //   child: const Text('Statistic'),
+                    // ),
+                    // ElevatedButton(
+                    //   onPressed: () {
+                    //     // Navigator.push(
+                    //     //     context,
+                    //     //     MaterialPageRoute(
+                    //     //         builder: (context) => AddBeneficiaryScreen()));
+                    //     // Get.to(const SensorDataScreen());
+                    //     deleteCollection('alarms').then((_) {
+                    //       print('Collection deleted successfully');
+                    //     }).catchError((error) {
+                    //       print('Error deleting collection: $error');
+                    //     });
+                    //   },
+                    //   child: const Text("SensorDataScreen"),
+                    // ),
                   ],
                 ),
               ),
       ),
       // bottomNavigationBar: CustomBottomBar(),
     );
+  }
+
+  Future<void> deleteCollection(String collectionPath) async {
+    // Reference to the collection
+    CollectionReference collectionRef =
+        FirebaseFirestore.instance.collection(collectionPath);
+
+    // Get all documents in the collection
+    var snapshots = await collectionRef.get();
+
+    // Loop through each document and delete it
+    for (var doc in snapshots.docs) {
+      await doc.reference.delete();
+    }
   }
 }

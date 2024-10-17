@@ -10,8 +10,7 @@ class InfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.only(
-            top: 20.0, left: 20.0, bottom: 16.0, right: 10.0),
+        padding: const EdgeInsets.only(top: 20.0, bottom: 16.0, right: 5.0),
         child: Column(
           children: [
             Text(

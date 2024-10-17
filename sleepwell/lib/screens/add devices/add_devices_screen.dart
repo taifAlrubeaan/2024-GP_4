@@ -124,7 +124,7 @@ class _AddDevicesScreenState extends State<AddDevicesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Devices'),
+        title: const Text('Add Devices'),
       ),
       body: Center(
         child: Column(
@@ -132,10 +132,10 @@ class _AddDevicesScreenState extends State<AddDevicesScreen> {
           children: [
             Text('Heart Rate: $heartRate'),
             Text('SpO2: $spO2'),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: addDevice, // إضافة جهاز جديد
-              child: Text('Add Device'),
+              child: const Text('Add Device'),
             ),
           ],
         ),

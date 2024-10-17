@@ -6,7 +6,6 @@ import 'package:sleepwell/screens/alarm/alarm_setup_screen.dart';
 import 'package:sleepwell/screens/feedback/feedback_page.dart';
 import 'package:sleepwell/screens/feedback/notifications/feedback_notification_daily_screen.dart';
 import 'package:sleepwell/screens/feedback/notifications/feedback_notification_weekly_screen.dart';
-
 import 'screens/home_screen.dart';
 
 class PushNotificationService {
@@ -212,3 +211,211 @@ class PushNotificationService {
     }
   }
 }
+
+// import 'package:firebase_messaging/firebase_messaging.dart';
+// import 'package:get/get.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
+// import 'screens/alarm/alarm_setup_screen.dart';
+// import 'screens/feedback/feedback_page.dart';
+// import 'screens/feedback/notifications/feedback_notification_daily_screen.dart';
+// import 'screens/feedback/notifications/feedback_notification_weekly_screen.dart';
+// import 'screens/home_screen.dart';
+
+// class PushNotificationService {
+//   static final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+
+//   static Future<void> initializeNotifications() async {
+//     // طلب الإذن لتلقي الإشعارات
+//     NotificationSettings settings = await _firebaseMessaging.requestPermission(
+//       alert: true,
+//       badge: true,
+//       sound: true,
+//     );
+
+//     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+//       print("User granted permission");
+
+//       // التعامل مع الإشعارات أثناء تشغيل التطبيق
+//       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+//         print("Received a message while in the foreground!");
+//         _handleMessage(message);
+//       });
+
+//       // التعامل مع الإشعارات عندما يكون التطبيق مغلقاً أو في الخلفية
+//       FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+//         print("Notification clicked!");
+//         _navigateBasedOnPayload(message.data);
+//       });
+//     } else {
+//       print("User declined or has not accepted permission");
+//     }
+//   }
+
+//   static void _handleMessage(RemoteMessage message) {
+//     if (message.notification != null) {
+//       String? title = message.notification!.title;
+//       String? body = message.notification!.body;
+
+//       // عرض الإشعار داخل التطبيق
+//       Get.snackbar(title ?? "Notification", body ?? "You have a new message");
+//     }
+//   }
+
+//   static void _navigateBasedOnPayload(Map<String, dynamic> payload) {
+//     if (payload["navigate"] == true) {
+//       Get.to(AlarmSetupScreen());
+//     } else if (payload["buttonKeyPressed"] == 'FeedBak') {
+//       Get.offAll(const FeedbackPage());
+//     } else if (payload["buttonKeyPressed"] == 'DailyNotification') {
+//       Get.to(const FeedbackNotificationDailyScreen());
+//     } else if (payload["buttonKeyPressed"] == 'WeeklyNotification') {
+//       Get.to(const FeedbackNotificationWeeklyScreen());
+//     } else {
+//       Get.to(const HomeScreen());
+//     }
+//   }
+
+//   // استبدال عرض الإشعار بإرسال الإشعار باستخدام Firebase Cloud Messaging
+//   static Future<void> showNotification({
+//     required final String title,
+//     required final String body,
+//     final Map<String, String>? payload,
+//   }) async {
+//     // لا يمكننا جدولة الإشعارات المحلية باستخدام FCM بدون خادم (نحتاج Firebase Functions أو أي خدمة خادم).
+//     // بدلاً من ذلك، نرسل إشعارًا باستخدام موضوع FCM.
+//     await _firebaseMessaging.subscribeToTopic('notifications');
+//   }
+
+//   static Future<void> sendNotificationWithReasonsAndRecommendations({
+//     required final String title,
+//     required final List<String> reasons,
+//     required final List<String> recommendations,
+//     final Map<String, String>? payload,
+//   }) async {
+//     // تنسيق الأسباب والنصائح
+//     String reasonsText = reasons.isNotEmpty
+//         ? "\nYour sleep was not good, it could be due to the following reasons:\n${reasons.map((reason) => "- $reason").join("\n")}"
+//         : '';
+
+//     String recommendationsText = recommendations.isNotEmpty
+//         ? "\nHere are some tips to consider for better sleep:\n${recommendations.map((recommendation) => "- $recommendation").join("\n")}"
+//         : '';
+
+//     // دمج النصوص لعرضها داخل الإشعار
+//     String completeBody = reasonsText + recommendationsText;
+
+//     // إرسال إشعار محلي باستخدام Firebase Cloud Messaging
+//     await _firebaseMessaging.subscribeToTopic('notifications');
+//   }
+
+//   static Future<void> scheduleBedtimeNotification() async {
+//     final prefs = await SharedPreferences.getInstance();
+//     final int? hour = prefs.getInt('bedtime_hour');
+//     final int? minute = prefs.getInt('bedtime_minute');
+//     if (hour != null && minute != null) {
+//       final now = DateTime.now();
+//       final bedtime = DateTime(now.year, now.month, now.day, hour, minute);
+//       final interval = bedtime.difference(now).inSeconds;
+
+//       // إرسال إشعار للتذكير بوقت النوم (يمكنك إرسال رسالة إلى FCM إذا كنت تريد إشعاراً في وقت محدد)
+//       await showNotification(
+//         title: 'Bed Time Reminder',
+//         body: 'It\'s time to go to bed',
+//         payload: {"navigate": "AlarmSetupScreen"},
+//       );
+//     }
+//   }
+// }
+
+// import 'package:flutter/material.dart';
+// import 'package:firebase_messaging/firebase_messaging.dart';
+// import 'package:get/get.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
+// import 'screens/alarm/alarm_setup_screen.dart';
+// import 'screens/feedback/feedback_page.dart';
+// import 'screens/feedback/notifications/feedback_notification_daily_screen.dart';
+// import 'screens/feedback/notifications/feedback_notification_weekly_screen.dart';
+// import 'screens/home_screen.dart';
+
+// class PushNotificationService {
+
+//   static final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+
+//   static Future<void> initializeNotifications() async {
+//     // طلب الإذن لتلقي الإشعارات
+//     NotificationSettings settings = await _firebaseMessaging.requestPermission(
+//       alert: true,
+//       badge: true,
+//       sound: true,
+//     );
+
+//     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+//       print("User granted permission");
+
+//       // التعامل مع الإشعارات أثناء تشغيل التطبيق
+//       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+//         print("Received a message while in the foreground!");
+//         _handleMessage(message);
+//       });
+
+//       // التعامل مع الإشعارات عندما يكون التطبيق مغلقاً أو في الخلفية
+//       FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+//         print("Notification clicked!");
+//         _navigateBasedOnPayload(message.data);
+//       });
+//     } else {
+//       print("User declined or has not accepted permission");
+//     }
+//   }
+
+//   static void _handleMessage(RemoteMessage message) {
+//     if (message.notification != null) {
+//       String? title = message.notification!.title;
+//       String? body = message.notification!.body;
+
+//       // عرض الإشعار داخل التطبيق
+//       Get.snackbar(title ?? "Notification", body ?? "You have a new message");
+//     }
+//   }
+
+//   static void _navigateBasedOnPayload(Map<String, dynamic> payload) {
+//     if (payload["navigate"] == true) {
+//       Get.to(AlarmSetupScreen());
+//     } else if (payload["buttonKeyPressed"] == 'FeedBak') {
+//       Get.offAll(const FeedbackPage());
+//     } else if (payload["buttonKeyPressed"] == 'DailyNotification') {
+//       Get.to(const FeedbackNotificationDailyScreen());
+//     } else if (payload["buttonKeyPressed"] == 'WeeklyNotification') {
+//       Get.to(const FeedbackNotificationWeeklyScreen());
+//     } else {
+//       Get.to(const HomeScreen());
+//     }
+//   }
+
+//   static Future<void> showNotification({
+//     required final String title,
+//     required final String body,
+//     final Map<String, String>? payload,
+//   }) async {
+//     // إرسال إشعار محلي باستخدام Firebase Cloud Messaging
+//     await _firebaseMessaging.subscribeToTopic('notifications'); // يمكنك تخصيصه حسب الحاجة
+//   }
+
+//   static Future<void> scheduleBedtimeNotification() async {
+//     final prefs = await SharedPreferences.getInstance();
+//     final int? hour = prefs.getInt('bedtime_hour');
+//     final int? minute = prefs.getInt('bedtime_minute');
+//     if (hour != null && minute != null) {
+//       final now = DateTime.now();
+//       final bedtime = DateTime(now.year, now.month, now.day, hour, minute);
+//       final interval = bedtime.difference(now).inSeconds;
+
+//       // إرسال إشعار للتذكير بوقت النوم (يمكنك إرسال رسالة إلى FCM إذا كنت تريد إشعاراً في وقت محدد)
+//       await showNotification(
+//         title: 'Bed Time Reminder',
+//         body: 'It\'s time to go to bed',
+//         payload: {"navigate": "AlarmSetupScreen"},
+//       );
+//     }
+//   }
+// }

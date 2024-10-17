@@ -245,7 +245,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     }
                   },
                 ),
-                const SizedBox(height: 10),
+                      const SizedBox(height: 10),
                 TextButton(
                   onPressed: () {
                     Get.to(() => ResetPasswordScreen());
@@ -254,7 +254,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     'Forget Password?'.tr,
                     style: const TextStyle(
                       fontSize: 20,
-                      fontWeight: FontWeight.bold,
+                                    fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
                   ),
