@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sleepwell/screens/alarm/alarm_setup_screen.dart';
 import 'package:sleepwell/screens/feedback/feedback_page.dart';
 import 'package:sleepwell/screens/feedback/notifications/feedback_notification_daily_screen.dart';
 import 'package:sleepwell/screens/feedback/notifications/feedback_notification_weekly_screen.dart';
+import 'screens/alarm/SleepWellCycleScreen/sleepwell_cycle_screen.dart';
 import 'screens/home_screen.dart';
 
 class PushNotificationService {
@@ -56,7 +56,7 @@ class PushNotificationService {
     // debugPrint('onActionReceivedMethod');
     final payload = receivedAction.payload ?? {};
     if (payload["navigate"] == true) {
-      Get.to(AlarmSetupScreen());
+      Get.to(SleepWellCycleScreen());
     }
     if (receivedAction.buttonKeyPressed == 'FeedBak') {
       Get.offAll(const FeedbackPage());

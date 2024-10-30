@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import 'package:sleepwell/screens/statistic/beneficiary_statistics_screen.dart';
 import '../controllers/beneficiary_controller.dart';
+import 'settings/sensor_setting_screen.dart';
 
 class BeneficiariesScreen extends StatelessWidget {
   final BeneficiaryController beneficiaryController =
@@ -121,6 +122,7 @@ class BeneficiariesScreen extends StatelessWidget {
                     ElevatedButton(
                       onPressed: () {
                         showAddBeneficiaryDialog(context);
+                        // Get.to(SensorSettingScreen());
                       },
                       child: const Icon(Icons.add),
                     ),
@@ -137,29 +139,45 @@ class BeneficiariesScreen extends StatelessWidget {
 
   void showAddBeneficiaryDialog(BuildContext context) {
     final nameController = TextEditingController();
-    final watchController = TextEditingController();
+    // final watchController = TextEditingController();
+
     Get.dialog(
       AlertDialog(
         title: const Text('Add New Beneficiary'),
-        content: Column(
-          children: [
-            TextField(
-                controller: nameController,
-                decoration:
-                    const InputDecoration(labelText: 'Beneficiary Name')),
-            TextField(
-                controller: watchController,
-                decoration: const InputDecoration(labelText: 'Watch')),
-          ],
+        content: SingleChildScrollView(
+          child: SizedBox(
+            height: 150, // Adjust height as needed
+            child: Column(
+              mainAxisSize:
+                  MainAxisSize.min, // Ensures column takes minimal space
+              children: [
+                TextField(
+                  controller: nameController,
+                  decoration:
+                      const InputDecoration(labelText: 'Beneficiary Name'),
+                ),
+                // const TextField(
+                //   // controller: watchController,
+                //   decoration: InputDecoration(labelText: 'Watch'),
+                // ),
+              ],
+            ),
+          ),
         ),
         actions: [
-          TextButton(onPressed: () => Get.back(), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () => Get.back(),
+            child: const Text('Cancel'),
+          ),
           ElevatedButton(
             onPressed: () {
-              if (nameController.text.isNotEmpty &&
-                  watchController.text.isNotEmpty) {
+              if (nameController.text.isNotEmpty
+                  //&& watchController.text.isNotEmpty
+                  ) {
                 Get.find<BeneficiaryController>()
-                    .addBeneficiary(nameController.text, watchController.text);
+                    .addBeneficiary(nameController.text
+                        //  watchController.text
+                        );
                 Get.back();
               } else {
                 Get.snackbar('Warning', 'Please fill all fields');

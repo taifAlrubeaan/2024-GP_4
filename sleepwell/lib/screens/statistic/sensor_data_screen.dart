@@ -11,6 +11,10 @@ class SensorDataScreen extends StatefulWidget {
 class _SensorDataScreenState extends State<SensorDataScreen> {
   final DatabaseReference _database =
       FirebaseDatabase.instance.ref().child('data');
+  // final DatabaseReference sensorsDatabase =
+  //     FirebaseDatabase.instance.ref().child('sensors');
+  // final DatabaseReference usersSensors =
+  //     FirebaseDatabase.instance.ref().child('usersSensors');
   double heartRate = 0;
   double spO2 = 0;
   double temperature = 0;

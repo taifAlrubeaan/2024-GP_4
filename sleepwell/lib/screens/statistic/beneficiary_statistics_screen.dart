@@ -9,10 +9,11 @@ import 'package:sleepwell/widget/statistic_monthly_widget.dart';
 
 import '../../controllers/alarms_controller.dart';
 import '../../controllers/beneficiary_controller.dart';
+
 import '../../models/alarm_model.dart';
 import '../../widget/statistic_daily_widget.dart';
 import '../../widget/statistic_weekly_widget.dart';
-import '../alarm/alarm_setup_screen.dart';
+import '../alarm/SleepWellCycleScreen/sleepwell_cycle_screen.dart';
 
 class BeneficiaryStatisticsScreen extends StatefulWidget {
   // final String beneficiaryId;
@@ -102,7 +103,7 @@ class _BeneficiaryStatisticsScreenState
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => AlarmSetupScreen(),
+                      builder: (context) => SleepWellCycleScreen(),
                     ),
                   );
                 }
@@ -184,9 +185,28 @@ class _BeneficiaryStatisticsScreenState
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => AlarmSetupScreen(),
+                                    builder: (context) =>
+                                        SleepWellCycleScreen(),
                                   ),
                                 );
+                                // final DeviceController controllerDevice =
+                                //     Get.put(DeviceController());
+                                // if (!isForBeneficiary!) {
+                                //   BottomSheetWidget.showDeviceBottomSheet(
+                                //     context,
+                                //     controllerDevice,
+                                //     'Available Devices For $beneficiaryName ',
+                                //     isForBeneficiary: true,
+                                //     beneficiaryId:
+                                //         beneficiaryId.value, // معرف المستفيد
+                                //   );
+                                // } else {
+                                //   BottomSheetWidget.showDeviceBottomSheet(
+                                //     context,
+                                //     controllerDevice,
+                                //     'Available Devices For  Your Self',
+                                //   );
+                                // }
                               },
                               style: ElevatedButton.styleFrom(
                                 padding: const EdgeInsets.symmetric(
@@ -383,34 +403,45 @@ class _BeneficiaryStatisticsScreenState
                     double chartMaxYMonth = maxSleepHours + 15;
 
                     for (var alarm in alarms) {
-                      String bedtimeString = alarm.bedtime;
-                      String wakeupTimeString = alarm.wakeupTime;
-                      String cyclesString = alarm.numOfCycles;
+                      try {
+                        String bedtimeString = alarm.bedtime ?? '';
+                        String wakeupTimeString = alarm.wakeupTime ?? '';
+                        String cyclesString = alarm.numOfCycles ?? '0';
 
-                      // Parse times with AM/PM format
-                      DateTime bedtime =
-                          DateFormat('hh:mm a').parse(bedtimeString);
-                      DateTime wakeupTime =
-                          DateFormat('hh:mm a').parse(wakeupTimeString);
+                        // تأكد من أن الحقلين bedtime و wakeupTime ليسا فارغين
+                        if (bedtimeString.isNotEmpty &&
+                            wakeupTimeString.isNotEmpty) {
+                          // Parse times with AM/PM format
+                          DateTime bedtime =
+                              DateFormat('hh:mm a').parse(bedtimeString);
+                          DateTime wakeupTime =
+                              DateFormat('hh:mm a').parse(wakeupTimeString);
 
-                      if (wakeupTime.isBefore(bedtime)) {
-                        wakeupTime = wakeupTime.add(const Duration(days: 1));
-                      }
+                          if (wakeupTime.isBefore(bedtime)) {
+                            wakeupTime =
+                                wakeupTime.add(const Duration(days: 1));
+                          }
 
-                      double sleepDuration =
-                          wakeupTime.difference(bedtime).inHours.toDouble();
-                      int cycles = int.tryParse(cyclesString) ?? 0;
+                          double sleepDuration =
+                              wakeupTime.difference(bedtime).inHours.toDouble();
+                          int cycles = int.tryParse(cyclesString) ?? 0;
 
-                      sleepHoursMonth.add(sleepDuration);
-                      sleepCyclesMonth.add(cycles.toDouble());
+                          sleepHoursMonth.add(sleepDuration);
+                          sleepCyclesMonth.add(cycles.toDouble());
 
-                      // Calculate weekly data
-                      int weekIndex = ((alarm.timestamp.day - 1) / 7).floor();
-                      if (weekIndex < 4) {
-                        weeklySleepCycles[weekIndex] += cycles.toDouble();
-                        weeklySleepHours[weekIndex].add(sleepDuration);
+                          // Calculate weekly data
+                          int weekIndex =
+                              ((alarm.timestamp.day - 1) / 7).floor();
+                          if (weekIndex < 4) {
+                            weeklySleepCycles[weekIndex] += cycles.toDouble();
+                            weeklySleepHours[weekIndex].add(sleepDuration);
+                          }
+                        }
+                      } catch (e) {
+                        print("Error parsing time or date: $e");
                       }
                     }
+
                     // حساب متوسط ساعات النوم لكل أسبوع
                     List<double> averageWeeklySleepHours =
                         weeklySleepHours.map((hours) {

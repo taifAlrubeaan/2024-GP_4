@@ -1,20 +1,16 @@
-import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:get/get.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../../controllers/alarms_controller.dart';
-import '../../models/alarm_model.dart';
-import '../../widget/indicator.dart';
+import 'package:sleepwell/screens/alarm/SleepWellCycleScreen/sleepwell_cycle_screen.dart';
+
 import '../../widget/info_card.dart';
-import '../alarm/alarm_setup_screen.dart';
 
 class BeneficiaryDetailsScreen extends StatefulWidget {
   final String beneficiaryId;
 
-  const BeneficiaryDetailsScreen({Key? key, required this.beneficiaryId})
-      : super(key: key);
+  const BeneficiaryDetailsScreen({super.key, required this.beneficiaryId});
 
   @override
   State<BeneficiaryDetailsScreen> createState() =>
@@ -221,7 +217,7 @@ class _BeneficiaryDetailsScreenState extends State<BeneficiaryDetailsScreen> {
     return formattedDates;
   }
 
-  int _selectedIndex = 0;
+  final int _selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
     double maxweekSleepHours = sleepHours.isNotEmpty
@@ -385,7 +381,8 @@ class _BeneficiaryDetailsScreenState extends State<BeneficiaryDetailsScreen> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => const AlarmSetupScreen(),
+                                      builder: (context) =>
+                                          SleepWellCycleScreen(),
                                     ),
                                   );
                                 },
@@ -431,8 +428,7 @@ class _BeneficiaryDetailsScreenState extends State<BeneficiaryDetailsScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      const AlarmSetupScreen(),
+                                  builder: (context) => SleepWellCycleScreen(),
                                 ),
                               );
                             },

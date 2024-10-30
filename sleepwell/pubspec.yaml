@@ -60,7 +60,7 @@ dependencies:
   connectivity_plus: ^6.0.3
   rxdart: ^0.28.0
   # firebase_messaging: ^14.9.4
-  # flutter_local_notifications: ^17.2.1
+  flutter_local_notifications: ^17.2.1
   google_sign_in: ^6.2.1
   firebase_analytics: ^10.10.7
   # awesome_notifications: ^0.9.3+1
@@ -69,6 +69,10 @@ dependencies:
   firebase_core: ^2.32.0
   firebase_messaging: ^14.9.4
   awesome_notifications: ^0.9.3+1
+  googleapis: ^13.1.0
+  googleapis_auth: ^1.6.0
+  # googleapis_auth:
+  # googleapis:
   # tflite_flutter: ^0.10.4
   # awesome_notifications:
 

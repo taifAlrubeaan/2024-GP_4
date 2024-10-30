@@ -2,8 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:sleepwell/screens/alarm/alarm_setup_screen.dart';
+
 import 'dart:core';
+
+import 'alarm/SleepWellCycleScreen/sleepwell_cycle_screen.dart';
 
 class AlarmScreen extends StatefulWidget {
   const AlarmScreen({super.key});
@@ -31,14 +33,6 @@ class _AlarmScreenState extends State<AlarmScreen> {
     // getUserId();
     print(userId);
   }
-
-  // Future<void> getUserId() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   setState(() {
-  //     userId = prefs.getString('userid'); // استرجاع الـ userid
-  //     print(userId);
-  //   });
-  // }
 
   void checkIfAlarmAddedToday() async {
     try {
@@ -117,6 +111,9 @@ class _AlarmScreenState extends State<AlarmScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -127,22 +124,12 @@ class _AlarmScreenState extends State<AlarmScreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        // actions: [
-        //   IconButton(
-        //     onPressed: () {
-        //       Get.to(() => const SettingsScreen());
-        //     },
-        //     icon: Icon(
-        //       Icons.settings,
-        //       color: Colors.grey[300],
-        //     ),
-        //   ),
-        // ],
         backgroundColor: const Color(0xFF004AAD),
       ),
       body: Container(
-        height: MediaQuery.of(context).size.height,
-        padding: const EdgeInsets.all(30),
+        height: screenHeight,
+        width: screenWidth, // Make the container responsive
+        padding: EdgeInsets.all(screenHeight * 0.03), // Responsive padding
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [Color(0xFF004AAD), Color(0xFF040E3B)],
@@ -151,78 +138,96 @@ class _AlarmScreenState extends State<AlarmScreen> {
           ),
         ),
         child: isAlarmAdded
-            ? Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  const Text(
-                    'Alarm has been Scheduled',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
+            ? Dismissible(
+                key: UniqueKey(),
+                direction: DismissDirection.endToStart,
+                background: Container(
+                  alignment: Alignment.centerRight,
+                  padding: EdgeInsets.only(right: 20),
+                  color: Colors.red,
+                  child: const Icon(Icons.delete, color: Colors.white),
+                ),
+                onDismissed: (direction) {
+                  deleteAlarm();
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text('Alarm deleted successfully'),
+                  ));
+                },
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    const Text(
+                      'Alarm has been Scheduled',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 150,
-                  ),
-                  Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          'Actual sleep time is: $printedBedtime',
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 17,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Text(
-                          'Optimal wake-up time is: $printedWakeUpTime',
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 17,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Text(
-                          'You slept for $numOfCycles ${numOfCycles == 1 ? 'sleep cycle' : 'sleep cycles'}',
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 17,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        const Text(
-                          "Go to profile page to edit alarm settings",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        const SizedBox(height: 10),
-                        ElevatedButton(
-                          onPressed: () {
-                            // Call the delete alarm function
-                            deleteAlarm();
-                          },
-                          child: const Text('Delete Alarm'),
-                        ),
-                        FloatingActionButton(
-                          onPressed: () {
-                            print(":::::::::::::::;");
-                            print(userId);
-                          },
-                          child: const Icon(Icons.ad_units),
-                        ),
-                      ],
+                    SizedBox(
+                      height: screenHeight * 0.2, // Replace fixed height
                     ),
-                  ),
-                ],
+                    Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            'Actual sleep time is: $printedBedtime',
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(
+                              height:
+                                  screenHeight * 0.02), // Responsive spacing
+                          Text(
+                            'Optimal wake-up time is: $printedWakeUpTime',
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: screenHeight * 0.02),
+                          Text(
+                            'You slept for $numOfCycles ${numOfCycles == 1 ? 'sleep cycle' : 'sleep cycles'}',
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: screenHeight * 0.03),
+                          const Text(
+                            "Go to profile page to edit alarm settings",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          SizedBox(height: screenHeight * 0.02),
+                          ElevatedButton(
+                            onPressed: () {
+                              // Call the delete alarm function
+                              deleteAlarm();
+                            },
+                            child: const Text('Delete Alarm'),
+                          ),
+                          // FloatingActionButton(
+                          //   onPressed: () {
+                          //     print(":::::::::::::::;");
+                          //     print(userId);
+                          //   },
+                          //   child: const Icon(Icons.ad_units),
+                          // ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               )
             : Center(
                 child: Column(
@@ -233,7 +238,7 @@ class _AlarmScreenState extends State<AlarmScreen> {
                       size: 100,
                       color: Colors.black,
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: screenHeight * 0.03),
                     const Text(
                       'No alarm created',
                       style: TextStyle(
@@ -241,7 +246,7 @@ class _AlarmScreenState extends State<AlarmScreen> {
                         color: Colors.green,
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    SizedBox(height: screenHeight * 0.02),
                     const Text(
                       'No created alarm. Create a new alarm \nby tapping the + button',
                       textAlign: TextAlign.center,
@@ -250,39 +255,17 @@ class _AlarmScreenState extends State<AlarmScreen> {
                         color: Colors.white,
                       ),
                     ),
-                    const SizedBox(height: 50),
+                    SizedBox(height: screenHeight * 0.05),
                     FloatingActionButton(
                       onPressed: () {
-                        Get.to(const AlarmSetupScreen());
+                        Get.to(SleepWellCycleScreen());
                       },
                       child: const Icon(Icons.add),
                     ),
-                    // FloatingActionButton(
-                    //   onPressed: () {
-                    //     Get.to(const StatisticScreen());
-                    //   },
-                    //   child: const Text('Statistic'),
-                    // ),
-                    // ElevatedButton(
-                    //   onPressed: () {
-                    //     // Navigator.push(
-                    //     //     context,
-                    //     //     MaterialPageRoute(
-                    //     //         builder: (context) => AddBeneficiaryScreen()));
-                    //     // Get.to(const SensorDataScreen());
-                    //     deleteCollection('alarms').then((_) {
-                    //       print('Collection deleted successfully');
-                    //     }).catchError((error) {
-                    //       print('Error deleting collection: $error');
-                    //     });
-                    //   },
-                    //   child: const Text("SensorDataScreen"),
-                    // ),
                   ],
                 ),
               ),
       ),
-      // bottomNavigationBar: CustomBottomBar(),
     );
   }
 
@@ -300,3 +283,6 @@ class _AlarmScreenState extends State<AlarmScreen> {
     }
   }
 }
+// 10:20
+// 11:50
+// 6

@@ -1,10 +1,9 @@
- 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
 class AlarmModelData {
-  final String bedtime;
-  final String wakeupTime;
+  var bedtime;
+  var wakeupTime;
   final String numOfCycles;
   final DateTime timestamp;
   final bool isForBeneficiary;
@@ -19,6 +18,7 @@ class AlarmModelData {
 
   // تحويل البيانات من Firestore DocumentSnapshot إلى Alarm object
   factory AlarmModelData.fromFirestore(Map<String, dynamic> data) {
+    print(data);
     return AlarmModelData(
       bedtime: data['bedtime'],
       wakeupTime: data['wakeup_time'],
@@ -35,25 +35,31 @@ class AlarmModelData {
   //   return wakeTime.difference(sleepTime);
   // }
   Duration get sleepDuration {
-    // Assuming a default date for both times (like '1970-01-01')
-    DateFormat timeFormat = DateFormat('h:mm a');
+    try {
+      // استخراج الوقت فقط من `bedtime` و `wakeupTime`
+      DateFormat fullDateTimeFormat = DateFormat('yyyy-MM-dd HH:mm:ss.SSS');
+      DateFormat timeOnlyFormat = DateFormat('h:mm a');
 
-    // Parsing the times into DateTime objects with a default date
-    final sleepTime = timeFormat.parse(bedtime); // Example: '4:30 AM'
-    final wakeTime = timeFormat.parse(wakeupTime); // Example: '6:30 AM'
+      // تحويل `bedtime` و `wakeupTime` إلى `DateTime` وقراءة الوقت فقط
+      DateTime sleepDateTime = fullDateTimeFormat.parse(bedtime);
+      DateTime wakeDateTime = fullDateTimeFormat.parse(wakeupTime);
 
-    // Set a default date to compare times
-    DateTime sleepDateTime =
-        DateTime(1970, 1, 1, sleepTime.hour, sleepTime.minute);
-    DateTime wakeDateTime =
-        DateTime(1970, 1, 1, wakeTime.hour, wakeTime.minute);
+      // تحويل التاريخ إلى صيغة الوقت فقط، باستخدام تاريخ افتراضي
+      DateTime sleepTime =
+          DateTime(1970, 1, 1, sleepDateTime.hour, sleepDateTime.minute);
+      DateTime wakeTime =
+          DateTime(1970, 1, 1, wakeDateTime.hour, wakeDateTime.minute);
 
-    // If wakeup time is before sleep time, assume it is the next day
-    if (wakeDateTime.isBefore(sleepDateTime)) {
-      wakeDateTime = wakeDateTime.add(const Duration(days: 1));
+      // إذا كان وقت الاستيقاظ قبل وقت النوم، نعتبره في اليوم التالي
+      if (wakeTime.isBefore(sleepTime)) {
+        wakeTime = wakeTime.add(const Duration(days: 1));
+      }
+
+      return wakeTime.difference(sleepTime);
+    } catch (e) {
+      print('Error parsing sleep duration: $e');
+      return Duration.zero; // إرجاع صفر في حال حدوث خطأ
     }
-
-    return wakeDateTime.difference(sleepDateTime);
   }
 
   // الحصول على دورات النوم كرقم بدلاً من String

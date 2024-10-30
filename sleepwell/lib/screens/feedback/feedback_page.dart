@@ -152,7 +152,6 @@ class _FeedbackPageState extends State<FeedbackPage> {
       await PushNotificationService.showNotification(
         title: 'Sleep Well Quality',
         body: notificationMessage,
-        
         schedule: true,
         interval: 60,
         actionButtons: [

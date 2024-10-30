@@ -1,47 +1,60 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:alarm/alarm.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sleepwell/models/alarm_data.dart';
+
 import 'package:sleepwell/models/list_of_music.dart';
 import 'package:sleepwell/screens/alarm/alarm_ring_screen.dart';
 import 'package:sleepwell/screens/alarm/alarm_ring_with_equation_screen.dart';
-
-import 'controllers/beneficiary_controller.dart';
-import 'main.dart';
 
 class AppAlarm {
   static StreamSubscription<AlarmSettings>? subscription;
   static String _selectedSoundPath = musicList[0].musicPath;
   static String _selectedMission = 'Default';
   static String _selectedMath = 'easy';
+  static late AlarmData alarmsData;
 
+  // Initialize alarms and check permissions
   static Future<void> initAlarms() async {
     if (Alarm.android) {
-      checkAndroidNotificationPermission();
-      checkAndroidScheduleExactAlarmPermission();
+      await checkAndroidNotificationPermission();
+      await checkAndroidScheduleExactAlarmPermission();
     }
 
     final prefs = await SharedPreferences.getInstance();
     _loadSettings(prefs);
-    subscription ??= Alarm.ringStream.stream.listen(
-      (alarmSettings) {
-        // beneficiaryId = selectedBeneficiaryId!;
-        if (_selectedMission == "Default") {
-          Get.to(() => AlarmRingScreen(alarmSettings: alarmSettings));
-        } else {
-          Get.to(() => AlarmRingWithEquationScreen(
-                alarmSettings: alarmSettings,
-                showEasyEquation: _selectedMath == "easy",
-              ));
-        }
-      },
-    );
+    String? jsonData = prefs.getString("alarms");
+    if (jsonData != null) {
+      Map<String, dynamic> rawData = jsonDecode(jsonData);
+      alarmsData = AlarmData.fromJson(rawData);
+      // rawData.map((key, value) => MapEntry(key, AlarmData.fromJson(value)));
+    }
+
+    subscription ??= Alarm.ringStream.stream.listen((alarmSettings) {
+      log("Alarm triggered for: ${alarmSettings.id}");
+      if (_selectedMission == "Default") {
+        Get.to(
+            () => AlarmRingScreen(
+                  alarmSettings: alarmSettings,
+                  alarmsData: alarmsData,
+                ),
+            arguments: alarmsData);
+      } else {
+        Get.to(
+            () => AlarmRingWithEquationScreen(
+                  alarmSettings: alarmSettings,
+                  showEasyEquation: _selectedMath == "easy",
+                  alarmsData: alarmsData,
+                ),
+            arguments: alarmsData);
+      }
+    });
   }
 
   static void _loadSettings(SharedPreferences prefs) {
@@ -51,34 +64,23 @@ class AppAlarm {
     _selectedMath = prefs.getString("selectedMath") ?? "easy";
   }
 
+  // Request permissions for Android notifications
   static Future<void> checkAndroidNotificationPermission() async {
-    final status = await Permission.notification.status;
-    if (status.isDenied) {
-      alarmPrint('Requesting notification permission...');
-      final res = await Permission.notification.request();
-      alarmPrint(
-        'Notification permission ${res.isGranted ? '' : 'not '}granted.',
-      );
+    if (await Permission.notification.isDenied) {
+      await Permission.notification.request();
     }
   }
 
+  // Request permissions for exact alarm scheduling
   static Future<void> checkAndroidScheduleExactAlarmPermission() async {
-    final status = await Permission.scheduleExactAlarm.status;
-    alarmPrint('Schedule exact alarm permission: $status.');
-    if (status.isDenied) {
-      alarmPrint('Requesting schedule exact alarm permission...');
-      final res = await Permission.scheduleExactAlarm.request();
-      alarmPrint(
-        'Schedule exact alarm permission ${res.isGranted ? '' : 'not'} granted.',
-      );
+    if (await Permission.scheduleExactAlarm.isDenied) {
+      await Permission.scheduleExactAlarm.request();
     }
   }
 
   static AlarmSettings buildAlarmSettings(DateTime date) {
-    // final id = DateTime.now().millisecondsSinceEpoch % 100000;
-    print(_selectedSoundPath);
     const id = 1000;
-    final alarmSettings = AlarmSettings(
+    return AlarmSettings(
       id: id,
       dateTime: date,
       loopAudio: true,
@@ -88,57 +90,46 @@ class AppAlarm {
       notificationTitle: 'Alarm',
       notificationBody: 'Optimal time to WAKE UP',
     );
-    return alarmSettings;
   }
 
-  final BeneficiaryController controller = Get.find();
-  late RxString beneficiaryId = ''.obs;
-  String? selectedBeneficiaryId;
-  bool? isForBeneficiary = true;
+  // Save a new or updated alarm
+  static Future<void> saveAlarm({
+    required String userId,
+    required String bedtime,
+    required String optimalWakeTime,
+    required String name,
+    bool usertype = false,
+    required String sensorId,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
 
-  static Future<void> saveAlarm(
-    TimeOfDay bedtime,
-    String optimalWakeTime,
-    String beneficiaryId, // نقبل null إذا كان المنبه للمستخدم نفسه
-  ) async {
-    // تحديد تاريخ ووقت النوم
-    DateTime bedtimeDate = DateFormat("yyyy-MM-dd hh:mm a").parse(
-      "${DateTime.now().toString().split(' ')[0]} ${bedtime.format(Get.context!)}",
+    // Update alarm data for the user
+    alarmsData = AlarmData(
+      userId: userId,
+      bedtime: bedtime,
+      optimalWakeTime: optimalWakeTime,
+      name: name,
+      usertype: usertype,
+      sensorId: sensorId,
     );
 
-    // تحديد تاريخ ووقت الاستيقاظ المثالي
-    DateTime optimalWakeUpDate = DateFormat("yyyy-MM-dd hh:mm a").parse(
-      "${DateTime.now().toString().split(' ')[0]} $optimalWakeTime",
-    );
+    // Save the updated alarms data back to shared preferences
+    await prefs.setString("alarms", jsonEncode(alarmsData.toJson()));
 
-    // تعديل تاريخ الاستيقاظ ليكون في اليوم التالي إذا كان وقت الاستيقاظ قبل وقت النوم
+    DateTime now = DateTime.now();
+    DateTime bedtimeDate = DateFormat("HH:mm").parse(bedtime);
+    bedtimeDate = DateTime(
+        now.year, now.month, now.day, bedtimeDate.hour, bedtimeDate.minute);
+
+    DateTime optimalWakeUpDate = DateFormat("yyyy-MM-dd hh:mm a")
+        .parse("${DateTime.now().toString().split(' ')[0]} $optimalWakeTime");
+
     if (optimalWakeUpDate.isBefore(bedtimeDate)) {
       optimalWakeUpDate = optimalWakeUpDate.add(const Duration(days: 1));
     }
 
-    // إعداد المنبه باستخدام إعدادات التنبيه
     final alarmSettings = buildAlarmSettings(optimalWakeUpDate);
     await Alarm.set(alarmSettings: alarmSettings);
-
-    // التوجيه إلى شاشة رنين المنبه بناءً على المستفيد أو المستخدم
-    Get.to(() => AlarmRingScreen(
-          alarmSettings: alarmSettings,
-          // beneficiaryId: isForBeneficiary
-          //     ? beneficiaryId
-          //     : null, // تمرير معرف المستفيد أو null
-        ));
-
-    // طباعة معلومات لأغراض تتبع التصحيح
-    log("Alarm For------------------------------------------------");
-    log("Beneficiary ID: ${beneficiaryId ?? 'None (User)'}");
-    beneficiaryId = beneficiaryId;
-    log("Is for Beneficiary: $beneficiaryId");
-  }
-
-  static getAlarms() {
-    Alarm.getAlarms().forEach((element) {
-      print("-- ${element.dateTime}");
-    });
   }
 
   static updateStoredWakeUpAlarmSound() {
@@ -147,6 +138,64 @@ class AppAlarm {
       alarmSettings =
           alarmSettings.copyWith(assetAudioPath: _selectedSoundPath);
       Alarm.set(alarmSettings: alarmSettings);
+      log("Alarm sound updated for Alarm ID: ${alarmSettings.id}");
     }
+  }
+
+  // Load and update a user's alarm
+  static Future<void> loadAndUpdateAlarm({
+    required String userId,
+    String? newBedtime,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    // Check if alarm data for the user exists and update bedtime
+    if (alarmsData.userId == userId && newBedtime != null) {
+      alarmsData.bedtime = newBedtime;
+
+      await prefs.setString("alarms", jsonEncode(alarmsData.toJson()));
+
+      String optimalWakeTime = alarmsData.optimalWakeTime;
+      String name = alarmsData.name;
+      bool usertype = alarmsData.usertype;
+      String sensorId = alarmsData.sensorId;
+      await saveAlarm(
+        userId: userId,
+        bedtime: newBedtime,
+        optimalWakeTime: optimalWakeTime,
+        name: name,
+        usertype: usertype,
+        sensorId: sensorId,
+        // sensorId: sensorService.selectedSensor.value,
+      );
+    } else {
+      log("No alarm data found for userId $userId.");
+    }
+  }
+
+  // Fetch all existing alarms
+  static Future<void> getAlarms() async {
+    var alarms = await Alarm.getAlarms();
+    for (var alarm in alarms) {
+      log("Alarm ID: ${alarm.id}, Time: ${alarm.dateTime}");
+    }
+  }
+
+  // Clear all existing alarms
+  static Future<void> clearExistingAlarm() async {
+    var alarms = await Alarm.getAlarms();
+    for (var alarm in alarms) {
+      await Alarm.stop(alarm.id);
+      log("Stopped alarm with ID: ${alarm.id}");
+    }
+  }
+
+  // Print all saved alarms
+  static Future<void> printAllAlarms() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? jsonData = prefs.getString("alarms");
+
+    alarmsData = AlarmData.fromJson(jsonDecode(jsonData!));
+    log(alarmsData.toJson().toString());
   }
 }

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:sleepwell/main.dart';
 import 'package:sleepwell/signup/question.dart';
 import 'package:sleepwell/widget/regsterbutton.dart';
 import 'package:get/get.dart';
@@ -237,8 +238,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         final newUser =
                             await _auth.createUserWithEmailAndPassword(
                                 email: email, password: password);
-                        final userId = newUser.user
-                            ?.uid; // Access the UID of the newly created user
+                        final userId = newUser.user?.uid;
+                        // Access the UID of the newly created user
+                        final getAccessToken = getToken();
                         await _firestore.collection('Users').doc(userId).set({
                           'UserId': userId,
                           'Email': email,
@@ -246,6 +248,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           'Lname': Lname,
                           'Age': age,
                           'Password': password,
+                          'FCM_Token': getAccessToken,
                         });
 
                         showDialog(

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,6 +23,7 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
+  final _firestore = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
   bool showSpinner = false;
   late String email;
@@ -33,11 +35,10 @@ class _SignInScreenState extends State<SignInScreen> {
   void getCurrentUser() async {
     try {
       final user = auth.currentUser;
-      if (user != null) {
+      if (user != null && mounted) {
         setState(() {
-          userid = user.uid; // تهيئة userid
+          userid = user.uid;
         });
-        // قم بتخزين الـ userid في SharedPreferences
         await storeUserIdInSharedPreferences(userid!);
       }
     } catch (e) {
@@ -199,17 +200,41 @@ class _SignInScreenState extends State<SignInScreen> {
                   color: const Color(0xffd5defe),
                   title: 'Sign In'.tr,
                   onPressed: () async {
+                    if (!mounted)
+                      return; // Check if the widget is still in the tree
                     setState(() {
                       showSpinner = true;
                     });
+
                     try {
-                      final user = await _auth.signInWithEmailAndPassword(
+                      final userCredential =
+                          await _auth.signInWithEmailAndPassword(
                         email: email,
                         password: password,
                       );
-                      // الانتقال إلى الشاشة التالية بعد تسجيل الدخول بنجاح
-                      Get.offAll(const HomeScreen());
-                      prefs.setBool("isLogin", true);
+
+                      final userId = userCredential.user?.uid;
+
+                      if (userId != null) {
+                        if (mounted) {
+                          Get.offAll(const HomeScreen());
+                        }
+
+                        await prefs.setBool("isLogin", true);
+
+                        final getAccessToken = await getToken();
+                        await _firestore
+                            .collection('Users')
+                            .doc(userId)
+                            .update({
+                          'FCM_Token': getAccessToken,
+                        });
+                      } else {
+                        throw FirebaseAuthException(
+                          code: 'user-not-found',
+                          message: 'User ID not found!',
+                        );
+                      }
                     } catch (e) {
                       String errorMessage = 'An error occurred';
                       if (e is FirebaseAuthException) {
@@ -233,19 +258,24 @@ class _SignInScreenState extends State<SignInScreen> {
                       } else {
                         errorMessage = e.toString();
                       }
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(errorMessage),
-                        ),
-                      );
+
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(errorMessage),
+                          ),
+                        );
+                      }
                     } finally {
-                      setState(() {
-                        showSpinner = false;
-                      });
+                      if (mounted) {
+                        setState(() {
+                          showSpinner = false;
+                        });
+                      }
                     }
                   },
                 ),
-                      const SizedBox(height: 10),
+                const SizedBox(height: 10),
                 TextButton(
                   onPressed: () {
                     Get.to(() => ResetPasswordScreen());
@@ -254,7 +284,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     'Forget Password?'.tr,
                     style: const TextStyle(
                       fontSize: 20,
-                                    fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
                   ),
@@ -295,7 +325,6 @@ class _SignInScreenState extends State<SignInScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // زر تسجيل الدخول باستخدام Google
                     SquareTile(
                       onTap: () async {
                         setState(() {
@@ -303,19 +332,27 @@ class _SignInScreenState extends State<SignInScreen> {
                         });
                         try {
                           await AuthService().signInWithGoogle();
-                          Get.offAll(const HomeScreen());
-                        } catch (e) {
-                          String errorMessage =
-                              'An error occurred! Please try again.';
-                          if (e is PlatformException) {
-                            if (e.code == 'sign_in_failed') {
-                              errorMessage =
-                                  'Sign-in failed. Please check your Google account credentials.';
-                            }
+
+                          // تحقق من وجود UID وتوجيه المستخدم
+                          final user = _auth.currentUser;
+                          if (user != null && user.uid.isNotEmpty) {
+                            // إذا كانت البيانات متوفرة، توجيه المستخدم إلى الشاشة الرئيسية
+                            Get.offAll(const HomeScreen());
+                          } else {
+                            // إذا كانت البيانات مفقودة، عرض رسالة فشل
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                    "Failed to sign in. Please try again."),
+                              ),
+                            );
+                            Get.offAll(const SignInScreen());
                           }
+                        } catch (e) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(errorMessage),
+                            const SnackBar(
+                              content:
+                                  Text('An error occurred! Please try again.'),
                             ),
                           );
                         } finally {

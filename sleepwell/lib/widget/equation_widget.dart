@@ -7,7 +7,6 @@ import 'package:sleepwell/screens/feedback/feedback_page.dart';
 import 'package:sleepwell/models/difficult_equation_model.dart';
 import 'package:sleepwell/models/easy_equation_model.dart';
 import 'package:sleepwell/screens/home_screen.dart';
-import '../controllers/beneficiary_controller.dart';
 
 class EquationWidget extends StatefulWidget {
   final bool showEasyEquation;
@@ -94,8 +93,6 @@ class _EquationWidgetState extends State<EquationWidget> {
                         // If the alarm is for a beneficiary, reset data and navigate to the home screen
                         if (!widget.isForBeneficiary) {
                           print("Resetting beneficiary info");
-                          Get.delete<
-                              BeneficiaryController>(); // حذف controller من الذاكرة
 
                           Get.offAll(() => const HomeScreen());
                         } else {

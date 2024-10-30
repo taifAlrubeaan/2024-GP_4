@@ -1,9 +1,15 @@
+import 'dart:ffi';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sleepwell/local_notification_service.dart';
+import 'package:sleepwell/main.dart';
 import 'package:sleepwell/screens/feedback/notifications/feedback_notification_daily_screen.dart';
 import '../../controllers/feedback_notification_service.dart';
+
+ 
 import 'notifications/feedback_notification_weekly_screen.dart';
 
 class FeedbackeNotificationsScreen extends StatefulWidget {
@@ -111,6 +117,91 @@ class _FeedbackeNotificationsScreenState
                   "Send Notification ",
                   style: TextStyle(color: Colors.white, fontSize: 22),
                 )),
+            ElevatedButton(
+              onPressed: () async {
+                List<String> reasons = [
+                  "Stress and anxiety can interfere with sleep.",
+                  "Nicotine is a stimulant that can disrupt sleep.",
+                  "Blue light from devices can suppress melatonin production.",
+                  "Noise can disrupt sleep.",
+                  "Extreme temperatures can interfere with sleep.",
+                  "Caffeine is a stimulant that can interfere with sleep.",
+                  "Eating close to bedtime can disrupt sleep.",
+                ];
+                List<String> recommendations = [
+                  "Practice relaxation techniques before bed.",
+                  "Avoid nicotine for at least 4-6 hours before bedtime.",
+                  "Avoid devices 1-2 hours before bedtime.",
+                  "Create a quiet sleep environment.",
+                  "Maintain a warm bedroom temperature.",
+                  "Avoid caffeine for at least 4-6 hours before bedtime.",
+                  "Finish eating at least 2-3 hours before bedtime.",
+                ];
+                String deviceToken =
+                    "eHt4wVoiR46JQ2DpCVyQ1j:APA91bFIWdKZ8TuebQXAtml1U8zsR_JmaqCHhfFpGE7m7nzVyM0W7H_pUvERL9WCnXuE9J6SEaTxQDYUIQxuISfsEirPh6ZIASOFam6aYDwIc2IwT-qYBjdgK7v_SIo0yep8oopWFFJH";
+                String reasonsText = reasons.isNotEmpty
+                    ? "\nYour sleep was not good, it could be due to the following reasons:\n${reasons.map((reason) => "- $reason").join("\n")}"
+                    : '';
+
+                String recommendationsText = recommendations.isNotEmpty
+                    ? "\n Here are some tips to consider for better sleep:\n${recommendations.map((recommendation) => "- $recommendation").join("\n")}"
+                    : '';
+
+                String completeBody = reasonsText + recommendationsText;
+                // final deviceTokens =
+                //     await PushNotificationServices.getToken(); // Use await here
+
+                // PushNotificationServices.sendNotificationToSelectorUser(
+                //   deviceToken, // replace with actual deviceToken
+                //   context,
+                //   "Sleep Analysis",
+                //   completeBody,
+                //   reasons,
+                //   recommendations,
+                // );
+                // sendNotification('sendNotification', 'sendNotification');
+              },
+              style: ButtonStyle(
+                backgroundColor:
+                    MaterialStateProperty.all(Colors.lightBlue[100]),
+                foregroundColor: const MaterialStatePropertyAll(Colors.white),
+              ),
+              child: const Text("Send"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                List<String> reasons = [
+                  "Stress and anxiety can interfere with sleep.",
+                  "Nicotine is a stimulant that can disrupt sleep.",
+                  "Blue light from devices can suppress melatonin production.",
+                  "Noise can disrupt sleep.",
+                  "Extreme temperatures can interfere with sleep.",
+                  "Caffeine is a stimulant that can interfere with sleep.",
+                  "Eating close to bedtime can disrupt sleep.",
+                ];
+                List<String> recommendations = [
+                  "Practice relaxation techniques before bed.",
+                  "Avoid nicotine for at least 4-6 hours before bedtime.",
+                  "Avoid devices 1-2 hours before bedtime.",
+                  "Create a quiet sleep environment.",
+                  "Maintain a warm bedroom temperature.",
+                  "Avoid caffeine for at least 4-6 hours before bedtime.",
+                  "Finish eating at least 2-3 hours before bedtime.",
+                ];
+                // PushNotificationServices.sendNotificationToDevice(
+                //   title: 'تنبيه',
+                //   body: 'هذا هو نص الإشعار',
+                //   reasons: reasons,
+                //   recommendations: recommendations,
+                // );
+                // final localNotification = LocalNotificationService.instance;
+                // localNotification.initialize();
+                // var userId = FirebaseAuth.instance.currentUser?.uid;
+                // localNotification.showLocalNotification(int.parse(userId!),
+                //     reasons.toString(), recommendations.toString());
+              },
+              child: const Text('إرسال الإشعار'),
+            ),
           ],
         ),
       ),

@@ -1,8 +1,7 @@
- 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
-
 import '../models/beneficiary_model.dart';
 
 class BeneficiaryController extends GetxController {
@@ -13,38 +12,60 @@ class BeneficiaryController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    fetchBeneficiaries(userId!);
+    if (userId != null) {
+      print('User ID: $userId');
+      fetchBeneficiaries(userId!);
+    } else {
+      print('Error: User ID is null');
+    }
   }
 
   Future<void> fetchBeneficiaries(String userId) async {
-    isLoading(true);
     try {
+      isLoading(true); // بدأ تحميل البيانات
+      print('Fetching beneficiaries for userId: $userId');
+
       QuerySnapshot snapshot = await FirebaseFirestore.instance
           .collection('beneficiaries')
           .where('userid', isEqualTo: userId)
           .get();
-      beneficiaries.value = snapshot.docs
-          .map((doc) => BeneficiaryModel.fromFirestore(
-              doc.data() as Map<String, dynamic>, doc.id))
-          .toList();
+
+      if (snapshot.docs.isNotEmpty) {
+        print('Beneficiaries found: ${snapshot.docs.length}');
+        beneficiaries.value = snapshot.docs
+            .map((doc) => BeneficiaryModel.fromFirestore(
+                doc.data() as Map<String, dynamic>, doc.id))
+            .toList();
+      } else {
+        print('No beneficiaries found for userId: $userId');
+      }
     } catch (e) {
       print('Error fetching beneficiaries: $e');
     } finally {
-      isLoading(false);
+      // تأخير تحديث حالة isLoading إلى ما بعد الانتهاء من البناء
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        isLoading(false);
+      });
     }
   }
 
+  var selectedBeneficiaryDevice = ''.obs;
+
+  // تعيين المستفيد النشط
   void setBeneficiaryId(String id) {
     selectedBeneficiaryId.value = id;
+    // loadSavedDevice(id); // تحميل الجهاز المحفوظ عند تغيير المستفيد
   }
 
-  Future<void> addBeneficiary(String name, String watch) async {
+  Future<void> addBeneficiary(String name,
+  //  String watch
+   ) async {
     if (userId != null) {
       try {
         BeneficiaryModel newBeneficiary = BeneficiaryModel(
           id: '',
           name: name,
-          watch: watch,
+          // watch: watch,
           userId: userId!,
         );
         await FirebaseFirestore.instance

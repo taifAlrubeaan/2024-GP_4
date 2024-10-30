@@ -1,19 +1,18 @@
 import 'package:alarm/alarm.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:sleepwell/controllers/beneficiary_controller.dart';
 import 'package:sleepwell/main.dart';
 import 'package:sleepwell/widget/equation_widget.dart';
+import '../../models/alarm_data.dart';
 
 class AlarmRingWithEquationScreen extends StatefulWidget {
   final AlarmSettings alarmSettings;
   final bool showEasyEquation;
-
+  final AlarmData alarmsData;
   const AlarmRingWithEquationScreen({
     super.key,
     required this.alarmSettings,
     required this.showEasyEquation,
+    required this.alarmsData,
   });
 
   @override
@@ -23,48 +22,20 @@ class AlarmRingWithEquationScreen extends StatefulWidget {
 
 class _AlarmRingWithEquationScreenState
     extends State<AlarmRingWithEquationScreen> {
-  String beneficiaryName = 'Unknown';
-  final BeneficiaryController controller = Get.find();
-
-  late RxString beneficiaryId = ''.obs;
-
-  String? selectedBeneficiaryId;
-  bool? isForBeneficiary = true;
+  late String name;
+  late bool userType;
 
   @override
   void initState() {
     super.initState();
-    selectedBeneficiaryId = controller.selectedBeneficiaryId.value;
-
-    if (selectedBeneficiaryId != null && selectedBeneficiaryId!.isNotEmpty) {
-      isForBeneficiary = false;
-      beneficiaryId.value = selectedBeneficiaryId!;
-      getBeneficiariesName(beneficiaryId.value);
-    }
-  }
-
-  Future<void> getBeneficiariesName(String beneficiaryId) async {
-    final docSnapshot = await FirebaseFirestore.instance
-        .collection('beneficiaries')
-        .doc(beneficiaryId)
-        .get();
-
-    if (docSnapshot.exists) {
-      setState(() {
-        beneficiaryName = docSnapshot['name'] ?? 'No Name';
-      });
-    } else {
-      setState(() {
-        beneficiaryName = 'No Name';
-      });
-    }
+    name = widget.alarmsData.name;
+    userType = widget.alarmsData.usertype;
   }
 
   @override
   Widget build(BuildContext context) {
-    final String title = isForBeneficiary!
-        ? "Ringing...\nOptimal time to WAKE UP for Yourself"
-        : "Ringing...\nOptimal time to WAKE UP for $beneficiaryName";
+    final String title =
+        "Ringing...\nOptimal time to WAKE UP\n for Yourself   $name";
 
     return Scaffold(
       body: SafeArea(
@@ -82,7 +53,7 @@ class _AlarmRingWithEquationScreenState
             EquationWidget(
               showEasyEquation: widget.showEasyEquation,
               alarmId: widget.alarmSettings.id,
-              isForBeneficiary: isForBeneficiary!,
+              isForBeneficiary: userType!,
             ),
 
             Container(
