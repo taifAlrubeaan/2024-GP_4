@@ -1,4 +1,3 @@
-// question_card.dart
 import 'package:flutter/material.dart';
 
 class QuestionCard extends StatefulWidget {
@@ -7,7 +6,8 @@ class QuestionCard extends StatefulWidget {
   final String answer;
   final ValueChanged<String> onChanged;
 
-  const QuestionCard({super.key, 
+  const QuestionCard({
+    super.key,
     required this.question,
     required this.options,
     required this.answer,
@@ -24,7 +24,9 @@ class _QuestionCardState extends State<QuestionCard> {
   @override
   void initState() {
     super.initState();
-    _selectedAnswer = widget.answer;
+    _selectedAnswer = widget.options.contains(widget.answer)
+        ? widget.answer
+        : null; // تعيينها إلى null إذا كانت الإجابة ليست ضمن الخيارات
   }
 
   @override
@@ -32,7 +34,6 @@ class _QuestionCardState extends State<QuestionCard> {
     return Card(
       shape: const RoundedRectangleBorder(
         side: BorderSide(color: Colors.black),
-        //borderRadius: BorderRadius.circular(8.0),
       ),
       child: Container(
         color: const Color.fromARGB(255, 207, 203, 252),
@@ -50,7 +51,9 @@ class _QuestionCardState extends State<QuestionCard> {
                 ),
               ),
               DropdownButton<String>(
-                value: _selectedAnswer,
+                value: widget.options.contains(_selectedAnswer)
+                    ? _selectedAnswer
+                    : null, // التأكد من أن القيمة موجودة ضمن الخيارات
                 isExpanded: true,
                 hint: const Text(
                   'Select an answer',

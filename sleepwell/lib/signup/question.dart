@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sleepwell/screens/auth/signin_screen.dart';
+import 'package:sleepwell/screens/home_screen.dart';
 
 class QuestionScreen extends StatefulWidget {
   static String RouteScreen = 'question';
@@ -174,7 +175,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
         showSpinner = true;
       });
 
-      await _firestore.collection('User behavior').doc(userId).set({
+      await _firestore.collection('userHabitts').doc(userId).set({
         'UserId': userId,
         'answerQ1': answers[0],
         'answerQ2': answers[1],
@@ -210,7 +211,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
               TextButton(
                 child: const Text('OK'),
                 onPressed: () {
-                  Get.to(const SignInScreen());
+                  Get.to(const HomeScreen());
                 },
               ),
             ],

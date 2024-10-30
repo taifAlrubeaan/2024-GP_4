@@ -1,8 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:sleepwell/screens/statistic/beneficiary_statistics_screen.dart';
+import 'package:sleepwell/services/sensor_service.dart';
 import '../controllers/beneficiary_controller.dart';
+import '../controllers/sensor_settings_controller.dart';
+import '../models/user_sensor.dart';
 import 'settings/sensor_setting_screen.dart';
 
 class BeneficiariesScreen extends StatelessWidget {
@@ -39,7 +43,14 @@ class BeneficiariesScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text('No beneficiaries added'),
+                  const Text(
+                    'No beneficiaries added',
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
                   ElevatedButton(
                     onPressed: () => showAddBeneficiaryDialog(context),
                     child: const Icon(Icons.add),
@@ -187,6 +198,74 @@ class BeneficiariesScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  void showAddSensorDialog(BuildContext context) {
+    final nameController = TextEditingController();
+    // final watchController = TextEditingController();
+    TextEditingController sensorIdController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Add Sensor'),
+          content: SizedBox(
+            height: 150,
+            child: Column(
+              children: [
+                TextField(
+                  controller: sensorIdController,
+                  decoration:
+                      const InputDecoration(hintText: 'Enter Sensor ID'),
+                ),
+                TextField(
+                  controller: nameController,
+                  decoration:
+                      const InputDecoration(labelText: 'Beneficiary Name'),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            ElevatedButton(
+              child: const Text('Add'),
+              onPressed: () async {
+                String sensorId = sensorIdController.text.trim();
+                if (sensorId.isNotEmpty) {
+                  final sensorService = Get.find<SensorService>();
+                  final sensorSettings = Get.put(SensorSettingsController());
+                  final String? userId = FirebaseAuth.instance.currentUser?.uid;
+
+                  if (sensorService.sensorsIds.contains(sensorId)) {
+                    List<UserSensor> userSensors =
+                        await sensorService.getUserSensors(userId);
+                    if (userSensors
+                        .any((sensor) => sensor.sensorId == sensorId)) {
+                      Get.snackbar(
+                          'Warning', 'This sensor is already assigned to you.');
+                    } else {
+                      await sensorSettings.addUserSensor(
+                          userId!, sensorId, context);
+                      Get.find<BeneficiaryController>()
+                          .addBeneficiary(nameController.text
+                              //  watchController.text
+                              );
+                      Get.snackbar('SuccessFully', 'Sensor Added SuccessFully');
+
+                      Navigator.pop(context);
+                    }
+                  } else {
+                    Get.snackbar('Warning', 'Sensor not found.');
+                  }
+                } else {
+                  Get.snackbar('Warning', 'Sensor ID cannot be empty.');
+                }
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 

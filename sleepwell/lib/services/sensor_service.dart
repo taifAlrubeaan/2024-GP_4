@@ -56,8 +56,9 @@ class SensorService extends GetxService {
       print("Error: User ID is null");
       return;
     }
-
-    selectedSensor = userSensors[0].sensorId.obs;
+    if (userSensors.isNotEmpty) {
+      selectedSensor = userSensors[0].sensorId.obs;
+    }
   }
 
   // Future<List<Sensor>> getAllSensors() async {

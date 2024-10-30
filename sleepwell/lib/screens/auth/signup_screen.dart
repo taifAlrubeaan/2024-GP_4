@@ -1,35 +1,77 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-import 'package:sleepwell/main.dart';
-import 'package:sleepwell/signup/question.dart';
-import 'package:sleepwell/widget/regsterbutton.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:sleepwell/controllers/auth/signup_controller.dart';
+import 'package:sleepwell/screens/auth/signin_screen.dart';
 
-import 'signin_screen.dart';
+import '../../widget/regsterbutton.dart';
+import '../../widget/text_field_widget.dart';
 
 class SignUpScreen extends StatefulWidget {
-  static String RouteScreen = 'signup_screen';
-  const SignUpScreen({
-    super.key,
-  });
+  const SignUpScreen({super.key});
 
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  _SignUpScreenState createState() => _SignUpScreenState();
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  final _firestore = FirebaseFirestore.instance;
-  final _auth = FirebaseAuth.instance;
-  bool showSpinner = false;
-// why late because i well not give  it a value new
-  late String name;
-  late String Lname;
-  late String email;
-  late String password;
-  late String cpassword;
-  late String age;
+  final SignUpController authController = Get.put(SignUpController());
+
+  final TextEditingController firstNameController = TextEditingController();
+  final TextEditingController lastNameController = TextEditingController();
+  final TextEditingController ageController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController cpasswordController = TextEditingController();
+
+  @override
+  void dispose() {
+    // Dispose of each controller when not in use
+    firstNameController.dispose();
+    lastNameController.dispose();
+    ageController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    cpasswordController.dispose();
+    super.dispose();
+  }
+
+  Widget buildInstractionSignUp() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(
+          height: 10,
+        ),
+        Text(
+          '- Password should be Identical.'.tr,
+          style: const TextStyle(
+              color: Color.fromARGB(241, 230, 158, 3),
+              fontSize: 15,
+              fontWeight: FontWeight.bold),
+        ),
+        Text(
+          '- At least 8 characters long.'.tr,
+          style: const TextStyle(
+              color: Color.fromARGB(241, 230, 158, 3),
+              fontSize: 15,
+              fontWeight: FontWeight.bold),
+        ),
+        Text(
+          '- Password should contain numbers & characters.'.tr,
+          style: const TextStyle(
+              color: Color.fromARGB(241, 230, 158, 3),
+              fontSize: 15,
+              fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,322 +81,130 @@ class _SignUpScreenState extends State<SignUpScreen> {
         backgroundColor: const Color.fromARGB(255, 0, 74, 173),
         title: Text(
           'SignUp'.tr,
-          style: const TextStyle(color: Colors.white),
+          style: const TextStyle(
+              color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
         ),
       ),
-      body: ModalProgressHUD(
-        inAsyncCall: showSpinner,
-        child: Container(
-          height: MediaQuery.of(context).size.height,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color(0xFF004AAD), Color(0xFF040E3B)],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
+      body: Obx(() {
+        return ModalProgressHUD(
+          inAsyncCall: authController.isLoading.value,
+          child: Container(
+            height: MediaQuery.of(context).size.height,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xFF004AAD), Color(0xFF040E3B)],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
             ),
-          ),
-          child: Padding(
             padding: const EdgeInsets.all(20),
             child: ListView(
-              shrinkWrap: true,
               children: [
-                const SizedBox(
-                  height: 15,
-                ),
                 Center(
                   child: Text(
                     'Let’s create your account!'.tr,
                     style: const TextStyle(
                         color: Colors.white,
-                        fontSize: 20,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold),
                   ),
                 ),
-                const SizedBox(
-                  height: 15,
+                const SizedBox(height: 20),
+                TextFieldWidget(
+                  controller: firstNameController,
+                  hintText: 'First Name'.tr,
+                  icon: Icons.person,
                 ),
-                Text(
-                  'Names should be in English'.tr,
-                  style: const TextStyle(
-                      color: Color.fromARGB(241, 230, 158, 3),
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold),
+                const SizedBox(height: 20),
+                TextFieldWidget(
+                  controller: lastNameController,
+                  hintText: 'Last Name'.tr,
+                  icon: Icons.person,
                 ),
-                const SizedBox(
-                  height: 10,
+                const SizedBox(height: 20),
+                TextFieldWidget(
+                  controller: ageController,
+                  hintText: 'Your Age'.tr,
+                  icon: Icons.date_range,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 ),
-                TextField(
-                  keyboardType: TextInputType.name,
-                  onChanged: (value) {
-                    // here i save the  value of name from user
-                    name = value;
-                  },
-                  decoration: InputDecoration(
-                    fillColor: Colors.white,
-                    filled: true,
-                    suffixIcon: const Icon(Icons.person),
-                    hintText: 'First Name'.tr,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
+                const SizedBox(height: 20),
+                TextFieldWidget(
+                  controller: emailController,
+                  hintText: 'Email Address'.tr,
+                  icon: Icons.email,
                 ),
-                const SizedBox(
-                  height: 15,
-                ),
-                TextField(
-                  keyboardType: TextInputType.name,
-                  onChanged: (value) {
-                    // here i save the  value of name from user
-                    Lname = value;
-                  },
-                  decoration: InputDecoration(
-                    fillColor: Colors.white,
-                    filled: true,
-                    suffixIcon: const Icon(Icons.person),
-                    hintText: 'Last Name'.tr,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                TextField(
-                  keyboardType: TextInputType.name,
-                  onChanged: (value) {
-                    // here i save the  value of age from user
-                    age = value;
-                  },
-                  decoration: InputDecoration(
-                    fillColor: Colors.white,
-                    filled: true,
-                    suffixIcon: const Icon(Icons.date_range),
-                    hintText: 'your Age'.tr,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                TextField(
-                  keyboardType: TextInputType.emailAddress,
-                  onChanged: (value) {
-                    // here i save the  value of email from user
-                    email = value;
-                  },
-                  decoration: InputDecoration(
-                    fillColor: Colors.white,
-                    filled: true,
-                    suffixIcon: const Icon(Icons.email),
-                    hintText: 'Email Address'.tr,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                TextField(
-                  keyboardType: TextInputType.visiblePassword,
-                  onChanged: (value) {
-                    // here i save the  value of password from user
-                    password = value;
-                  },
+                const SizedBox(height: 20),
+                TextFieldWidget(
+                  controller: passwordController,
+                  hintText: 'Password'.tr,
+                  icon: Icons.key,
                   obscureText: true,
-                  decoration: InputDecoration(
-                    fillColor: Colors.white,
-                    filled: true,
-                    suffixIcon: const Icon(Icons.key),
-                    hintText: 'Password'.tr,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
                 ),
-                const SizedBox(
-                  height: 15,
-                ),
-                TextField(
-                  keyboardType: TextInputType.visiblePassword,
-                  onChanged: (value) {
-                    // here i save the  value of cpassword from user
-                    cpassword = value;
-                  },
+                const SizedBox(height: 20),
+                TextFieldWidget(
+                  controller: cpasswordController,
+                  hintText: 'Confirm Password'.tr,
+                  icon: Icons.key,
                   obscureText: true,
-                  decoration: InputDecoration(
-                    fillColor: Colors.white,
-                    filled: true,
-                    suffixIcon: const Icon(Icons.key),
-                    hintText: 'Confirm Password'.tr,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  '- Password should be Identical.'.tr,
-                  style: const TextStyle(
-                      color: Color.fromARGB(241, 230, 158, 3),
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  '- At least 8 characters long.'.tr,
-                  style: const TextStyle(
-                      color: Color.fromARGB(241, 230, 158, 3),
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  '- Password should contain numbers & characters.'.tr,
-                  style: const TextStyle(
-                      color: Color.fromARGB(241, 230, 158, 3),
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                regsterbutton(
+                buildInstractionSignUp(),
+                RegisterButton(
                   color: const Color(0xffd5defe),
                   title: 'Create Account'.tr,
-                  onPressed: () async {
-                    if (password.length >= 8 &&
-                        password.contains(RegExp(r'[a-zA-Z]')) &&
-                        password.contains(RegExp(r'[0-9]')) &&
-                        password == cpassword) {
-                      try {
-                        setState(() {
-                          showSpinner = true;
-                        });
-                        final newUser =
-                            await _auth.createUserWithEmailAndPassword(
-                                email: email, password: password);
-                        final userId = newUser.user?.uid;
-                        // Access the UID of the newly created user
-                        final getAccessToken = getToken();
-                        await _firestore.collection('Users').doc(userId).set({
-                          'UserId': userId,
-                          'Email': email,
-                          'Fname': name,
-                          'Lname': Lname,
-                          'Age': age,
-                          'Password': password,
-                          'FCM_Token': getAccessToken,
-                        });
-
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: Text('Great job!'.tr),
-                              titleTextStyle: const TextStyle(
-                                color: Colors.green,
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              content: Text(
-                                  'Your are almost there! Just a few more steps and you will be completely signed up with us.'
-                                      .tr),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    // Navigator.of(context).pop();
-                                    Get.back();
-                                    // Navigator.pushNamed(
-                                    //   context,
-                                    //   QuestionScreen.RouteScreen,
-                                    // );
-                                    Get.offAll(const QuestionScreen());
-                                  },
-                                  child: Text('OK'.tr),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                        setState(() {
-                          showSpinner = false;
-                        });
-                      } catch (e) {
-                        setState(() {
-                          showSpinner = false;
-                        });
-                        String errorMessage = '';
-                        if (e is FirebaseAuthException) {
-                          if (e.code == 'weak-password'.tr) {
-                            errorMessage = 'Cause: Password is too weak.'.tr;
-                          } else if (e.code == 'email-already-in-use'.tr) {
-                            errorMessage = 'Email is already in use.'.tr;
-                          } else {
-                            errorMessage = 'Emil format not correct'.tr;
-                          }
-                        } else {
-                          errorMessage =
-                              'An error occurred. Please try again later.'.tr;
-                        }
-                        print('Sign-up error: $errorMessage');
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(errorMessage),
-                            duration: const Duration(seconds: 3),
-                          ),
-                        );
-                      }
-                    } else {
+                  onPressed: () {
+                    if (ageController.text.isEmpty ||
+                        int.tryParse(ageController.text) == null ||
+                        int.parse(ageController.text) <= 0) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            'Something went wrong with the password ! Make sure the conditions are met.'
-                                .tr,
-                          ),
-                          duration: const Duration(seconds: 3),
+                        const SnackBar(
+                          content: Text('Please enter a valid age.'),
                         ),
                       );
+                      return;
                     }
+
+                    authController.signUp(
+                      emailController.text.trim(),
+                      passwordController.text,
+                      cpasswordController.text,
+                      firstNameController.text.trim(),
+                      lastNameController.text.trim(),
+                      ageController.text.trim(),
+                    );
                   },
                 ),
                 const SizedBox(height: 10.0),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Already have an account?'.tr,
+                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  Text(
+                    'Already have an account?'.tr,
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(width: 10),
+                  InkWell(
+                    onTap: () {
+                      Get.offAll(const SignInScreen());
+                      // Get.back();
+                      // Get.back();
+                    },
+                    child: Text(
+                      "Login".tr,
                       style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 18,
+                          fontSize: 20,
                           fontWeight: FontWeight.bold),
                     ),
-                    const SizedBox(width: 10),
-                    InkWell(
-                      onTap: () {
-                        Get.offAll(const SignInScreen());
-                        // Get.back();
-                        // Get.back();
-                      },
-                      child: Text(
-                        "Login".tr,
-                        style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    )
-                  ],
-                ),
+                  ),
+                ]),
               ],
             ),
           ),
-        ),
-      ),
+        );
+      }),
     );
   }
 }

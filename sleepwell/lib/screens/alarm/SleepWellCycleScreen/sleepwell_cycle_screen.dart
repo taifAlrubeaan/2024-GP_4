@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -49,24 +50,14 @@ class SleepWellCycleScreen extends StatelessWidget {
                 _buildSaveButton(context),
                 const SizedBox(height: 20),
                 _buildSelectDeviceButton(context),
-                _buildSensorStatus(),
-                ElevatedButton(
-                  onPressed: () async {
-                    // Call the function to update alarm with new values
-                    await AppAlarm.loadAndUpdateAlarm(
-                      newBedtime: '09:15 AM', // Set newBedtime to '01:20 AM',
-                      userId:
-                          controller.userId.value, // Set userId to 'userId',
-                      // userId: 'GnQXhV91N7XRbM9z9t8g', // Set userId to 'userId',
-                    );
-                    await AppAlarm.printAllAlarms();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                          content: Text("Alarm updated successfully!")),
-                    );
-                  },
-                  child: const Text("Update Alarm"),
-                ),
+                // _buildSensorStatus(),
+                // _buildUpdateAlarmButton(context),
+                // ElevatedButton(
+                //   onPressed: () {
+                //     renameCollection();
+                //   },
+                //   child: Text("Rename Collection"),
+                // ),
               ],
             ),
           ),
@@ -75,11 +66,43 @@ class SleepWellCycleScreen extends StatelessWidget {
     );
   }
 
+  Future<void> renameCollection() async {
+    String oldName = "User behavior";
+    String newName = "userHabitts";
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    try {
+      // Reference to old and new collections
+      CollectionReference oldCollectionRef = firestore.collection(oldName);
+      CollectionReference newCollectionRef = firestore.collection(newName);
+
+      // Get all documents from the old collection
+      QuerySnapshot snapshot = await oldCollectionRef.get();
+
+      // Copy each document to the new collection
+      for (var doc in snapshot.docs) {
+        await newCollectionRef.doc(doc.id).set(doc.data());
+      }
+
+      // Delete documents in the old collection
+      for (var doc in snapshot.docs) {
+        await oldCollectionRef.doc(doc.id).delete();
+      }
+
+      print("Collection renamed from $oldName to $newName");
+    } catch (e) {
+      print("Error renaming collection: $e");
+    }
+  }
+
   AppBar _buildAppBar() => AppBar(
         title: const Text(
           'SleepWell Cycle',
           style: TextStyle(
-              color: Colors.white, fontSize: 24, fontWeight: FontWeight.w700),
+            color: Colors.white,
+            fontSize: 24,
+            fontWeight: FontWeight.w700,
+          ),
         ),
         iconTheme: const IconThemeData(color: Colors.white),
         backgroundColor: const Color(0xFF004AAD),
@@ -98,9 +121,9 @@ class SleepWellCycleScreen extends StatelessWidget {
       if (beneficiaryController.isLoading.value) {
         return const CircularProgressIndicator();
       }
-      if (beneficiaryController.beneficiaries.isEmpty) {
-        return const Text("No beneficiaries found.");
-      }
+      // if (beneficiaryController.beneficiaries.isEmpty) {
+      //   return const Text("No beneficiaries found.");
+      // }
 
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -138,7 +161,14 @@ class SleepWellCycleScreen extends StatelessWidget {
     return [
       DropdownMenuItem<String>(
         value: controller.userId.value,
-        child: const Text('Yourself'),
+        child: const Text(
+          'Yourself',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Color.fromRGBO(240, 16, 252, 1),
+          ),
+        ),
         onTap: () {
           controller.setBeneficiary(controller.userId.value, 'Yourself');
         },
@@ -149,7 +179,10 @@ class SleepWellCycleScreen extends StatelessWidget {
           child: Text(
             beneficiary.name,
             style: const TextStyle(
-                fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Color.fromRGBO(240, 16, 252, 1),
+            ),
           ),
           onTap: () {
             controller.setBeneficiary(beneficiary.id, beneficiary.name);
@@ -237,6 +270,24 @@ class SleepWellCycleScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildUpdateAlarmButton(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () async {
+        // Call the function to update alarm with new values
+        await AppAlarm.loadAndUpdateAlarm(
+          newBedtime: '09:15 AM', // Set newBedtime to '01:20 AM',
+          userId: controller.userId.value, // Set userId to 'userId',
+          // userId: 'GnQXhV91N7XRbM9z9t8g', // Set userId to 'userId',
+        );
+        await AppAlarm.printAllAlarms();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Alarm updated successfully!")),
+        );
+      },
+      child: const Text("Update Alarm"),
+    );
+  }
+
   Widget _buildSelectDeviceButton(BuildContext context) {
     return ElevatedButton(
       // onPressed: () {},
@@ -321,17 +372,17 @@ class SleepWellCycleScreen extends StatelessWidget {
       context: context,
       builder: (_) => Obx(
         () => ConfirmationDialogWidget(
-            alarmFor: controller.selectedBeneficiaryName.value,
-            selectedDevice: sensorService.selectedSensor.value,
-            wakeUpTime:
-                DateFormat('hh:mm a').format(controller.wakeUpTime.value),
-            bedTime: DateFormat('hh:mm a').format(controller.bedtime.value),
-            sleepCycle: controller.calculateSleepDuration(),
-            onPressed:
-                controller.loading.value ? null : () => controller.saveTimes(),
-            changeDevice: null
-            // () => sensorService.checkUserSensors(context),
-            ),
+          alarmFor: controller.selectedBeneficiaryName.value,
+          selectedDevice: sensorService.selectedSensor.value,
+          wakeUpTime: DateFormat('hh:mm a').format(controller.wakeUpTime.value),
+          bedTime: DateFormat('hh:mm a').format(controller.bedtime.value),
+          sleepCycle: controller.calculateSleepDuration(),
+          onPressed:
+              controller.loading.value ? null : () => controller.saveTimes(),
+          changeDevice: () => sensorSettings.checkUserSensors(context),
+
+          // () => sensorService.checkUserSensors(context),
+        ),
       ),
     );
   }

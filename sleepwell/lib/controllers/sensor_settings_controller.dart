@@ -38,14 +38,14 @@ class SensorSettingsController extends GetxController {
       print("Error: User ID is null");
       return;
     }
-
-    userSensors = await getUserSensors(userId);
+    await sensorService.loadSensors();
+    userSensors = await sensorService.getUserSensors(userId);
 
     if (userSensors.isEmpty) {
       showAddSensorDialog(context);
-    } else if (userSensors.length == 1) {
-      selectedSensor = userSensors[0].sensorId.obs;
     } else {
+      // } else {
+      selectedSensor = userSensors[0].sensorId.obs;
       showSensorSelectionDialog(
         context: context,
         userSensors: sensorService.sensorsCurrentUser
@@ -54,7 +54,10 @@ class SensorSettingsController extends GetxController {
             .toList(),
         selectedSensorId: selectedSensor.value,
         onSensorSelected: selectSensor,
-        onDeleteSensor: deleteSensor,
+        // onDeleteSensor: deleteSensor,
+        onDeleteSensor: (sensorId) async {
+          await showConfirmDeleteDialog(context, sensorId);
+        },
       );
 
       sensorsCurrentUser.clear();
@@ -196,6 +199,7 @@ class SensorSettingsController extends GetxController {
           }
         });
       }
+      Get.back();
     } catch (e) {
       print("Error deleting sensor: $e");
     }
@@ -203,11 +207,21 @@ class SensorSettingsController extends GetxController {
 
   void showAddSensorDialog(BuildContext context) {
     TextEditingController sensorIdController = TextEditingController();
+
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Add Sensor'),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text('Add Sensor'),
+              IconButton(
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(Icons.close),
+              ),
+            ],
+          ),
           content: TextField(
             controller: sensorIdController,
             decoration: const InputDecoration(hintText: 'Enter Sensor ID'),
@@ -219,15 +233,22 @@ class SensorSettingsController extends GetxController {
                 String sensorId = sensorIdController.text.trim();
                 if (sensorId.isNotEmpty) {
                   if (sensorsIds.contains(sensorId)) {
-                    List<UserSensor> userSensors = await getUserSensors(userId);
+                    // List<UserSensor> userSensors = await getUserSensors(userId);
+
+                    userSensors = await sensorService.getUserSensors(userId);
                     if (userSensors
                         .any((sensor) => sensor.sensorId == sensorId)) {
                       _showErrorDialog(
                           context, 'This sensor is already assigned to you.');
                     } else {
                       await addUserSensor(userId!, sensorId, context);
-                      _showErrorDialog(context, 'Sensor Added SuccessFully');
-                      Navigator.pop(context);
+                      await sensorService.loadSensors();
+
+                      // _showErrorDialog(context, 'Sensor Added Successfully');
+                      // Navigator.pop(context);
+                      // Navigator.pop(context);
+                      Get.back();
+                      Get.back();
                     }
                   } else {
                     _showErrorDialog(context, 'Sensor not found.');
@@ -243,17 +264,20 @@ class SensorSettingsController extends GetxController {
     );
   }
 
-  void _showErrorDialog(BuildContext context, String message) {
+  void _showSuccessDialog(BuildContext context, String message) {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Error'),
+          title: const Text('Success'),
           content: Text(message),
           actions: [
             ElevatedButton(
               child: const Text('OK'),
-              onPressed: () => Navigator.pop(context),
+              onPressed: () {
+                // Navigator.pop(context);
+                Navigator.pop(context);
+              },
             ),
           ],
         );
@@ -261,12 +285,43 @@ class SensorSettingsController extends GetxController {
     );
   }
 
-  void _showSuccessDialog(BuildContext context, String message) {
+  Future<void> showConfirmDeleteDialog(
+      BuildContext context, String sensorId) async {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Success'),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text('Confirm Delete'),
+              IconButton(
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(Icons.close),
+              ),
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              child: const Text('Confirm'),
+              onPressed: () async {
+                deleteSensor(sensorId);
+                Get.back();
+                // await deleteSensor(sensorId);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showErrorDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Error'),
           content: Text(message),
           actions: [
             ElevatedButton(
