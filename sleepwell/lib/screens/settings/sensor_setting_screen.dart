@@ -56,7 +56,7 @@ class SensorSettingScreen extends StatelessWidget {
                     sensorService.selectSensor(sensorId);
                   },
                   onDeleteSensor: (sensorId) {
-                    sensorSettings.deleteSensor(sensorId);
+                    sensorSettings.showConfirmDeleteDialog(context, sensorId);
                   },
                 );
               },

@@ -85,6 +85,7 @@ class _MoreAboutYouScreenState extends State<MoreAboutYouScreen> {
     ],
     ['Yes', 'Occasionally', 'No'],
   ];
+
   Future<void> fetchSavedAnswers() async {
     setState(() {
       _isLoading = true;
@@ -92,7 +93,7 @@ class _MoreAboutYouScreenState extends State<MoreAboutYouScreen> {
 
     try {
       DocumentSnapshot snapshot = await _firestore
-          .collection('User behavior')
+          .collection('userHabitts')
           .doc(_user!.uid)
           .get(const GetOptions(source: Source.server));
       if (snapshot.exists) {
@@ -177,7 +178,7 @@ class _MoreAboutYouScreenState extends State<MoreAboutYouScreen> {
 
   void saveAnswers() async {
     try {
-      await _firestore.collection('User behavior').doc(_user!.uid).update({
+      await _firestore.collection('userHabitts').doc(_user!.uid).update({
         'answerQ1': _answers[0],
         'answerQ2': _answers[1],
         'answerQ3': _answers[2],

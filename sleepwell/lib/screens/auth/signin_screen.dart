@@ -196,7 +196,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 const SizedBox(
                   height: 15,
                 ),
-                regsterbutton(
+                RegisterButton(
                   color: const Color(0xffd5defe),
                   title: 'Sign In'.tr,
                   onPressed: () async {
@@ -298,7 +298,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        Get.offAll(const SignUpScreen());
+                        Get.offAll(  SignUpScreen());
                       },
                       child: Text(
                         'Sign Up'.tr,

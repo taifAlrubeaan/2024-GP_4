@@ -60,7 +60,7 @@ class welcome extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              regsterbutton(
+              RegisterButton(
                 color: const Color(0xffd5defe),
                 title: 'SIGN UP'.tr,
                 onPressed: () {
@@ -68,13 +68,13 @@ class welcome extends StatelessWidget {
                   //   context,
                   //   MaterialPageRoute(builder: (context) => SignUpScreen()),
                   // );
-                  Get.offAll(const SignUpScreen());
+                  Get.offAll(  SignUpScreen());
                 },
               ),
               const SizedBox(
                 height: 2,
               ),
-              regsterbutton(
+              RegisterButton(
                 color: const Color(0xffd5defe),
                 title: 'SIGN IN'.tr,
                 onPressed: () {

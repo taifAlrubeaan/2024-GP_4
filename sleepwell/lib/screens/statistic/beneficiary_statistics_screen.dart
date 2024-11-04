@@ -99,7 +99,6 @@ class _BeneficiaryStatisticsScreenState
               icon: const Icon(Icons.more_vert),
               onSelected: (value) {
                 if (value == 'add_alarm') {
-                  // ضع هنا ما تريد فعله عند الضغط على "إضافة منبه جديد"
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -160,73 +159,80 @@ class _BeneficiaryStatisticsScreenState
                   } else if (snapshot.hasError) {
                     return const Center(child: Text("Error loading data"));
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return Center(
-                      child: Container(
-                        // height: MediaQuery.of(context).size.height,
-                        width: double.infinity,
-                        decoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [Color(0xFF004AAD), Color(0xFF040E3B)],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                          ),
-                        ),
+                    // return Center(
+                    //   child: Container(
+                    //     // height: MediaQuery.of(context).size.height,
+                    //     width: double.infinity,
+                    //     decoration: const BoxDecoration(
+                    //       gradient: LinearGradient(
+                    //         colors: [Color(0xFF004AAD), Color(0xFF040E3B)],
+                    //         begin: Alignment.topCenter,
+                    //         end: Alignment.bottomCenter,
+                    //       ),
+                    //     ),
 
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const SizedBox(height: 300),
-                            const Text(
-                              'Set new alarm for your follower',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        SleepWellCycleScreen(),
-                                  ),
-                                );
-                                // final DeviceController controllerDevice =
-                                //     Get.put(DeviceController());
-                                // if (!isForBeneficiary!) {
-                                //   BottomSheetWidget.showDeviceBottomSheet(
-                                //     context,
-                                //     controllerDevice,
-                                //     'Available Devices For $beneficiaryName ',
-                                //     isForBeneficiary: true,
-                                //     beneficiaryId:
-                                //         beneficiaryId.value, // معرف المستفيد
-                                //   );
-                                // } else {
-                                //   BottomSheetWidget.showDeviceBottomSheet(
-                                //     context,
-                                //     controllerDevice,
-                                //     'Available Devices For  Your Self',
-                                //   );
-                                // }
-                              },
-                              style: ElevatedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 8),
-                                backgroundColor: const Color(0xFF21E6C1),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                              ),
-                              child: const Text(
-                                'Set Alarm',
-                                style: TextStyle(fontSize: 18),
-                              ),
-                            ),
-                            const SizedBox(height: 300),
-                          ],
-                        ),
-                      ),
+                    //     // child: Column(
+                    //     //   mainAxisAlignment: MainAxisAlignment.center,
+                    //     //   children: [
+                    //     //     const SizedBox(height: 300),
+                    //     //     const Text(
+                    //     //       'Set new alarm for your follower',
+                    //     //       style: TextStyle(color: Colors.white),
+                    //     //     ),
+                    //     //     ElevatedButton(
+                    //     //       onPressed: () {
+                    //     //         Navigator.push(
+                    //     //           context,
+                    //     //           MaterialPageRoute(
+                    //     //             builder: (context) =>
+                    //     //                 SleepWellCycleScreen(),
+                    //     //           ),
+                    //     //         );
+                    //     //         // final DeviceController controllerDevice =
+                    //     //         //     Get.put(DeviceController());
+                    //     //         // if (!isForBeneficiary!) {
+                    //     //         //   BottomSheetWidget.showDeviceBottomSheet(
+                    //     //         //     context,
+                    //     //         //     controllerDevice,
+                    //     //         //     'Available Devices For $beneficiaryName ',
+                    //     //         //     isForBeneficiary: true,
+                    //     //         //     beneficiaryId:
+                    //     //         //         beneficiaryId.value, // معرف المستفيد
+                    //     //         //   );
+                    //     //         // } else {
+                    //     //         //   BottomSheetWidget.showDeviceBottomSheet(
+                    //     //         //     context,
+                    //     //         //     controllerDevice,
+                    //     //         //     'Available Devices For  Your Self',
+                    //     //         //   );
+                    //     //         // }
+                    //     //       },
+                    //     //       style: ElevatedButton.styleFrom(
+                    //     //         padding: const EdgeInsets.symmetric(
+                    //     //             horizontal: 12, vertical: 8),
+                    //     //         backgroundColor: const Color(0xFF21E6C1),
+                    //     //         shape: RoundedRectangleBorder(
+                    //     //           borderRadius: BorderRadius.circular(20),
+                    //     //         ),
+                    //     //       ),
+                    //     //       child: const Text(
+                    //     //         'Set Alarm',
+                    //     //         style: TextStyle(fontSize: 18),
+                    //     //       ),
+                    //     //     ),
+                    //     //     const SizedBox(height: 300),
+                    //     //   ],
+                    //     // ),
+                    //   ),
+                    // );
+                    return const Center(
+                        child: Text(
+                      "No data available",
+                      textAlign: TextAlign.center,
+                    ),
                     );
-                  } else {
+                  }
+                   else {
                     final alarms = snapshot.data!;
 
                     // جلب أول بيانات نوم

@@ -4,23 +4,19 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sleepwell/controllers/sleep-cycle-ontroller.dart';
 import 'package:sleepwell/controllers/sensor_settings_controller.dart';
 import 'package:sleepwell/main.dart';
 import 'package:sleepwell/screens/account_screen.dart';
-
 import 'package:sleepwell/screens/auth/signin_screen.dart';
 import 'package:sleepwell/screens/feedback/feedbacke_notification_screen.dart';
 import 'package:sleepwell/screens/settings/language_screen.dart';
-
 import 'package:sleepwell/widget/counter_widget.dart';
-import '../controllers/beneficiary_controller.dart';
 import '../services/sensor_service.dart';
 import '../widget/bed_time_reminder.dart';
 import 'edite_alarm_screen.dart';
 import 'profile/about_you_screen.dart';
 import 'profile/more_about_you.dart';
-import 'statistic/real_time_data_screen.dart';
+
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -99,9 +95,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     // isDarkMode.value = controller.themeMode.value == ThemeMode.dark;
-   
-        final sensorService = Get.find<SensorService>();
 
+    Get.find<SensorService>();
+    final sensorSettings = Get.put(SensorSettingsController());
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF004AAD),
@@ -214,7 +210,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               },
                             ),
 
-                          
                             ListTile(
                               title: Text('Notification'.tr,
                                   style: const TextStyle(
@@ -251,22 +246,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 // => Get.to(() => NotificationScreen()),
                                 ),
                             ListTile(
-                                title: Text('Sensor Connection'.tr,
-                                    style: const TextStyle(
-                                        color: Colors.white, fontSize: 18)),
-                                leading:
-                                    const Icon(Icons.usb, color: Colors.white),
-                                trailing: const Icon(Icons.arrow_forward_ios,
-                                    color: Colors.white, size: 18),
-                                onTap: () async {
-                                  // showDeviceBottomSheet(
-                                  //     context);
-                                  // Get.to(const SensorScreen());
-                                  // sensorService.checkUserSensors(context);
-                                }
+                              title: Text('Sensor Connection'.tr,
+                                  style: const TextStyle(
+                                      color: Colors.white, fontSize: 18)),
+                              leading:
+                                  const Icon(Icons.usb, color: Colors.white),
+                              trailing: const Icon(Icons.arrow_forward_ios,
+                                  color: Colors.white, size: 18),
+                              onTap: () =>
+                                  sensorSettings.checkUserSensors(context),
+                              // async {
+                              // showDeviceBottomSheet(
+                              //     context);
+                              // Get.to(const SensorScreen());
+                              // sensorService.checkUserSensors(context);
 
-                                // => Get.to(() => NotificationScreen()),
-                                ),
+                              // }
+
+                              // => Get.to(() => NotificationScreen()),
+                            ),
                             ListTile(
                                 title: Text('Sleep Goal'.tr,
                                     style: const TextStyle(
@@ -325,7 +323,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
                             const SizedBox(height: 20),
 
-                          
                             Text(
                               'Account Actions'.tr,
                               style: const TextStyle(

@@ -87,7 +87,7 @@ class ConfirmationDialogWidget extends StatelessWidget {
                   ElevatedButton(
                     onPressed: changeDevice,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.orange,
+                      backgroundColor: const Color.fromRGBO(21, 0, 255, 1),
                       minimumSize: Size(
                           mediaQuery.size.width * 0.35, 40), // Button width
                     ),

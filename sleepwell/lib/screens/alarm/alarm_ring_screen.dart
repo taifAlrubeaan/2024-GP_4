@@ -42,7 +42,7 @@ class _AlarmRingScreenState extends State<AlarmRingScreen> {
             Text(
               title,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.headline4,
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
             const Text("🔔", style: TextStyle(fontSize: 50)),
             Row(
