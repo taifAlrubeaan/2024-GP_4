@@ -6,6 +6,8 @@ import 'package:sleepwell/main.dart';
 import '../push_notification_service.dart';
 
 class BedTimeReminder extends StatefulWidget {
+  const BedTimeReminder({super.key});
+
   @override
   _BedTimeReminderState createState() => _BedTimeReminderState();
 }

@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:sleepwell/screens/alarm_screen.dart';
+import 'package:sleepwell/screens/home_screen.dart';
 import '../../push_notification_service.dart';
 
 // late String predictedQuality;
@@ -18,6 +18,10 @@ class FeedbackPage extends StatefulWidget {
 
 class _FeedbackPageState extends State<FeedbackPage> {
   List<String> answers = List.filled(7, ''); // Initialize with empty strings
+  String predictedQuality = "";
+  List<String> reasons = List.filled(7, '');
+  List<String> recommendations = List.filled(7, '');
+
   bool showError = false;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -40,7 +44,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
         showSpinner = true;
       });
 
-      final user = await _auth.currentUser;
+      final user = _auth.currentUser;
       if (user != null) {
         setState(() {
           userId = user.uid;
@@ -112,17 +116,15 @@ class _FeedbackPageState extends State<FeedbackPage> {
   }
 
   Future<void> showSleepQualityDialog(
-      BuildContext context,
-      String predictedQuality,
-      List<String> reasons,
-      List<String> recommendations) async {
+      BuildContext context, predictedQuality, reasons, recommendations) async {
     // Prepare notification message
     String notificationMessage = 'Your Sleep Quality is: $predictedQuality \n';
     // if (predictedQuality == 'Poor' || predictedQuality == 'Average') {
     //   notificationMessage +=
     //       '\nReason: ${reasons.join(', ')}\nAdvice: ${recommendations.join(', ')}';
     // }
-    Get.offAll(AlarmScreen());
+    Get.offAll(const HomeScreen());
+
     if (predictedQuality == 'Poor' || predictedQuality == 'Average') {
       await PushNotificationService
           .showNotificationWithReasonsAndRecommendations(
@@ -132,9 +134,11 @@ class _FeedbackPageState extends State<FeedbackPage> {
         recommendations: recommendations, // تمرير القائمة هنا
         schedule: true,
         interval: 60,
-        // actionButton: [
-        //   NotificationActionButton(key: 'FeedBak', label: 'Go To Feedback Now')
-        // ],
+        actionButton: [
+          NotificationActionButton(
+              key: 'DailyNotification',
+              label: 'Go To Daily Notification Screen')
+        ],
       );
 
       // await PushNotificationService.showNotification(
@@ -150,49 +154,13 @@ class _FeedbackPageState extends State<FeedbackPage> {
         body: notificationMessage,
         schedule: true,
         interval: 60,
+        actionButtons: [
+          NotificationActionButton(
+              key: 'DailyNotification',
+              label: 'Go To Daily Notification Screen')
+        ],
       );
     }
-
-    // Show notification
-    // await PushNotificationService.showNotification(
-    //   title: 'Sleep Well Quality',
-    //   body: notificationMessage,
-    //   interval: 60,
-    // );
-
-    // Show dialog
-    // showDialog(
-    //   context: context,
-    //   builder: (BuildContext context) {
-    //     return AlertDialog(
-    //       title: Text('Predicted Sleep Quality: $predictedQuality'),
-    //       content: Column(
-    //         mainAxisSize: MainAxisSize.min,
-    //         crossAxisAlignment: CrossAxisAlignment.start,
-    //         children: [
-    //           if (predictedQuality == 'Poor' ||
-    //               predictedQuality == 'Average') ...[
-    //             const Text(
-    //                 "Your sleep was not good, it could be due to the following reasons:"),
-    //             for (var reason in reasons) Text("- $reason"),
-    //             const Text(
-    //                 "\nHere are some tips to consider for better sleep:"),
-    //             for (var recommendation in recommendations)
-    //               Text("- $recommendation"),
-    //           ]
-    //         ],
-    //       ),
-    //       actions: [
-    //         ElevatedButton(
-    //           child: const Text('OK'),
-    //           onPressed: () {
-    //             Get.to(AlarmScreen());
-    //           },
-    //         ),
-    //       ],
-    //     );
-    //   },
-    // );
   }
 
   void evaluateSleepQuality(BuildContext context) {
@@ -213,81 +181,10 @@ class _FeedbackPageState extends State<FeedbackPage> {
     showSleepQualityDialog(context, predictedQuality, reasons, recommendations);
   }
 
-  // Future<void> showSleepQualityDialog(
-  //     BuildContext context,
-  //     String predictedQuality,
-  //     List<String> reasons,
-  //     List<String> recommendations) async {
-  //   // Prepare notification message
-  //   String notificationMessage = 'Your Sleep Quality is: $predictedQuality \n';
-  //   // if (predictedQuality == 'Poor' || predictedQuality == 'Average') {
-  //   //   notificationMessage +=
-  //   //       '\nReason: ${reasons.join(', ')}\nAdvice: ${recommendations.join(', ')}';
-  //   // }
-  //   Get.offAll(AlarmScreen());
-  //   if (predictedQuality == 'Poor' || predictedQuality == 'Average') {
-  //     await PushNotificationService.showNotification(
-  //       title: notificationMessage,
-  //       body: '\nReason: ${reasons.join(', \n')}',
-  //       summary: '\nAdvice: ${recommendations.join(', \n')}',
-  //       schedule: true,
-  //       interval: 60,
-  //     );
-  //   } else {
-  //     await PushNotificationService.showNotification(
-  //       title: 'Sleep Well Quality',
-  //       body: notificationMessage,
-  //       interval: 60,
-  //     );
-  //   }
-
-  //   // Show notification
-  //   // await PushNotificationService.showNotification(
-  //   //   title: 'Sleep Well Quality',
-  //   //   body: notificationMessage,
-  //   //   interval: 60,
-  //   // );
-
-  //   // Show dialog
-  //   // showDialog(
-  //   //   context: context,
-  //   //   builder: (BuildContext context) {
-  //   //     return AlertDialog(
-  //   //       title: Text('Predicted Sleep Quality: $predictedQuality'),
-  //   //       content: Column(
-  //   //         mainAxisSize: MainAxisSize.min,
-  //   //         crossAxisAlignment: CrossAxisAlignment.start,
-  //   //         children: [
-  //   //           if (predictedQuality == 'Poor' ||
-  //   //               predictedQuality == 'Average') ...[
-  //   //             const Text(
-  //   //                 "Your sleep was not good, it could be due to the following reasons:"),
-  //   //             for (var reason in reasons) Text("- $reason"),
-  //   //             const Text(
-  //   //                 "\nHere are some tips to consider for better sleep:"),
-  //   //             for (var recommendation in recommendations)
-  //   //               Text("- $recommendation"),
-  //   //           ]
-  //   //         ],
-  //   //       ),
-  //   //       actions: [
-  //   //         ElevatedButton(
-  //   //           child: const Text('OK'),
-  //   //           onPressed: () {
-  //   //             Get.to(AlarmScreen());
-  //   //           },
-  //   //         ),
-  //   //       ],
-  //   //     );
-  //   //   },
-  //   // );
-  // }
-
-  Future<void> _getFeedback() async {
+  Future<void> _getFeedback(BuildContext context) async {
     final url = Uri.parse(
         'https://my-sleep-quality-api-5903a0effd39.herokuapp.com/predict');
-    // final urll = Uri.parse(
-    //     'https://my-sleep-quality-api-5903a0effd39.herokuapp.com/predict');
+
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -296,7 +193,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
 
     if (response.statusCode == 200) {
       final result = jsonDecode(response.body);
-      final String predictedQuality = result['predicted_quality'];
+      final String sleepQuality = result['predicted_quality'];
 
       // Casting dynamic list to List<String>
       final List<String> reasons = List<String>.from(result['reasons'] ?? []);
@@ -306,10 +203,11 @@ class _FeedbackPageState extends State<FeedbackPage> {
         'UserId': userId,
         'answers': answers,
         'timestamp': DateTime.now(),
-        'predictedQuality': predictedQuality,
+        'sleepQuality': sleepQuality,
+        'reasons': reasons,
+        'recommendations': recommendations,
       });
-      showSleepQualityDialog(
-          context, predictedQuality, reasons, recommendations);
+      showSleepQualityDialog(context, sleepQuality, reasons, recommendations);
     } else {
       print('Failed to get a response. Status code: ${response.statusCode}');
     }
@@ -394,7 +292,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   if (_currentQuestionIndex == questions.length - 1 &&
                       _canProceed)
                     ElevatedButton(
-                      onPressed: _getFeedback,
+                      onPressed: () async => await _getFeedback(context),
                       child: const Text('Submit Feedback'),
                     ),
                 ],

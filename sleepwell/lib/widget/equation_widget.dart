@@ -1,31 +1,36 @@
 import 'dart:async';
-
 import 'package:alarm/alarm.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sleepwell/screens/dashboard_screen.dart';
+import 'package:sleepwell/models/equation_abstrat_model.dart';
 import 'package:sleepwell/screens/feedback/feedback_page.dart';
 import 'package:sleepwell/models/difficult_equation_model.dart';
 import 'package:sleepwell/models/easy_equation_model.dart';
-import 'package:sleepwell/models/equation_abstrat_model.dart';
-// import 'package:sleepwell/screens/home_screen.dart';
+import 'package:sleepwell/screens/home_screen.dart';
+
+import '../controllers/alarm/alarm_list__controller.dart';
+import '../push_notification_service.dart';
 
 class EquationWidget extends StatefulWidget {
   final bool showEasyEquation;
   final int alarmId;
+  final bool isForBeneficiary;
+
   const EquationWidget({
-    Key? key,
+    super.key,
     required this.alarmId,
     this.showEasyEquation = false,
-  }) : super(key: key);
+    required this.isForBeneficiary,
+  });
 
   @override
   State<EquationWidget> createState() => _EquationWidgetState();
 }
 
 class _EquationWidgetState extends State<EquationWidget> {
-  bool _showFeedbackDialog = true;
   Timer? _reminderTimer;
+  bool _showFeedbackDialog = true;
 
   @override
   void dispose() {
@@ -33,14 +38,14 @@ class _EquationWidgetState extends State<EquationWidget> {
     super.dispose();
   }
 
+  final AlarmListController controller = Get.put(AlarmListController());
+
   @override
   Widget build(BuildContext context) {
     EquationModel equationModel = widget.showEasyEquation
         ? EasyEquationModel()
         : DifficultEquationModel();
-
     final width = MediaQuery.of(context).size.width;
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Column(
@@ -78,7 +83,6 @@ class _EquationWidgetState extends State<EquationWidget> {
                 final optionsCount = equationModel.options.length;
                 const margin = 10 * 2;
                 final allOptionsMargin = optionsCount * margin;
-
                 return Container(
                   width: (widthScreen - allOptionsMargin) / optionsCount,
                   margin: const EdgeInsets.symmetric(horizontal: margin / 2),
@@ -87,54 +91,69 @@ class _EquationWidgetState extends State<EquationWidget> {
                     onPressed: () async {
                       if (equationModel.options[index] ==
                           equationModel.result) {
-                        print(":::::::::::::::::: Success chosen");
+                        print("Correct answer");
+
+                        // Stop the alarm
                         await Alarm.stop(widget.alarmId);
-                        final shouldShowFeedbackDialog = await showDialog<bool>(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: const Text('Daily Feedback'),
-                              content: const Text(
-                                  'Do you want to give your feedback now?'),
-                              actions: [
-                                TextButton(
-                                  child: const Text('Remind me later'),
-                                  onPressed: () {
-                                    // Navigator.pop(context, false);
-                                    Get.back(result: false);
-                                    _showFeedbackDialog = false;
-                                    _startReminderTimer();
-                                  },
-                                ),
-                                TextButton(
-                                  child: const Text('Yes'),
-                                  onPressed: () {
-                                    // Navigator.pop(context, true);
-                                    // Navigator.push(
-                                    //   context,
-                                    //   MaterialPageRoute(
-                                    //       builder: (context) => FeedbackPage()),
-                                    // );
-                                    Get.back(result: true);
-                                    Get.to(const FeedbackPage());
-                                  },
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                        if (!(shouldShowFeedbackDialog ?? false)) {
-                          // Navigator.pushAndRemoveUntil(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //       builder: (context) => MyHomePage()),
-                          //   (route) => false,
-                          // );
-                          Get.offAll(DashboardScreen());
+                        controller.deleteAlarm(widget.alarmId);
+                        // If the alarm is for a beneficiary, reset data and navigate to the home screen
+                        if (!widget.isForBeneficiary) {
+                          print("Resetting beneficiary info");
+
+                          Get.offAll(() => const HomeScreen());
+                        } else {
+                          // For the main user, show the feedback dialog
+                          final shouldShowFeedbackDialog =
+                              await showDialog<bool>(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text('Daily Feedback'),
+                                content: const Text(
+                                    'Do you want to give your feedback now?'),
+                                actions: [
+                                  TextButton(
+                                    child: const Text('Remind me later'),
+                                    onPressed: () async {
+                                      await Alarm.stop(widget.alarmId).then(
+                                          (_) => Navigator.pop(context, false));
+
+                                      await PushNotificationService
+                                          .showNotification(
+                                        title: 'Daily Feedback',
+                                        body:
+                                            'You must  given your feedback now',
+                                        schedule: true,
+                                        interval: 3600,
+                                        actionButtons: [
+                                          NotificationActionButton(
+                                              key: 'FeedBak',
+                                              label: 'Go To Feedback Now')
+                                        ],
+                                      );
+                                      Get.back(result: false);
+                                      _showFeedbackDialog = false;
+                                      _startReminderTimer();
+                                    },
+                                  ),
+                                  TextButton(
+                                    child: const Text('Yes'),
+                                    onPressed: () {
+                                      Get.back(result: true);
+                                      Get.to(() => const FeedbackPage());
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+
+                          if (shouldShowFeedbackDialog ?? false) {
+                            Get.to(() => const FeedbackPage());
+                          }
                         }
                       } else {
-                        print(":::::::::::::::::: Wrong chosen");
-                        setState(() {});
+                        print("Wrong answer");
                       }
                     },
                     child: Text(equationModel.options[index].toString()),
@@ -151,33 +170,28 @@ class _EquationWidgetState extends State<EquationWidget> {
   }
 
   void _startReminderTimer() {
-    _reminderTimer = Timer(Duration(minutes: 1), () {
+    _reminderTimer = Timer(const Duration(minutes: 3), () {
       if (_showFeedbackDialog) {
         showDialog(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('Daily Feedback Reminder'),
-              content: Text('Do you want to give your feedback now?'),
+              title: const Text('Daily Feedback Reminder'),
+              content: const Text('Do you want to give your feedback now?'),
               actions: [
                 TextButton(
-                  child: Text('Remind me later'),
+                  child: const Text('Remind me later'),
                   onPressed: () {
-                    // Navigator.pop(context);
-                    Get.back();
+                    Get.back(result: false);
+                    _showFeedbackDialog = false;
                     _startReminderTimer();
                   },
                 ),
                 TextButton(
-                  child: Text('Yes'),
+                  child: const Text('Yes'),
                   onPressed: () {
-                    // Navigator.pop(context);
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(builder: (context) => FeedbackPage()),
-                    // );
                     Get.back();
-                    Get.to(const FeedbackPage());
+                    Get.to(() => const FeedbackPage());
                   },
                 ),
               ],

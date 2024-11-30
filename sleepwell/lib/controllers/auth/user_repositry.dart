@@ -1,32 +1,32 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:sleepwell/models/user_model.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:flutter/material.dart';
+// import 'package:get/get.dart';
+// import 'package:sleepwell/models/user_model.dart';
 
-// class to preform Database opration on user like update delete  for new will not be used
+// // class to preform Database opration on user like update delete  for new will not be used
 
-class UserReository extends GetxController {
-  static UserReository get instance => Get.find();
+// class UserReository extends GetxController {
+//   static UserReository get instance => Get.find();
 
-  final _db = FirebaseFirestore.instance;
+//   final _db = FirebaseFirestore.instance;
 
-  createUser(UserModel user) async {
-    await _db
-        .collection("Users")
-        .add(user.toJson())
-        .whenComplete(() => Get.snackbar(
-              'Success',
-              'Your account has been created',
-              snackPosition: SnackPosition.BOTTOM,
-              backgroundColor: Colors.green.withOpacity(0.1),
-              colorText: Colors.green,
-            ))
-        .catchError((error, stackTrace) {
-      Get.snackbar("Error", "Something went wrong ,Try again",
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.redAccent.withOpacity(0.1),
-          colorText: Colors.red);
-      print(error.toString());
-    });
-  }
-}
+//   createUser(UserModel user) async {
+//     await _db
+//         .collection("Users")
+//         .add(user.toJson())
+//         .whenComplete(() => Get.snackbar(
+//               'Success',
+//               'Your account has been created',
+//               snackPosition: SnackPosition.BOTTOM,
+//               backgroundColor: Colors.green.withOpacity(0.1),
+//               colorText: Colors.green,
+//             ))
+//         .catchError((error, stackTrace) {
+//       Get.snackbar("Error", "Something went wrong ,Try again",
+//           snackPosition: SnackPosition.BOTTOM,
+//           backgroundColor: Colors.redAccent.withOpacity(0.1),
+//           colorText: Colors.red);
+//       print(error.toString());
+//     });
+//   }
+// }

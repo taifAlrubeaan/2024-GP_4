@@ -1,15 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:sleepwell/main.dart';
 
-// class UserTypeClass {
-//   static String? get userType => prefs.getString('userType');
-
-//   static set userType(String? type) =>
-//       prefs.setString('userType', type ?? 'Guest');
-
-//   static void deleteUserType() => prefs.remove('userType');
-// }
-
 class AppNotifications {
   static const _publicTopic = "public_notification";
   static void subscribeToPublicNotification() {

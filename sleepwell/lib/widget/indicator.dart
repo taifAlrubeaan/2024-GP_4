@@ -4,7 +4,7 @@ class Indicator extends StatelessWidget {
   final Color color;
   final String text;
 
-  const Indicator({
+  const Indicator({super.key, 
     required this.color,
     required this.text,
   });

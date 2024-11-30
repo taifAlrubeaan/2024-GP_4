@@ -1,12 +1,16 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/get_navigation.dart';
+import 'package:get/get.dart';
 import 'package:sleepwell/alarm.dart';
-import 'package:sleepwell/main.dart';
 import 'package:sleepwell/models/list_of_music.dart';
 import 'package:sleepwell/widget/sounds_widget.dart';
+import '../models/alarm_data.dart';
 
 class EditAlarmScreen extends StatefulWidget {
+  final AlarmData? alarm;
+
+  const EditAlarmScreen({super.key, this.alarm});
+
   @override
   _EditAlarmScreenState createState() => _EditAlarmScreenState();
 }
@@ -15,29 +19,91 @@ class _EditAlarmScreenState extends State<EditAlarmScreen> {
   String selectedSoundPath = musicList[0].musicPath;
   String selectedMission = 'Default';
   String selectedMath = 'easy';
-  bool isMissionStopVisible = false;
-  bool isMathMissionSelected = false;
-  String mathMissionDifficulty = 'Easy';
-  // final audioPlayer = AudioPlayer();
-
-  void saveSettings() {
-    prefs.setString("selectedMission", selectedMission);
-    prefs.setString("selectedMath", selectedMath);
-    prefs.setString("selectedSoundPath", selectedSoundPath);
-    setState(() {});
-  }
-
-  void loadSettings() {
-    selectedSoundPath =
-        prefs.getString("selectedSoundPath") ?? musicList[0].musicPath;
-    selectedMission = prefs.getString("selectedMission") ?? "Default";
-    selectedMath = prefs.getString("selectedMath") ?? "easy";
-  }
+  late bool isGeneralSettings;
 
   @override
   void initState() {
     super.initState();
-    loadSettings();
+    isGeneralSettings = widget.alarm == null;
+    log("Initialized as ${isGeneralSettings ? 'General Settings' : 'Alarm-Specific Settings'}");
+
+    if (isGeneralSettings) {
+      _loadDefaultSettings();
+    } else {
+      _loadAlarmSettings();
+    }
+  }
+
+  Future<void> _loadDefaultSettings() async {
+    Map<String, String> settings = await AppAlarm.getDefaultSettings();
+    setState(() {
+      selectedSoundPath = settings['soundPath'] ?? musicList[0].musicPath;
+      selectedMission = settings['mission'] ?? 'Default';
+      selectedMath = settings['mathDifficulty'] ?? 'easy';
+    });
+  }
+
+  void _loadAlarmSettings() {
+    setState(() {
+      selectedSoundPath =
+          widget.alarm?.selectedSoundPath ?? musicList[0].musicPath;
+      selectedMission = widget.alarm?.selectedMission ?? 'Default';
+      selectedMath = widget.alarm?.selectedMath ?? 'easy';
+    });
+  }
+
+  Future<void> _saveSettings() async {
+    if (isGeneralSettings) {
+      await AppAlarm.saveDefaultSettings(
+        soundPath: selectedSoundPath,
+        mission: selectedMission,
+        mathDifficulty: selectedMath,
+      );
+      AppAlarm.initAlarms(); // Update alarms globally
+      await AppAlarm.getAlarms();
+      log("Default settings saved.");
+    } else {
+      widget.alarm?.selectedSoundPath = selectedSoundPath;
+      widget.alarm?.selectedMission = selectedMission;
+      widget.alarm?.selectedMath = selectedMath;
+
+      AppAlarm.updateAlarmSettings(
+        alarmId: widget.alarm!.alarmId,
+        soundPath: selectedSoundPath,
+        mission: selectedMission,
+        mathDifficulty: selectedMath,
+      );
+      AppAlarm.initAlarms(); // Update alarms globally
+      await AppAlarm.getAlarms();
+      log("Settings saved for alarm ID: ${widget.alarm?.alarmId}");
+    }
+
+    Get.back(); // Close the screen
+  }
+
+  Future<void> _showSaveConfirmationDialog() async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Save Changes'),
+          content: const Text('Do you want to save the updated settings?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
+    if (result == true) {
+      await _saveSettings();
+    }
   }
 
   @override
@@ -45,17 +111,20 @@ class _EditAlarmScreenState extends State<EditAlarmScreen> {
     final soundsWidget = SoundsWidget(
       initSoundPath: selectedSoundPath,
       onChangeSound: (soundPath) {
-        selectedSoundPath = soundPath ?? musicList[0].musicName;
+        setState(() {
+          selectedSoundPath = soundPath ?? musicList[0].musicPath;
+        });
       },
     );
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Edit Alarm',
-          style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+        title: Text(
+          isGeneralSettings ? 'Edit General Settings' : 'Edit Alarm Settings',
+          style: const TextStyle(color: Colors.white),
         ),
-        backgroundColor: Color(0xFF004AAD),
+        iconTheme: const IconThemeData(color: Colors.white),
+        backgroundColor: const Color(0xFF004AAD),
       ),
       body: Container(
         decoration: const BoxDecoration(
@@ -68,8 +137,6 @@ class _EditAlarmScreenState extends State<EditAlarmScreen> {
         child: Padding(
           padding: const EdgeInsets.all(30.0),
           child: ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            shrinkWrap: true,
             children: [
               const SizedBox(height: 15),
               const Text(
@@ -77,128 +144,93 @@ class _EditAlarmScreenState extends State<EditAlarmScreen> {
                 style: TextStyle(
                   fontSize: 25,
                   fontWeight: FontWeight.bold,
-                  color: Color.fromARGB(255, 255, 255, 255),
+                  color: Colors.white,
                 ),
               ),
               Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: soundsWidget),
-              // const Divider(),
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: soundsWidget,
+              ),
               const SizedBox(height: 30),
-
-              // choose the method of pause the alarm
               const Text(
                 'Alarm Type',
                 style: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                    color: Color.fromARGB(255, 255, 255, 255)),
-              ),
-              const SizedBox(height: 20),
-              getRadioListTile(
-                value: "Default",
-                groupValue: selectedMission,
-                onChanged: (value) =>
-                    setState(() => selectedMission = value ?? "Default"),
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                title: 'Sound only',
-                icon: Icons.alarm,
-              ),
-              /* const ListTile(
-                contentPadding: EdgeInsets.symmetric(horizontal: 68),
-                leading: Icon(
-                  Icons.pause_circle_outline_sharp,
-                  size: 20,
-                  color: Color.fromARGB(255, 255, 255, 255),
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
                 ),
-                title: Text(
-                  'Stop',
-                  style: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
-                    color: Color.fromARGB(255, 255, 255, 255),
-                  ),
-                ),
-              ),*/
-              const SizedBox(height: 20),
-              getRadioListTile(
-                value: "Math Problem",
-                groupValue: selectedMission,
-                onChanged: (value) =>
-                    setState(() => selectedMission = value ?? "Default"),
-                padding: const EdgeInsets.symmetric(horizontal: 0),
-                icon: Icons.calculate_rounded,
-                title: 'Sound & Math Problem',
-              ),
-              getRadioListTile(
-                value: "easy",
-                groupValue:
-                    selectedMission == "Math Problem" ? selectedMath : "",
-                onChanged: (value) =>
-                    setState(() => selectedMath = value ?? "easy"),
-                padding: const EdgeInsets.symmetric(horizontal: 58),
-                icon: Icons.sim_card,
-                title: 'easy',
-                fontSize: 17,
-              ),
-              getRadioListTile(
-                value: "difficult",
-                groupValue:
-                    selectedMission == "Math Problem" ? selectedMath : "",
-                onChanged: (value) =>
-                    setState(() => selectedMath = value ?? "easy"),
-                padding: const EdgeInsets.symmetric(horizontal: 58),
-                icon: Icons.difference,
-                title: 'difficult',
-                fontSize: 17,
               ),
               const SizedBox(height: 20),
+              _buildMissionTypeSelector(),
+              const SizedBox(height: 30),
               Row(
                 children: [
                   Expanded(
-                    child: FilledButton(
-                      onPressed: () async {
-                        await soundsWidget.audioPlayer.pause();
-                        Get.back();
-                      },
-                      child: const Text(
-                        'Cancel',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Color.fromARGB(255, 255, 255, 255),
-                          // backgroundColor: Color.fromARGB(0, 9, 42, 232),
-                        ),
-                      ),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.grey),
+                      onPressed: () => Get.back(),
+                      child: const Text('Cancel'),
                     ),
                   ),
                   const SizedBox(width: 20),
                   Expanded(
-                    child: FilledButton(
-                      onPressed: () async {
-                        await soundsWidget.audioPlayer.pause();
-                        saveSettings();
-                        await AppAlarm.initAlarms();
-                        await AppAlarm.updateStoredWakeUpAlarmSound();
-                        Get.back();
-                      },
-                      child: const Text(
-                        'Save',
-                        style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.bold,
-                          color: Color.fromARGB(255, 255, 255, 255),
-                        ),
-                      ),
+                    child: ElevatedButton(
+                      onPressed: _showSaveConfirmationDialog,
+                      child: const Text('Save'),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildMissionTypeSelector() {
+    return Column(
+      children: [
+        getRadioListTile(
+          value: "Default",
+          groupValue: selectedMission,
+          onChanged: (value) =>
+              setState(() => selectedMission = value ?? "Default"),
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          icon: Icons.alarm,
+          title: 'Sound only',
+        ),
+        getRadioListTile(
+          value: "Math Problem",
+          groupValue: selectedMission,
+          onChanged: (value) =>
+              setState(() => selectedMission = value ?? "Default"),
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          icon: Icons.calculate,
+          title: 'Sound & Math Problem',
+        ),
+        if (selectedMission == "Math Problem") ...[
+          getRadioListTile(
+            value: "easy",
+            groupValue: selectedMath,
+            onChanged: (value) =>
+                setState(() => selectedMath = value ?? "easy"),
+            padding: const EdgeInsets.symmetric(horizontal: 30),
+            icon: Icons.star_border,
+            title: 'Easy',
+          ),
+          getRadioListTile(
+            value: "difficult",
+            groupValue: selectedMath,
+            onChanged: (value) =>
+                setState(() => selectedMath = value ?? "difficult"),
+            padding: const EdgeInsets.symmetric(horizontal: 30),
+            icon: Icons.star,
+            title: 'Difficult',
+          ),
+        ],
+      ],
     );
   }
 }

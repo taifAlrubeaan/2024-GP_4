@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AboutYouPage extends StatefulWidget {
+  const AboutYouPage({super.key});
+
   @override
   _AboutYouPageState createState() => _AboutYouPageState();
 }

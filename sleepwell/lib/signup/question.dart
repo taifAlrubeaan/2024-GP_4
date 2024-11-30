@@ -2,11 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sleepwell/screens/auth/signin_screen.dart';
+import 'package:sleepwell/screens/home_screen.dart';
+
+import '../services/firebase_auth_service.dart';
 
 class QuestionScreen extends StatefulWidget {
   static String RouteScreen = 'question';
-  const QuestionScreen({Key? key}) : super(key: key);
+  const QuestionScreen({super.key});
 
   @override
   State<QuestionScreen> createState() => _QuestionScreenState();
@@ -21,6 +23,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
   bool showSpinner = false;
   late String userId;
   late String email;
+  FirebaseAuthService authService = FirebaseAuthService();
 
   @override
   void initState() {
@@ -34,7 +37,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
         showSpinner = true; // Show spinner while fetching user
       });
 
-      final user = await _auth.currentUser;
+      final user = _auth.currentUser;
       if (user != null) {
         setState(() {
           userId = user.uid;
@@ -174,7 +177,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
         showSpinner = true;
       });
 
-      await _firestore.collection('User behavior').doc(userId).set({
+      await _firestore.collection('userHabitts').doc(userId).set({
         'UserId': userId,
         'answerQ1': answers[0],
         'answerQ2': answers[1],
@@ -209,8 +212,9 @@ class _QuestionScreenState extends State<QuestionScreen> {
             actions: <Widget>[
               TextButton(
                 child: const Text('OK'),
-                onPressed: () {
-                  Get.to(SignInScreen());
+                onPressed: () async {
+                  await authService.setUserId();
+                  Get.offAll(const HomeScreen());
                 },
               ),
             ],
@@ -295,14 +299,14 @@ class _QuestionScreenState extends State<QuestionScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ElevatedButton(
-                    child: const Text('Back'),
                     onPressed: _previousQuestion,
+                    child: const Text('Back'),
                   ),
                   ElevatedButton(
-                    child: const Text('Next'),
                     onPressed: answers[currentQuestionIndex].isEmpty
                         ? null
                         : _nextQuestion,
+                    child: const Text('Next'),
                   ),
                   if (showError &&
                       options[currentQuestionIndex].contains('Other'))

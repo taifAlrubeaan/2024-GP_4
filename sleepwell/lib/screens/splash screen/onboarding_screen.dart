@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sleepwell/screens/onboarding_data.dart';
-import 'package:sleepwell/screens/welcoming_screen.dart';
+import 'package:sleepwell/screens/splash screen/onboarding_data.dart';
+import 'package:sleepwell/screens/splash screen/welcoming_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class OnboardingScreen extends StatefulWidget {
   static String RouteScreen = 'onboarding_screen';
-  const OnboardingScreen({Key? key}) : super(key: key);
+  const OnboardingScreen({super.key});
 
   @override
   _OnboardingScreenState createState() => _OnboardingScreenState();
@@ -22,7 +22,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [Color(0xFF004AAD), Color(0xFF040E3B)],
             begin: Alignment.topCenter,
@@ -48,14 +48,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       const SizedBox(height: 50),
                       Text(
                         controller.items[index].title,
-                        style: TextStyle(
+                        style: const TextStyle(
                             color: Colors.white,
                             fontSize: 30,
                             fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 15),
                       Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
                         child: Text(
                           controller.items[index].descriptions,
                           style: const TextStyle(
@@ -89,9 +89,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             // );
                             Get.offAll(const welcome());
                           },
-                          child: const Text(
-                            "Skip",
-                            style: TextStyle(color: Colors.white),
+                          child: Text(
+                            "Skip".tr,
+                            style: const TextStyle(color: Colors.white),
                           ),
                         ),
                         // Indicator
@@ -116,9 +116,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             duration: const Duration(milliseconds: 600),
                             curve: Curves.easeIn,
                           ),
-                          child: const Text(
-                            "Next",
-                            style: TextStyle(color: Colors.white),
+                          child: Text(
+                            "Next".tr,
+                            style: const TextStyle(color: Colors.white),
                           ),
                         )
                       ],
@@ -148,8 +148,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           //     context, MaterialPageRoute(builder: (context) => welcome()));
           Get.offAll(const welcome());
         },
-        child: const Text("Get Started",
-            style: TextStyle(color: Color(0xFF040E3B), fontSize: 20)),
+        child: Text("Get Started".tr,
+            style: const TextStyle(color: Color(0xFF040E3B), fontSize: 20)),
       ),
     );
   }

@@ -1,38 +1,59 @@
-
-
 import 'package:alarm/alarm.dart';
-import 'package:alarm/model/alarm_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:sleepwell/main.dart';
 import 'package:sleepwell/widget/equation_widget.dart';
+import '../../models/alarm_data.dart';
 
-class AlarmRingWithEquationScreen extends StatelessWidget {
+class AlarmRingWithEquationScreen extends StatefulWidget {
   final AlarmSettings alarmSettings;
   final bool showEasyEquation;
-
+  final AlarmData alarmsData;
   const AlarmRingWithEquationScreen({
     super.key,
     required this.alarmSettings,
     required this.showEasyEquation,
+    required this.alarmsData,
   });
 
   @override
+  State<AlarmRingWithEquationScreen> createState() =>
+      _AlarmRingWithEquationScreenState();
+}
+
+class _AlarmRingWithEquationScreenState
+    extends State<AlarmRingWithEquationScreen> {
+  late String name;
+  late bool userType;
+
+  @override
+  void initState() {
+    super.initState();
+    name = widget.alarmsData.name;
+    userType = widget.alarmsData.isForBeneficiary;
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final String title = "Ringing...\nOptimal time to WAKE UP\n for    $name";
+
     return Scaffold(
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Text(
-              "Rining...\nOptimal time to WAKE UP",
+              title,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const Text("🔔", style: TextStyle(fontSize: 50)),
 
-            // show the equation widget
+            // Show the equation widget
             EquationWidget(
-                showEasyEquation: showEasyEquation, alarmId: alarmSettings.id),
+              showEasyEquation: widget.showEasyEquation,
+              alarmId: widget.alarmSettings.id,
+              isForBeneficiary: userType!,
+            ),
 
             Container(
               width: double.infinity,
@@ -40,20 +61,19 @@ class AlarmRingWithEquationScreen extends StatelessWidget {
               child: TextButton(
                 onPressed: () {
                   final now = DateTime.now();
-                  int snooze = prefs.getInt("snooze") ?? 1;
+                  int snooze = prefs.getInt("snooze") ?? 2;
                   Alarm.set(
-                    alarmSettings: alarmSettings.copyWith(
-                      dateTime: DateTime(
-                        now.year,
-                        now.month,
-                        now.day,
-                        now.hour,
-                        now.minute,
-                        0,
-                        0,
-                      ).add(Duration(minutes: snooze)),
-                    ),
-                  ).then((_) => Navigator.pop(context));
+                      alarmSettings: widget.alarmSettings.copyWith(
+                    dateTime: DateTime(
+                      now.year,
+                      now.month,
+                      now.day,
+                      now.hour,
+                      now.minute,
+                      0,
+                      0,
+                    ).add(Duration(minutes: snooze)),
+                  )).then((_) => Navigator.pop(context));
                 },
                 child: Text(
                   "Snooze",

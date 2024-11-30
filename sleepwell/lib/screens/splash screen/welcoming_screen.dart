@@ -13,7 +13,6 @@ class welcome extends StatelessWidget {
     Color myColor = const Color.fromARGB(255, 0, 74, 173);
     return Scaffold(
       backgroundColor: Colors.white,
-      
       body: Container(
         height: MediaQuery.of(context).size.height,
         decoration: const BoxDecoration(
@@ -24,7 +23,7 @@ class welcome extends StatelessWidget {
           ),
         ),
         child: Padding(
-          padding: EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20),
           child: ListView(
             shrinkWrap: true,
             children: [
@@ -35,24 +34,25 @@ class welcome extends StatelessWidget {
                   image: AssetImage('assets/logo2.png'),
                 ),
               ),
-              const Center(
+              Center(
                 child: Text(
-                  'Welcome to SleepWell',
-                  style: TextStyle(
+                  'Welcome to SleepWell'.tr,
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 30,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
-              const Center(
+              Center(
                 child: Text(
-                  "Get ready to unlock better sleep and wake up refreshed \n \n Let's embark on this journey together!",
+                  "Get ready to unlock better sleep and wake up refreshed \n \n Let's embark on this journey together!"
+                      .tr,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 20,
                     //fontWeight: FontWeight.bold,
@@ -60,29 +60,29 @@ class welcome extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              regsterbutton(
-                color: Color(0xffd5defe),
-                title: 'SIGN UP',
+              RegisterButton(
+                color: const Color(0xffd5defe),
+                title: 'SIGN UP'.tr,
                 onPressed: () {
                   // Navigator.push(
                   //   context,
                   //   MaterialPageRoute(builder: (context) => SignUpScreen()),
                   // );
-                   Get.offAll(const SignUpScreen());
+                  Get.offAll(  SignUpScreen());
                 },
               ),
               const SizedBox(
                 height: 2,
               ),
-              regsterbutton(
-                color: Color(0xffd5defe),
-                title: 'SIGN IN',
+              RegisterButton(
+                color: const Color(0xffd5defe),
+                title: 'SIGN IN'.tr,
                 onPressed: () {
                   // Navigator.push(
                   //   context,
                   //   MaterialPageRoute(builder: (context) => SignInScreen()),
                   // );
-                   Get.offAll(const SignInScreen());
+                  Get.offAll(const SignInScreen());
                 },
               )
             ],
