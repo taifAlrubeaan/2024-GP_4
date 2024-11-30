@@ -1,24 +1,21 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_chart/fl_chart.dart';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:sleepwell/widget/statistic_monthly_widget.dart';
-
-import '../../controllers/alarms_controller.dart';
+import '../../controllers/statistics/alarms_statistics_controller.dart';
 import '../../controllers/beneficiary_controller.dart';
-
 import '../../models/alarm_model.dart';
 import '../../widget/statistic_daily_widget.dart';
 import '../../widget/statistic_weekly_widget.dart';
-import '../alarm/SleepWellCycleScreen/sleepwell_cycle_screen.dart';
+import '../alarm/sleepwell_cycle_screen.dart';
 
 class BeneficiaryStatisticsScreen extends StatefulWidget {
-  // final String beneficiaryId;
-
-  // BeneficiaryStatisticsScreen({required this.beneficiaryId});
+  const BeneficiaryStatisticsScreen({super.key});
 
   @override
   State<BeneficiaryStatisticsScreen> createState() =>
@@ -33,8 +30,8 @@ class _BeneficiaryStatisticsScreenState
 
   void getWeekRange() {
     final now = DateTime.now();
-    final weekEnd = now.subtract(const Duration(days: 1)); // نهاية الأسبوع
-    final weekStart = now.subtract(const Duration(days: 7)); // بداية الأسبوع
+    final weekEnd = now.subtract(const Duration(days: 1));
+    final weekStart = now.subtract(const Duration(days: 7));
 
     weekRange =
         '${DateFormat('d MMM').format(weekStart)} - ${DateFormat('d MMM').format(weekEnd)}';
@@ -80,7 +77,8 @@ class _BeneficiaryStatisticsScreenState
 
   @override
   Widget build(BuildContext context) {
-    AlarmsController alarmsController = Get.put(AlarmsController());
+    AlarmsStatisticsController alarmsController =
+        Get.put(AlarmsStatisticsController());
     return DefaultTabController(
       length: 3,
       child: Scaffold(
@@ -159,103 +157,67 @@ class _BeneficiaryStatisticsScreenState
                   } else if (snapshot.hasError) {
                     return const Center(child: Text("Error loading data"));
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    // return Center(
-                    //   child: Container(
-                    //     // height: MediaQuery.of(context).size.height,
-                    //     width: double.infinity,
-                    //     decoration: const BoxDecoration(
-                    //       gradient: LinearGradient(
-                    //         colors: [Color(0xFF004AAD), Color(0xFF040E3B)],
-                    //         begin: Alignment.topCenter,
-                    //         end: Alignment.bottomCenter,
-                    //       ),
-                    //     ),
+                    DateTime now = DateTime.now();
+                    String timestamp = DateFormat('yyyy-MM-dd: hh:mm a')
+                        .format(now)
+                        .toString();
+                    timestamp =
+                        'No data available for yesterday:  This Is Default data\n Do Daily ALarm To View Statistics Daily Like This ';
+                    // timestamp = 'Statistic Daily Times In: $timestamp';
+                    int numOfCycles = 1;
 
-                    //     // child: Column(
-                    //     //   mainAxisAlignment: MainAxisAlignment.center,
-                    //     //   children: [
-                    //     //     const SizedBox(height: 300),
-                    //     //     const Text(
-                    //     //       'Set new alarm for your follower',
-                    //     //       style: TextStyle(color: Colors.white),
-                    //     //     ),
-                    //     //     ElevatedButton(
-                    //     //       onPressed: () {
-                    //     //         Navigator.push(
-                    //     //           context,
-                    //     //           MaterialPageRoute(
-                    //     //             builder: (context) =>
-                    //     //                 SleepWellCycleScreen(),
-                    //     //           ),
-                    //     //         );
-                    //     //         // final DeviceController controllerDevice =
-                    //     //         //     Get.put(DeviceController());
-                    //     //         // if (!isForBeneficiary!) {
-                    //     //         //   BottomSheetWidget.showDeviceBottomSheet(
-                    //     //         //     context,
-                    //     //         //     controllerDevice,
-                    //     //         //     'Available Devices For $beneficiaryName ',
-                    //     //         //     isForBeneficiary: true,
-                    //     //         //     beneficiaryId:
-                    //     //         //         beneficiaryId.value, // معرف المستفيد
-                    //     //         //   );
-                    //     //         // } else {
-                    //     //         //   BottomSheetWidget.showDeviceBottomSheet(
-                    //     //         //     context,
-                    //     //         //     controllerDevice,
-                    //     //         //     'Available Devices For  Your Self',
-                    //     //         //   );
-                    //     //         // }
-                    //     //       },
-                    //     //       style: ElevatedButton.styleFrom(
-                    //     //         padding: const EdgeInsets.symmetric(
-                    //     //             horizontal: 12, vertical: 8),
-                    //     //         backgroundColor: const Color(0xFF21E6C1),
-                    //     //         shape: RoundedRectangleBorder(
-                    //     //           borderRadius: BorderRadius.circular(20),
-                    //     //         ),
-                    //     //       ),
-                    //     //       child: const Text(
-                    //     //         'Set Alarm',
-                    //     //         style: TextStyle(fontSize: 18),
-                    //     //       ),
-                    //     //     ),
-                    //     //     const SizedBox(height: 300),
-                    //     //   ],
-                    //     // ),
-                    //   ),
-                    // );
-                    return const Center(
-                        child: Text(
-                      "No data available",
-                      textAlign: TextAlign.center,
-                    ),
+                    String formattedTime = DateFormat("hh:mm a").format(now);
+
+                    return StatisticDailyWidget(
+                      timestamp: timestamp,
+                      sleepHoursDuration: '0 h 0 m',
+                      wakeup_time: formattedTime,
+                      numOfCycles: numOfCycles,
+                      actualSleepTime: formattedTime,
                     );
-                  }
-                   else {
+                  } else {
+                    // في حال وجود بيانات
                     final alarms = snapshot.data!;
-
-                    // جلب أول بيانات نوم
                     final latestAlarm = alarms.first;
-                    String wakeupTime = latestAlarm.wakeupTime; // وقت الاستيقاظ
-                    String bedtime = latestAlarm.bedtime; // وقت النوم
-                    String numOfCycles = latestAlarm.numOfCycles;
+
+                    // استرجاع القيم من البيانات
+                    String? wakeupTime = latestAlarm.wakeupTime;
+                    String? bedtime = latestAlarm.bedtime;
+
+                    // التعامل مع numOfCycles
+                    int numOfCycles;
+                    if (latestAlarm.numOfCycles is int) {
+                      numOfCycles = latestAlarm.numOfCycles;
+                    } else if (latestAlarm.numOfCycles is String) {
+                      numOfCycles = latestAlarm.numOfCycles;
+                    } else {
+                      numOfCycles = 0;
+                    }
 
                     // تحويل الأوقات من String إلى DateTime
-                    DateTime bedtimeDate = DateFormat("HH:mm").parse(bedtime);
+                    DateTime bedtimeDate =
+                        DateFormat("hh:mm a").parse(bedtime!);
                     DateTime wakeupTimeDate =
-                        DateFormat("HH:mm").parse(wakeupTime);
+                        DateFormat("hh:mm a").parse(wakeupTime!);
 
-                    // حساب عدد الساعات الفعلية للنوم
-                    Duration sleepDuration =
-                        wakeupTimeDate.difference(bedtimeDate);
+                    // حساب مدة النوم
+                    // Duration sleepDuration =
+                    //     wakeupTimeDate.difference(bedtimeDate);
+                    // String sleepHoursDuration =
+                    //     "${sleepDuration.inHours} h ${sleepDuration.inMinutes.remainder(60)}m";
 
-                    // تحويل مدة النوم إلى عدد ساعات ودقائق
-                    String sleepHoursDuration =
-                        "${sleepDuration.inHours} h ${sleepDuration.inMinutes.remainder(60)}m";
+                    Map<String, dynamic> sleepDuration = alarmsController
+                        .calculateSleepDuration(bedtimeDate, wakeupTimeDate);
 
-                    // إضافة البيانات وزر المنبه الجديد
+                    String sleepHoursDuration = sleepDuration['formatted'];
+
+                    String timestamp = DateFormat('yyyy-MM-dd: hh:mm a')
+                        .format(latestAlarm.timestamp)
+                        .toString();
+                    timestamp = 'Statistic Daily for Times:\n $timestamp';
+
                     return StatisticDailyWidget(
+                      timestamp: timestamp,
                       sleepHoursDuration: sleepHoursDuration,
                       wakeup_time: wakeupTime,
                       numOfCycles: numOfCycles,
@@ -272,83 +234,71 @@ class _BeneficiaryStatisticsScreenState
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
-                  } else if (snapshot.hasError) {
-                    return const Center(child: Text("Error loading data"));
-                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(
-                        child: Text(
-                      "No data available",
-                      textAlign: TextAlign.center,
-                    ));
                   } else {
                     final alarms = snapshot.data ?? [];
 
-                    // إنشاء قائمة تحتوي على ساعات النوم لكل يوم من الأسبوع
+                    // إنشاء القوائم للأيام السبعة
                     List<double> sleepHours = List.filled(7, 0.0);
                     List<double> sleepCycles = List.filled(7, 0.0);
 
-                    // معالجة البيانات لتحديد الأيام الصحيحة
+                    // معالجة البيانات لتحديد القيم لكل يوم
                     for (var alarm in alarms) {
-                      final alarmDate =
-                          alarm.timestamp; // تأكد من أن لديك حقل التوقيت
+                      final alarmDate = alarm.timestamp;
                       final differenceInDays =
                           DateTime.now().difference(alarmDate).inDays;
-                      print(
-                          ':::::::::::::differenceInDays::::::::::::::::::::;;');
-                      print(differenceInDays);
-                      print(
-                          ':::::::::::::::differenceInDays::::::::::::::::::;;');
-                      if (differenceInDays >= 0 && differenceInDays <= 7) {
-                        sleepHours[6 - differenceInDays] = alarm
-                            .sleepDuration.inHours
-                            .toDouble(); // 6 - difference لإدخال القيمة في العمود الصحيح
-                        sleepCycles[6 - differenceInDays] = alarm.sleepCycles
-                            .toDouble(); // 6 - difference لإدخال القيمة في العمود الصحيح
+
+                      if (differenceInDays >= 0 && differenceInDays < 7) {
+                        int index = 6 - differenceInDays; // اليوم الصحيح
+                        sleepHours[index] =
+                            alarm.sleepDuration.inHours.toDouble();
+                        sleepCycles[index] = alarm.sleepCycles.toDouble();
                       }
                     }
 
-                    // توليد barGroups بناءً على sleepHours
+                    // قائمة الألوان
+                    final weekColors = [
+                      const Color(0xFF26C6DA), // Sun
+                      const Color(0xFFDF1EE9), // Mon
+                      const Color(0xFF81C784), // Tue
+                      const Color(0xFF53C3E9), // Wed
+                      const Color(0xFF2196F3), // Thu
+                      const Color(0xFF0AE393), // Fri
+                      const Color(0xFF53C3E9), // Sat
+                    ];
+
+                    // إنشاء BarChartGroupData
                     final barGroups = List.generate(7, (index) {
                       return BarChartGroupData(
                         x: index,
                         barRods: [
                           BarChartRodData(
-                            toY: sleepHours[index], // استخدام القيمة مباشرة
-                            color: Colors.blue,
+                            toY: sleepHours[index],
+                            color: weekColors[index],
                             width: 16,
                           ),
                         ],
                       );
                     });
 
-                    List<Color> weekColors = [
-                      const Color(0xFF26C6DA), // Sun
-                      const Color.fromRGBO(223, 30, 233, 1), // Mon
-                      const Color(0xFF81C784), // Tue
-                      const Color(0xFF53C3E9), // Wed
-                      Colors.blue, // Thu
-                      const Color.fromARGB(255, 10, 227, 147), // Fri
-                      const Color(0xFF53C3E9), // Sat
-                    ];
-
-                    // توليد pieSections بناءً على sleepCycles
+                    // إنشاء PieChartSectionData
                     final pieSections = List.generate(7, (index) {
                       return PieChartSectionData(
-                        value: sleepCycles[index], // استخدام القيمة مباشرة
+                        value: sleepCycles[index],
                         color: weekColors[index],
-                        title: '${sleepCycles[index]}', // عرض القيمة
+                        title: '${sleepCycles[index].toStringAsFixed(1)}',
                         radius: 60,
                       );
                     });
 
-                    const double chartMaxYweek = 20; // قيمة افتراضية
+                    // حساب متوسط ساعات النوم
                     final double averageSleepHours =
                         sleepHours.reduce((a, b) => a + b) / sleepHours.length;
 
+                    // عرض الواجهة
                     return StatisticsWeeklyWidget(
                       barGroups: barGroups,
                       pieSections: pieSections,
-                      chartMaxYweek: chartMaxYweek,
+                      chartMaxYweek: 20,
                       averageSleepHours: averageSleepHours,
                       weekRange: weekRange,
                     );
@@ -359,14 +309,12 @@ class _BeneficiaryStatisticsScreenState
             SingleChildScrollView(
               child: FutureBuilder<List<AlarmModelData>>(
                 future: alarmsController
-                    .fetchBeneficiaryLastMonthAlarms(selectedBeneficiaryId!),
+                    .fetchBeneficiaryCurrentMonthAlarms(selectedBeneficiaryId!),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasError) {
                     return const Center(child: Text("Error loading data"));
-                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(child: Text("No data available"));
                   } else {
                     final alarms = snapshot.data ?? [];
 
@@ -412,7 +360,7 @@ class _BeneficiaryStatisticsScreenState
                       try {
                         String bedtimeString = alarm.bedtime ?? '';
                         String wakeupTimeString = alarm.wakeupTime ?? '';
-                        String cyclesString = alarm.numOfCycles ?? '0';
+                        int cyclesString = alarm.numOfCycles;
 
                         // تأكد من أن الحقلين bedtime و wakeupTime ليسا فارغين
                         if (bedtimeString.isNotEmpty &&
@@ -430,7 +378,7 @@ class _BeneficiaryStatisticsScreenState
 
                           double sleepDuration =
                               wakeupTime.difference(bedtime).inHours.toDouble();
-                          int cycles = int.tryParse(cyclesString) ?? 0;
+                          int cycles = cyclesString;
 
                           sleepHoursMonth.add(sleepDuration);
                           sleepCyclesMonth.add(cycles.toDouble());

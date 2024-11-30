@@ -1,23 +1,26 @@
-import 'package:flutter/material.dart';
+ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+
 import '../../models/feedbacke_notification_model.dart';
-
-class FeedbackNotificationWidget extends StatefulWidget {
+import '../controllers/notifications/feedbacke_notification_controllerl.dart';
+ 
+class FeedbackNotificationWidget extends StatelessWidget {
   final FeedbackeNotificationModel notification;
+  final String docId;
 
-  const FeedbackNotificationWidget({super.key, required this.notification});
+  FeedbackNotificationWidget({
+    super.key,
+    required this.notification,
+    required this.docId,
+  });
 
-  @override
-  State<FeedbackNotificationWidget> createState() =>
-      _FeedbackNotificationWidgetState();
-}
-
-class _FeedbackNotificationWidgetState
-    extends State<FeedbackNotificationWidget> {
-  RxBool isExpanded = false.obs;
+  final RxBool isExpanded = false.obs;
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<FeedbackeNotificationController>();
+
     return AnimatedSize(
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
@@ -29,124 +32,120 @@ class _FeedbackNotificationWidgetState
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (widget.notification.sleepQality.isNotEmpty)
-                Text("Sleep Quality IS: ${widget.notification.sleepQality}",
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.bold)),
-
-              // more details
+              if (notification.sleepQality.isNotEmpty)
+                Text(
+                  "Sleep Quality: ${notification.sleepQality}",
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.bold),
+                ),
               Obx(
                 () => isExpanded.value
                     ? Column(
                         children: [
                           const Divider(),
-                          if (widget.notification.sleepQality == "Poor" ||
-                              widget.notification.sleepQality == "Average")
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  "There are reasons for your sleep:",
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: Color.fromARGB(255, 92, 221, 169)),
-                                ),
-
-                                // Reasons
-                                if (widget.notification.reasons.isNotEmpty)
-                                  ...widget.notification.reasons.map(
-                                    (reason) => Padding(
-                                      padding: const EdgeInsets.only(bottom: 4),
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          const Text("• "),
-                                          Expanded(child: Text(reason)),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                const Divider(
-                                    color: Color.fromRGBO(9, 238, 13, 1)),
-                                // Recommendations
-                                const Text(
-                                  "Recommendations for improvement:",
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: Color.fromARGB(255, 92, 221, 169)),
-                                ),
-                                if (widget
-                                    .notification.recommendations.isNotEmpty)
-                                  ...widget.notification.recommendations.map(
-                                    (recommendation) => Padding(
-                                      padding: const EdgeInsets.only(bottom: 4),
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          const Text("• "),
-                                          Expanded(child: Text(recommendation)),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                              ],
-                            ),
+                          if (notification.sleepQality == "Poor" ||
+                              notification.sleepQality == "Average")
+                            _buildReasonsAndRecommendations(),
                         ],
                       )
                     : const SizedBox.shrink(),
               ),
-              const Divider(color: Color.fromRGBO(9, 238, 13, 1)),
-
-              // bottom buttons
-              const SizedBox(height: 5),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                child: Divider(thickness: 0.4, height: 2),
-              ),
-
-              SizedBox(
-                height: 35,
-                child: Row(
-                  children: [
-                    // show/hide details button
-                    Icon(Icons.access_time, size: 22, color: Colors.grey[600]),
-                    const SizedBox(width: 10),
-                    Text(
-                        "Timestamp: ${widget.notification.timestamp.toDate()}"),
-
-                    Obx(
-                      () => Card(
-                        elevation: 1.8,
-                        child: IconButton(
-                          tooltip: "Show more details",
-                          style: IconButton.styleFrom(padding: EdgeInsets.zero),
-                          onPressed: () {
-                            isExpanded.value = !isExpanded.value;
-                          },
-                          icon: Icon(
-                            isExpanded.value
-                                ? Icons.keyboard_arrow_up
-                                : Icons.keyboard_arrow_down,
-                          ),
-                        ),
+              const Divider(color: Colors.green),
+              Row(
+                children: [
+                  Icon(Icons.access_time, size: 20, color: Colors.grey[600]),
+                  const SizedBox(width: 5),
+                  Expanded(
+                    child: Text(
+                      "Timestamp: ${DateFormat('yyyy-MM-dd hh:mm a').format(notification.timestamp.toDate())}",
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  Obx(
+                    () => IconButton(
+                      tooltip: "Show more details",
+                      onPressed: () {
+                        isExpanded.value = !isExpanded.value;
+                      },
+                      icon: Icon(
+                        isExpanded.value
+                            ? Icons.keyboard_arrow_up
+                            : Icons.keyboard_arrow_down,
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                  IconButton(
+                    tooltip: "Delete notification",
+                    icon: Icon(Icons.delete, color: Colors.red),
+                    onPressed: () {
+                      _showDeleteConfirmation(controller, docId);
+                    },
+                  ),
+                ],
               ),
-
-              // const Divider(color: Color.fromRGBO(9, 238, 13, 1)),
-
-              // bottom buttons
-              const SizedBox(height: 5),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildReasonsAndRecommendations() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          "Reasons for your sleep quality:",
+          style: TextStyle(
+              fontSize: 16, fontWeight: FontWeight.bold, color: Colors.green),
+        ),
+        if (notification.reasons.isNotEmpty)
+          ...notification.reasons.map(
+            (reason) => Padding(
+              padding: const EdgeInsets.only(bottom: 4),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text("• "),
+                  Expanded(child: Text(reason)),
+                ],
+              ),
+            ),
+          ),
+        const Divider(color: Colors.green),
+        const Text(
+          "Recommendations for improvement:",
+          style: TextStyle(
+              fontSize: 16, fontWeight: FontWeight.bold, color: Colors.green),
+        ),
+        if (notification.recommendations.isNotEmpty)
+          ...notification.recommendations.map(
+            (recommendation) => Padding(
+              padding: const EdgeInsets.only(bottom: 4),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text("• "),
+                  Expanded(child: Text(recommendation)),
+                ],
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
+  void _showDeleteConfirmation(
+      FeedbackeNotificationController controller, String docId) {
+    Get.defaultDialog(
+      title: "Delete Notification",
+      middleText: "Are you sure you want to delete this notification?",
+      textCancel: "Cancel",
+      textConfirm: "Delete",
+      confirmTextColor: Colors.white,
+      onConfirm: () async {
+        await controller.deleteNotification(docId);
+      },
     );
   }
 }

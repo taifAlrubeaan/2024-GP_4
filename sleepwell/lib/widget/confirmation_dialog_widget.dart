@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 class ConfirmationDialogWidget extends StatelessWidget {
   final String alarmFor;
   final String selectedDevice;
-  final String wakeUpTime;
   final String bedTime;
+  final String wakeUpTime;
+
   final int sleepCycle;
   final Function()? onPressed;
   final Function()? changeDevice;
@@ -13,8 +14,8 @@ class ConfirmationDialogWidget extends StatelessWidget {
     super.key,
     required this.alarmFor,
     required this.selectedDevice,
-    required this.wakeUpTime,
     required this.bedTime,
+    required this.wakeUpTime,
     required this.sleepCycle,
     this.onPressed,
     this.changeDevice,
@@ -60,8 +61,8 @@ class ConfirmationDialogWidget extends StatelessWidget {
               const SizedBox(height: 16),
               _buildRow('Alarm For', alarmFor),
               _buildRow('Selected Device', selectedDevice),
-              _buildRow('Wake Up Time', wakeUpTime),
               _buildRow('Bed Time', bedTime),
+              _buildRow('Wake Up Time', wakeUpTime),
               _buildRow('Sleep Cycle', '$sleepCycle cycles'),
               const Divider(),
               const SizedBox(height: 16),

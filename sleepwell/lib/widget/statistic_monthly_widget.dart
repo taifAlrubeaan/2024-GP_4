@@ -29,19 +29,20 @@ class StatisticsMonthlyWidget extends StatelessWidget {
 
   List<String> getFormattedDatesForMonth() {
     final now = DateTime.now();
-    final DateTime monthStart = DateTime(now.year, now.month, 1); // بداية الشهر
     final int daysInMonth =
-        DateTime(now.year, now.month + 1, 0).day; // عدد أيام الشهر
+        DateTime(now.year, now.month + 1, 0).day; // Total days in the month
+    final DateTime monthStart = DateTime(now.year, now.month, 1);
 
-    formattedDatesWeeks = []; // تهيئة القائمة
+    List<String> formattedDatesWeeks = [];
 
     for (int i = 0; i < 4; i++) {
-      final int weekStartDay = i * 7 + 1;
+      final int weekStartDay = i * 7 + 1; // Start day of the week
       final int weekEndDay =
           (i + 1) * 7 > daysInMonth ? daysInMonth : (i + 1) * 7;
 
-      // صياغة النطاق الأسبوعي مثل "01-07/10"
-      String formattedRange = '$weekStartDay/$weekEndDay-${now.month}';
+      // Format the week range
+      String formattedRange =
+          '${weekStartDay.toString().padLeft(2, '0')}-${weekEndDay.toString().padLeft(2, '0')}/${now.month.toString().padLeft(2, '0')}';
       formattedDatesWeeks.add(formattedRange);
     }
 

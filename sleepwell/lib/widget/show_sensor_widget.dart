@@ -170,7 +170,8 @@ class _ReusableSensorDialogState extends State<ReusableSensorDialog> {
 void showSensorSelectionDialog({
   required BuildContext context,
   required List<UserSensor> userSensors,
-  required String? selectedSensorId,
+  required Rx<String>
+      selectedSensorId, // تخزين الحساس المختارString? selectedSensorId,
   required Function(String) onSensorSelected,
   required Function(String) onDeleteSensor,
 }) {
@@ -180,7 +181,7 @@ void showSensorSelectionDialog({
     builder: (context) {
       return ReusableSensorDialog(
         userSensors: userSensors,
-        selectedSensorId: selectedSensorId,
+        selectedSensorId: selectedSensorId.value,
         onSensorSelected: onSensorSelected,
         onDeleteSensor: onDeleteSensor,
       );

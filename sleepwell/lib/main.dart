@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:alarm/alarm.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -9,11 +10,11 @@ import 'package:sleepwell/screens/home_screen.dart';
 import 'package:sleepwell/screens/splash_screen.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:sleepwell/push_notification_service.dart';
-import 'locale/app_translation.dart';
-import 'locale/local_controller.dart';
+import 'services/firebase_auth_service.dart';
 import 'services/sensor_service.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
-// too1423too@gmail.com
+// too1423too@gmail.com taif1111
 late SharedPreferences prefs;
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -24,15 +25,33 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 bool loginStatus = prefs.getBool("isLogin") ?? false;
+List<SensorService> runningServices = [];
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await Get.putAsync<SensorService>(() => SensorService().init(),
       permanent: true);
+  FirebaseAuthService authService = FirebaseAuthService();
+  await authService.setUserId();
+// Add Alarm Schdualer List Of Alarm And Settings Of Sensors
+  // Example: Initialize and add a sensor service to runningServices
+  final sensorService = await SensorService().init();
+  runningServices.add(sensorService);
+  log('runningServices::::::::::::::::::::::::::::::::::::::::::::::');
+  log(runningServices.toString());
+  log('runningServices::::::::::::::::::::::::::::::::::::::::::::::');
+  // for (var service in runningServices) {
+  //   service.isSensorReading();
+  // }
+
+  // await Get.putAsync<AlarmService>(() => AlarmService().init(),
+  //     permanent: true);
+  // AlarmService().init();
+
   tz.initializeTimeZones();
-
   PushNotificationService.initializeNotifications();
-
+  await initializeDateFormatting('ar', null);
   requestNotificationPermission();
   await FirebaseMessaging.instance.setAutoInitEnabled(true);
   await FirebaseMessaging.instance.subscribeToTopic("topic");
@@ -50,6 +69,8 @@ Future<void> main() async {
   prefs = await SharedPreferences.getInstance();
   // initialize  Alarm
   await Alarm.init(showDebugLogs: true);
+  // await AppAlarm.initAlarms();
+
   runApp(const MainAppScreen());
 }
 
@@ -71,6 +92,7 @@ Future<void> requestNotificationPermission() async {
 
 Future<String?> getToken() async {
   final token = await FirebaseMessaging.instance.getToken();
+
   print("=======================================================");
   print(token);
   print("=======================================================");
@@ -93,10 +115,6 @@ class _MainAppScreenState extends State<MainAppScreen> {
     super.initState();
     runNotificationListening();
 
-    // subscribe to public notification
-    // if (AppNotifications.isUserSubscribeToPublicNotification == null) {
-    //   AppNotifications.subscribeToPublicNotification();
-    // }
     getToken();
     FirebaseMessaging.instance
         .getToken()
@@ -117,17 +135,18 @@ class _MainAppScreenState extends State<MainAppScreen> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    Get.lazyPut(() => AppLocalelcontroller(), fenix: true);
-    final AppLocalelcontroller locallcontroller = Get.find();
-    bool loginStatus = prefs.getBool("isLogin") ?? false;
+    // Get.lazyPut(() => AppLocalelcontroller(), fenix: false);
+    // final AppLocalelcontroller locallcontroller = Get.find();
+    // bool loginStatus = prefs.getBool("isLogin") ?? false;
     return GetMaterialApp(
       title: 'SleepWell',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      debugShowCheckedModeBanner: false, translations: AppTranslation(),
-      locale: locallcontroller.language,
+      debugShowCheckedModeBanner: false,
+      //  translations: AppTranslation(),
+      // locale: locallcontroller.language,
       home: loginStatus ? const HomeScreen() : const SplashScreen(),
       // home: const SplashScreen(),
     );
@@ -149,33 +168,3 @@ void runNotificationListening() {
     print("=======================================================");
   });
 }
-
-// Future<void> sendNotification(String title, String message) async {
-//   final serverKey = await PushNotificationServices.getToken();
-//   var headersList = {
-//     'Content-Type': 'application/json',
-//     'Authorization':
-//         'key=eHt4wVoiR46JQ2DpCVyQ1j:APA91bFIWdKZ8TuebQXAtml1U8zsR_JmaqCHhfFpGE7m7nzVyM0W7H_pUvERL9WCnXuE9J6SEaTxQDYUIQxuISfsEirPh6ZIASOFam6aYDwIc2IwT-qYBjdgK7v_SIo0yep8oopWFFJH', // Replace with the correct Server Key
-//   };
-
-//   var url = Uri.parse('https://fcm.googleapis.com/fcm/send');
-
-//   var body = json.encode({
-//     "to":
-//         "fuGq6l26RtGIMFOvrx2bdJ:APA91bERdvLts9KkvpK6WNnpqeJpF6VaUoOFXHsP743c-ScOYiXHt375013eMreMJXZcy_IGSmXlMtXdJ8Z5Bp94JN58gG7WM9_PotDNF-6JRNKWLtZ4jhh-UhdNYkIJjaglwMKsQKIu", // Add your device token here
-//     "notification": {"title": title, "body": message, "sound": "default"},
-//     "priority": "high"
-//   });
-
-//   var response = await http.post(url, headers: headersList, body: body);
-
-//   if (response.statusCode >= 200 && response.statusCode < 300) {
-//     print("=======================================================");
-//     print("Notification sent successfully: ${response.body}");
-//     print("=======================================================");
-//   } else {
-//     print("=======================================================");
-//     print("Error: ${response.statusCode} ${response.reasonPhrase}");
-//     print("=======================================================");
-//   }
-// }

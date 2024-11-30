@@ -2,8 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sleepwell/screens/auth/signin_screen.dart';
 import 'package:sleepwell/screens/home_screen.dart';
+
+import '../services/firebase_auth_service.dart';
 
 class QuestionScreen extends StatefulWidget {
   static String RouteScreen = 'question';
@@ -22,6 +23,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
   bool showSpinner = false;
   late String userId;
   late String email;
+  FirebaseAuthService authService = FirebaseAuthService();
 
   @override
   void initState() {
@@ -210,8 +212,9 @@ class _QuestionScreenState extends State<QuestionScreen> {
             actions: <Widget>[
               TextButton(
                 child: const Text('OK'),
-                onPressed: () {
-                  Get.to(const HomeScreen());
+                onPressed: () async {
+                  await authService.setUserId();
+                  Get.offAll(const HomeScreen());
                 },
               ),
             ],

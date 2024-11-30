@@ -1,43 +1,67 @@
-// alarm_data.dart
+import 'dart:developer';
 
 class AlarmData {
-    String bedtime;
-  final String optimalWakeTime;
-  final String name;
-  final bool usertype;
-  final String sensorId;
-  final String userId;
+  int alarmId; // Identifier for each alarm
+  String bedtime;
+  String optimalWakeTime;
+  String name;
+  String sensorId;
+  String userId;
+  String beneficiaryId;
+  bool isForBeneficiary;
+  String selectedSoundPath; // Specific sound for this alarm
+  String selectedMission; // Alarm mission type
+  String selectedMath; // Math difficulty
 
   AlarmData({
+    required this.alarmId,
     required this.userId,
+    required this.beneficiaryId,
     required this.bedtime,
     required this.optimalWakeTime,
     required this.name,
-    required this.usertype,
     required this.sensorId,
+    required this.isForBeneficiary,
+    // this.selectedSoundPath = 'musicList[0].musicPath',
+    this.selectedSoundPath = 'assets/music/mozart.mp3',
+    this.selectedMission = 'Default',
+    this.selectedMath = 'easy',
   });
 
-  // Convert a Map to an AlarmData instance
+  /// Factory constructor to initialize from JSON
   factory AlarmData.fromJson(Map<String, dynamic> json) {
+    if (!json.containsKey('uid')) {
+      log('Warning: userId (uid) is missing in Firestore document data');
+    }
     return AlarmData(
-      userId: json['userId'] ?? "0",
-      bedtime: json['bedtime'] ?? '', // Default empty string if null
-      optimalWakeTime: json['optimalWakeTime'] ?? '',
+      alarmId: json['alarmId'] ?? 0, // Default to 0 if not provided
+      userId: json['uid'] ?? '',
+      beneficiaryId: json['beneficiaryId'] ?? '',
+      bedtime: json['bedtime'] ?? '',
+      optimalWakeTime: json['wakeup_time'] ?? '',
       name: json['name'] ?? '',
-      usertype: json['usertype'] ?? false, // Default to false if null
       sensorId: json['sensorId'] ?? '',
+      isForBeneficiary: json['isForBeneficiary'] ?? false,
+      selectedSoundPath: json['selectedSoundPath'],
+      selectedMission: json['selectedMission'],
+      selectedMath: json['selectedMath'],
     );
   }
 
-  // Convert an AlarmData instance to a Map
+  /// Convert object to JSON
   Map<String, dynamic> toJson() {
     return {
+      'alarmId': alarmId,
       'bedtime': bedtime,
-      'optimalWakeTime': optimalWakeTime,
+      'wakeup_time': optimalWakeTime,
       'name': name,
-      'usertype': usertype,
       'sensorId': sensorId,
-      'userId': userId
+      'uid': userId,
+      'beneficiaryId': beneficiaryId,
+      'isForBeneficiary': isForBeneficiary,
+      'selectedSoundPath': selectedSoundPath,
+      'selectedMission': selectedMission,
+      'selectedMath': selectedMath,
     };
   }
 }

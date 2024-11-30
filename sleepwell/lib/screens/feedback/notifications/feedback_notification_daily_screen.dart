@@ -1,9 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import '../../../controllers/feedbacke_notification_controllerl.dart';
-import '../../../models/feedbacke_notification_model.dart';
+import '../../../controllers/notifications/feedbacke_notification_controllerl.dart';
 import '../../../widget/feedbacke_notification_widget.dart';
 
 class FeedbackNotificationDailyScreen extends StatefulWidget {
@@ -17,17 +15,13 @@ class FeedbackNotificationDailyScreen extends StatefulWidget {
 class _FeedbackNotificationDailyScreenState
     extends State<FeedbackNotificationDailyScreen> {
   final notificationsController = Get.put(FeedbackeNotificationController());
-  // String userId = 'Fz74uTkiBpSqt7zdF3C3ZTPjbhu1';
-  String userId = FirebaseAuth.instance.currentUser!.uid;
+  late String userId;
 
   @override
   void initState() {
     super.initState();
-    // استدعاء البيانات مرة واحدة في initState
+    userId = FirebaseAuth.instance.currentUser!.uid;
     notificationsController.fetchNotifications(userId);
-    print(":::::::::::::::::::::::::::userId::::::::::::::::;");
-    print(userId);
-    print(":::::::::::::::::::::::::::userId::::::::::::::::;");
   }
 
   @override
@@ -51,47 +45,51 @@ class _FeedbackNotificationDailyScreenState
             end: Alignment.bottomCenter,
           ),
         ),
-        child: FutureBuilder(
-          future: notificationsController.fetchNotifications(userId),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            if (snapshot.connectionState == ConnectionState.done &&
-                notificationsController.notifications.isEmpty) {
+        child: GetBuilder<FeedbackeNotificationController>(
+          init: FeedbackeNotificationController(),
+          builder: (controller) {
+            controller.fetchNotifications(userId);
+            // if (controller.isLoading.value) {
+            //   controller.fetchNotifications(userId);
+            //   return const Center(child: CircularProgressIndicator());
+            // }
+            // Show loading indicator if notifications list is empty
+            if (controller.notifications.isEmpty) {
               return RefreshIndicator(
-                onRefresh: () =>
-                    notificationsController.fetchNotifications(userId),
+                onRefresh: () => controller.fetchNotifications(userId),
                 child: SingleChildScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),
                   child: Container(
-                    height: Get.height - Get.mediaQuery.viewPadding.top - 150,
+                    height: MediaQuery.of(context).size.height -
+                        AppBar().preferredSize.height -
+                        Get.mediaQuery.padding.top,
                     alignment: Alignment.center,
                     child: const Text(
-                        "No notifications found, or you have no internet connection."),
+                      "No notifications found, \n or you have no internet connection.",
+                      style: TextStyle(color: Colors.white),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 ),
               );
             }
 
+            // Display list of notifications
             return RefreshIndicator(
-              onRefresh: () =>
-                  notificationsController.fetchNotifications(userId),
-              child: Obx(
-                () => ListView.separated(
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    FeedbackeNotificationModel notification =
-                        notificationsController.notifications[index];
-
-                    return FeedbackNotificationWidget(
-                        notification: notification);
-                  },
-                  separatorBuilder: (context, index) =>
-                      const SizedBox(height: 15),
-                  itemCount: notificationsController.notifications.length,
-                ),
+              onRefresh: () => controller.fetchNotifications(userId),
+              child: ListView.separated(
+                padding: const EdgeInsets.all(16.0),
+                itemBuilder: (context, index) {
+                  final notification = controller.notifications[index];
+                  return FeedbackNotificationWidget(
+                    notification: notification,
+                    docId:
+                        notification.id, // Ensure `id` is the correct property
+                  );
+                },
+                separatorBuilder: (context, index) =>
+                    const SizedBox(height: 15),
+                itemCount: controller.notifications.length,
               ),
             );
           },

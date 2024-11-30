@@ -1,14 +1,9 @@
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sleepwell/local_notification_service.dart';
-import 'package:sleepwell/main.dart';
 import 'package:sleepwell/screens/feedback/notifications/feedback_notification_daily_screen.dart';
-import '../../controllers/feedback_notification_service.dart';
-
+import '../../controllers/notifications/feedback_notification_service.dart';
 import 'notifications/feedback_notification_weekly_screen.dart';
 
 class FeedbackeNotificationsScreen extends StatefulWidget {
@@ -110,12 +105,13 @@ class _FeedbackeNotificationsScreenState
               onTap: () =>
                   Get.to(() => const FeedbackNotificationWeeklyScreen()),
             ),
-            // TextButton(
-            //     onPressed: _sendWeeklyNotification,
-            //     child: const Text(
-            //       "Send Notification ",
-            //       style: TextStyle(color: Colors.white, fontSize: 22),
-            //     )),
+            TextButton(
+              onPressed: _sendWeeklyNotification,
+              child: const Text(
+                "Send Notification ",
+                style: TextStyle(color: Colors.white, fontSize: 22),
+              ),
+            ),
           ],
         ),
       ),

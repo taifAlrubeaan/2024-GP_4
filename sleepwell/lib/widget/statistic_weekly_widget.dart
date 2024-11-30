@@ -50,7 +50,7 @@ class StatisticsWeeklyWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Initialize the formattedDatesDay list before building the widget
-    // getFormattedDatesForWeek();
+    getFormattedDatesForWeek();
 
     return SafeArea(
       child: Container(
@@ -157,7 +157,7 @@ class StatisticsWeeklyWidget extends StatelessWidget {
                   child: Column(
                     children: [
                       const Padding(
-                        padding: EdgeInsets.only(bottom: 10, top: 10),
+                        padding: EdgeInsets.only(bottom: 8, top: 10),
                         child: Text(
                           'Number Of Sleep Cycle:',
                           style: TextStyle(
@@ -167,7 +167,6 @@ class StatisticsWeeklyWidget extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 12.0),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -186,49 +185,76 @@ class StatisticsWeeklyWidget extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
+                              // Column(
+                              //   crossAxisAlignment: CrossAxisAlignment.start,
+                              //   children: List.generate(
+                              //     4, // First 4 days (Sun, Mon, Tue, Wed)
+                              //     (index) => Padding(
+                              //       padding: const EdgeInsets.only(bottom: 8.0),
+                              //       child: Row(
+                              //         children: [
+                              //           Container(
+                              //             width: 20,
+                              //             height: 20,
+                              //             color: pieSections[index].color,
+                              //           ),
+                              //           const SizedBox(width: 12),
+                              //           Text(
+                              //             daysOfWeek[index],
+                              //             style: const TextStyle(
+                              //               color: Colors.black,
+                              //               fontWeight: FontWeight.bold,
+                              //             ),
+                              //           ),
+                              //         ],
+                              //       ),
+                              //     ),
+                              //   ),
+                              // ),
+                              // const SizedBox(width: 20),
+                              // Column(
+                              //   crossAxisAlignment: CrossAxisAlignment.start,
+                              //   children: List.generate(
+                              //     3, // Remaining 3 days (Thu, Fri, Sat)
+                              //     (index) => Padding(
+                              //       padding: const EdgeInsets.only(bottom: 8.0),
+                              //       child: Row(
+                              //         children: [
+                              //           Container(
+                              //             width: 20,
+                              //             height: 20,
+                              //             color: pieSections[index + 4].color,
+                              //           ),
+                              //           const SizedBox(width: 12),
+                              //           Text(
+                              //             daysOfWeek[index + 4],
+                              //             style: const TextStyle(
+                              //               color: Colors.black,
+                              //               fontWeight: FontWeight.bold,
+                              //             ),
+                              //           ),
+                              //         ],
+                              //       ),
+                              //     ),
+                              //   ),
+                              // ),
+                              const SizedBox(width: 20),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: List.generate(
-                                  4, // First 4 days (Sun, Mon, Tue, Wed)
+                                  7, // First 4 days (Sun, Mon, Tue, Wed)
                                   (index) => Padding(
                                     padding: const EdgeInsets.only(bottom: 8.0),
                                     child: Row(
                                       children: [
                                         Container(
-                                          width: 20,
-                                          height: 20,
+                                          width: 15,
+                                          height: 15,
                                           color: pieSections[index].color,
                                         ),
                                         const SizedBox(width: 12),
                                         Text(
                                           daysOfWeek[index],
-                                          style: const TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 20),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: List.generate(
-                                  3, // Remaining 3 days (Thu, Fri, Sat)
-                                  (index) => Padding(
-                                    padding: const EdgeInsets.only(bottom: 8.0),
-                                    child: Row(
-                                      children: [
-                                        Container(
-                                          width: 20,
-                                          height: 20,
-                                          color: pieSections[index + 4].color,
-                                        ),
-                                        const SizedBox(width: 12),
-                                        Text(
-                                          daysOfWeek[index + 4],
                                           style: const TextStyle(
                                             color: Colors.black,
                                             fontWeight: FontWeight.bold,

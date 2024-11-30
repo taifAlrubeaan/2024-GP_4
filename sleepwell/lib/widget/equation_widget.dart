@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:alarm/alarm.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sleepwell/models/equation_abstrat_model.dart';
@@ -7,6 +8,9 @@ import 'package:sleepwell/screens/feedback/feedback_page.dart';
 import 'package:sleepwell/models/difficult_equation_model.dart';
 import 'package:sleepwell/models/easy_equation_model.dart';
 import 'package:sleepwell/screens/home_screen.dart';
+
+import '../controllers/alarm/alarm_list__controller.dart';
+import '../push_notification_service.dart';
 
 class EquationWidget extends StatefulWidget {
   final bool showEasyEquation;
@@ -33,6 +37,8 @@ class _EquationWidgetState extends State<EquationWidget> {
     _reminderTimer?.cancel();
     super.dispose();
   }
+
+  final AlarmListController controller = Get.put(AlarmListController());
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +95,7 @@ class _EquationWidgetState extends State<EquationWidget> {
 
                         // Stop the alarm
                         await Alarm.stop(widget.alarmId);
-
+                        controller.deleteAlarm(widget.alarmId);
                         // If the alarm is for a beneficiary, reset data and navigate to the home screen
                         if (!widget.isForBeneficiary) {
                           print("Resetting beneficiary info");
@@ -108,7 +114,23 @@ class _EquationWidgetState extends State<EquationWidget> {
                                 actions: [
                                   TextButton(
                                     child: const Text('Remind me later'),
-                                    onPressed: () {
+                                    onPressed: () async {
+                                      await Alarm.stop(widget.alarmId).then(
+                                          (_) => Navigator.pop(context, false));
+
+                                      await PushNotificationService
+                                          .showNotification(
+                                        title: 'Daily Feedback',
+                                        body:
+                                            'You must  given your feedback now',
+                                        schedule: true,
+                                        interval: 3600,
+                                        actionButtons: [
+                                          NotificationActionButton(
+                                              key: 'FeedBak',
+                                              label: 'Go To Feedback Now')
+                                        ],
+                                      );
                                       Get.back(result: false);
                                       _showFeedbackDialog = false;
                                       _startReminderTimer();
@@ -148,7 +170,7 @@ class _EquationWidgetState extends State<EquationWidget> {
   }
 
   void _startReminderTimer() {
-    _reminderTimer = Timer(const Duration(minutes: 1), () {
+    _reminderTimer = Timer(const Duration(minutes: 3), () {
       if (_showFeedbackDialog) {
         showDialog(
           context: context,
@@ -160,7 +182,8 @@ class _EquationWidgetState extends State<EquationWidget> {
                 TextButton(
                   child: const Text('Remind me later'),
                   onPressed: () {
-                    Get.back();
+                    Get.back(result: false);
+                    _showFeedbackDialog = false;
                     _startReminderTimer();
                   },
                 ),

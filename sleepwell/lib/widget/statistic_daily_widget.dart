@@ -2,26 +2,29 @@ import 'package:flutter/material.dart';
 import '../../widget/info_card.dart';
 
 class StatisticDailyWidget extends StatelessWidget {
+  final String timestamp;
   final String sleepHoursDuration;
   final String wakeup_time;
-  final String numOfCycles;
+  final int numOfCycles;
   final String actualSleepTime;
 
   const StatisticDailyWidget({
     super.key,
+    required this.timestamp,
     required this.sleepHoursDuration,
     required this.wakeup_time,
     required this.numOfCycles,
     required this.actualSleepTime,
   });
 
-  Map<String, dynamic> calculateSleepStages(String numCycles) {
-    int cycles = int.tryParse(numCycles) ?? 0;
+  // دالة لحساب المراحل المختلفة للنوم
+  Map<String, dynamic> calculateSleepStages(int numCycles) {
+    int cycles = numCycles;
 
-    // المدة لكل مرحلة بناءً على عدد الدورات
+    // حساب مدة كل مرحلة بناءً على عدد الدورات
     int lightSleepMin = (45 * cycles); // 45 دقيقة لكل دورة
-    int deepSleepMin = (18 * cycles); // 18 دقيقة لكل دورة
-    int remSleepMin = (18 * cycles); // 18 دقيقة لكل دورة
+    int deepSleepMin = (20 * cycles); // 20 دقيقة لكل دورة
+    int remSleepMin = (25 * cycles); // 25 دقيقة لكل دورة
 
     // المجموع الكلي للدقائق
     int totalMinutes = lightSleepMin + deepSleepMin + remSleepMin;
@@ -31,6 +34,7 @@ class StatisticDailyWidget extends StatelessWidget {
     double deepSleepPercentage = (deepSleepMin / totalMinutes) * 100;
     double remSleepPercentage = (remSleepMin / totalMinutes) * 100;
 
+    // تحويل المدة من دقائق إلى صيغة ساعات ودقائق
     String lightSleepDuration = _convertMinutesToHours(lightSleepMin);
     String deepSleepDuration = _convertMinutesToHours(deepSleepMin);
     String remSleepDuration = _convertMinutesToHours(remSleepMin);
@@ -48,6 +52,7 @@ class StatisticDailyWidget extends StatelessWidget {
     };
   }
 
+  // دالة لتحويل الدقائق إلى صيغة ساعات ودقائق
   String _convertMinutesToHours(int minutes) {
     int hours = minutes ~/ 60;
     int mins = minutes % 60;
@@ -71,6 +76,15 @@ class StatisticDailyWidget extends StatelessWidget {
       child: Column(
         children: [
           const SizedBox(height: 15),
+          Text(
+            timestamp,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 10),
           Row(
             children: [
               Expanded(
@@ -123,23 +137,26 @@ class StatisticDailyWidget extends StatelessWidget {
                     ),
                   ),
                   buildSleepStageRow(
-                      context,
-                      'REM',
-                      sleepStages["REM"]["percentage"],
-                      sleepStages["REM"]["duration"],
-                      Colors.lightBlue[200]!),
+                    context,
+                    'REM',
+                    sleepStages["REM"]["percentage"],
+                    sleepStages["REM"]["duration"],
+                    Colors.lightBlue[200]!,
+                  ),
                   buildSleepStageRow(
-                      context,
-                      'Light',
-                      sleepStages["Light"]["percentage"],
-                      sleepStages["Light"]["duration"],
-                      Colors.blue[400]!),
+                    context,
+                    'Light',
+                    sleepStages["Light"]["percentage"],
+                    sleepStages["Light"]["duration"],
+                    Colors.blue[400]!,
+                  ),
                   buildSleepStageRow(
-                      context,
-                      'Deep',
-                      sleepStages["Deep"]["percentage"],
-                      sleepStages["Deep"]["duration"],
-                      const Color.fromARGB(224, 13, 20, 161)!),
+                    context,
+                    'Deep',
+                    sleepStages["Deep"]["percentage"],
+                    sleepStages["Deep"]["duration"],
+                    const Color.fromARGB(224, 13, 20, 161)!,
+                  ),
                 ],
               ),
             ),

@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/intl.dart';
 import 'package:sleepwell/widget/indicator.dart'; // تأكد من إضافة هذا الاستيراد لمخطط FL Chart
 
 class FeedbackNotificationWeeklyScreen extends StatefulWidget {
@@ -25,7 +27,7 @@ class _FeedbackNotificationWeeklyScreenState
     Colors.blue,
     Colors.yellow
   ];
-  int totalReasons = 0; // لحساب إجمالي الأسباب
+  int totalReasons = 0;
 
   @override
   void initState() {
@@ -44,27 +46,40 @@ class _FeedbackNotificationWeeklyScreenState
             .collection('weeklyNotifications')
             .where('userId', isEqualTo: userId)
             .orderBy('date', descending: true)
+            .limit(1)
             .get();
 
-        setState(() {
-          notifications.clear();
-          notifications.addAll(notificationSnapshot.docs.map((doc) {
-            // طباعة البيانات المسترجعة للتحقق منها
-            // print("Notification Data: ${doc.data()}");
-            debugPrint("Notification Data: ${doc.data()}", wrapWidth: 1024);
+        setState(
+          () {
+            notifications.clear();
+            notifications.addAll(
+              notificationSnapshot.docs.map(
+                (doc) {
+                  // طباعة البيانات المسترجعة للتحقق منها
+                  // print("Notification Data: ${doc.data()}");
+                  debugPrint("Notification Data: ${doc.data()}",
+                      wrapWidth: 1024);
 
-            return {
-              'date': (doc['date'] as Timestamp).toDate(),
-              'reasons': Map<String, int>.from(doc['reasons']),
-              'repeatedReasonsWithRecommendations':
-                  doc['repeatedReasonsWithRecommendations'] != null
-                      ? List<Map<String, String>>.from((doc[
-                              'repeatedReasonsWithRecommendations'] as List)
-                          .map((item) => Map<String, String>.from(item as Map)))
-                      : [],
-            };
-          }));
-        });
+                  return {
+                    'date': (doc['date'] as Timestamp).toDate(),
+                    'reasons': Map<String, int>.from(doc['reasons']),
+                    'repeatedReasonsWithRecommendations':
+                        doc['repeatedReasonsWithRecommendations'] != null
+                            ? List<Map<String, String>>.from(
+                                (doc['repeatedReasonsWithRecommendations']
+                                        as List)
+                                    .map(
+                                  (item) =>
+                                      Map<String, String>.from(item as Map),
+                                ),
+                              )
+                            : [],
+                  };
+                },
+              ),
+            );
+          },
+        );
 
         _calculatePieChartData(); // حساب بيانات المخطط الدائري
       } catch (e) {
@@ -98,10 +113,17 @@ class _FeedbackNotificationWeeklyScreenState
 
   @override
   Widget build(BuildContext context) {
-    // استخدام التاريخ الافتراضي في حالة عدم وجود إشعارات
-    DateTime displayDate = notifications.isNotEmpty
-        ? notifications[0]['date'] as DateTime
-        : DateTime.now(); // تاريخ افتراضي
+    DateTime now = DateTime.now();
+    // Use a default display date if there are no notifications
+    String displayDate = notifications.isNotEmpty
+        ? DateFormat('yyyy-MM-dd: hh:mm a').format(notifications[0]['date'])
+        : DateFormat('yyyy-MM-dd').format(now);
+
+    // Safely print the time and date information
+    if (notifications.isNotEmpty) {
+      print('? ${DateFormat('hh:mm a').format(notifications[0]['date'])}');
+    }
+    print('? ${DateFormat('yyyy-MM-dd: hh:mm a').format(now)}');
 
     return Scaffold(
       appBar: AppBar(
@@ -127,41 +149,41 @@ class _FeedbackNotificationWeeklyScreenState
         child: Column(
           children: [
             const SizedBox(height: 10),
-            // تعديل المسافات هنا
+            // Adjust spacing here
             Expanded(
               flex: 2,
               child: Container(
                 width: double.infinity,
-                height: 250, // حجم ثابت للطول
-                margin: const EdgeInsets.all(8), // تقليل المسافة الخارجية
+                height: 250, // Fixed height
+                margin: const EdgeInsets.all(8), // Reduce outer margin
                 decoration: BoxDecoration(
                   color: const Color(0xFFBBDEFB),
-                  borderRadius: BorderRadius.circular(25), // حواف مقوسة
+                  borderRadius: BorderRadius.circular(25), // Rounded corners
                 ),
                 child: Center(
                   child: Column(
                     children: [
                       Padding(
-                        padding:
-                            const EdgeInsets.all(4.0), // إضافة مسافة حول النص
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 10),
                         child: Row(
                           children: [
                             Text(
-                              "Percentage of weekly effects on sleep\n   for $displayDate",
+                              notifications.isNotEmpty
+                                  ? "Percentage of weekly effects on sleep\n   for $displayDate"
+                                  : " Weekly effects on sleep No data yet\n  $displayDate:",
                               style: const TextStyle(
                                   color: Colors.black, fontSize: 18),
                             ),
                           ],
                         ),
                       ),
-                      // تعديل في المسافة بين العناوين والـ Pie Chart
-                      // const SizedBox(height: 8), // تقليل المسافة هنا
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           SizedBox(
-                            width: 180, // تقليل عرض المخطط
-                            height: 180, // تقليل ارتفاع المخطط
+                            width: 180, // Reduced width
+                            height: 180, // Reduced height
                             child: PieChart(
                               PieChartData(
                                 sections: pieSectionsWeekly,
@@ -172,7 +194,7 @@ class _FeedbackNotificationWeeklyScreenState
                             ),
                           ),
                           Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            // mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: List.generate(
                               pieSectionsWeekly.length,
@@ -188,7 +210,7 @@ class _FeedbackNotificationWeeklyScreenState
                                   child: Indicator(
                                     color: weeklyColors[
                                         index % weeklyColors.length],
-                                    text: reason, // عرض العنوان فقط
+                                    text: reason, // Show reason title
                                   ),
                                 );
                               },
@@ -201,7 +223,6 @@ class _FeedbackNotificationWeeklyScreenState
                 ),
               ),
             ),
-
             Expanded(
               flex: 2,
               child: ListView.builder(
@@ -210,12 +231,10 @@ class _FeedbackNotificationWeeklyScreenState
                   DateTime notificationDate = notifications[index]['date'];
                   Map<String, int> reasons = notifications[index]['reasons'];
 
-                  // التأكد من وجود قائمة 'repeatedReasonsWithRecommendations'
                   List<Map<String, String>> recommendationsList =
                       notifications[index]
                           ['repeatedReasonsWithRecommendations'];
 
-                  // عرض المؤثرات والتوصيات
                   List<Widget> reasonWidgets =
                       recommendationsList.map((recommendationEntry) {
                     String reason =

@@ -12,7 +12,10 @@ class ChoiceChipWidget extends StatefulWidget {
     super.key,
     required this.choices,
     required this.changeSelected,
-    required this.initialSelected, this.buttonSize, this.unselectedColor, this.selectedColor,
+    required this.initialSelected,
+    this.buttonSize,
+    this.unselectedColor,
+    this.selectedColor,
   });
 
   @override
@@ -38,11 +41,11 @@ class ChoiceChipWidgetState extends State<ChoiceChipWidget> {
         return ChoiceChip(
           label: Container(
             alignment: Alignment.center,
-            width: widget.buttonSize?.width?? 60,
+            width: widget.buttonSize?.width ?? 60,
             height: widget.buttonSize?.height,
             child: Text(choice, textAlign: TextAlign.center),
           ),
-          
+
           selected: _selectedChoice == index,
           selectedColor: widget.selectedColor,
           // labelStyle: Get.textTheme.bodyMedium!.copyWith(

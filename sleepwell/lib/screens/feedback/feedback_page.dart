@@ -181,7 +181,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
     showSleepQualityDialog(context, predictedQuality, reasons, recommendations);
   }
 
-  Future<void> _getFeedback() async {
+  Future<void> _getFeedback(BuildContext context) async {
     final url = Uri.parse(
         'https://my-sleep-quality-api-5903a0effd39.herokuapp.com/predict');
 
@@ -292,7 +292,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   if (_currentQuestionIndex == questions.length - 1 &&
                       _canProceed)
                     ElevatedButton(
-                      onPressed: _getFeedback,
+                      onPressed: () async => await _getFeedback(context),
                       child: const Text('Submit Feedback'),
                     ),
                 ],

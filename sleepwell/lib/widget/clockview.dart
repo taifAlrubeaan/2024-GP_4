@@ -68,7 +68,8 @@ class ClockPainter extends CustomPainter {
       ..color = const Color.fromARGB(255, 157, 185, 222)
       ..style = PaintingStyle.stroke
       ..strokeWidth = size.width / 20;
-    var centerDotBrush = Paint()..color = const Color.fromARGB(255, 26, 67, 121);
+    var centerDotBrush = Paint()
+      ..color = const Color.fromARGB(255, 26, 67, 121);
 
     var secHandBrush = Paint()
       ..shader = const RadialGradient(colors: [
