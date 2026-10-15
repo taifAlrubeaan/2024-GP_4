@@ -1,0 +1,301 @@
+Q1,Q2,Q3,Q4,Q5,Q6,Q7,SleepQuality,UserID,Date
+Yes,Yes,No,Quiet,Hot,Yes,Yes,Poor,1,5/8/2024
+No,No,No,Noisy,Warm,No,Yes,Average,1,5/9/2024
+No,No,Yes,Moderately noisy,Hot,No,Yes,Average,1,5/10/2024
+No,No,No,Quiet,Hot,Yes,No,Average,1,5/11/2024
+No,No,No,Moderately noisy,Hot,Yes,Yes,Average,1,5/12/2024
+No,Yes,No,Quiet,Warm,No,Yes,Average,1,5/13/2024
+No,Yes,No,Moderately noisy,Cool,Yes,Yes,Average,1,5/14/2024
+No,No,No,Moderately noisy,Hot,Yes,No,Average,1,5/15/2024
+No,No,No,Noisy,Hot,No,No,Good,1,5/16/2024
+Yes,No,Yes,Quiet,Hot,No,Yes,Poor,1,5/17/2024
+No,No,Yes,Noisy,Warm,No,Yes,Average,1,5/18/2024
+No,Yes,Yes,Moderately noisy,Cool,Yes,No,Average,1,5/19/2024
+No,Yes,No,Moderately noisy,Cool,No,Yes,Average,1,5/20/2024
+No,Yes,Yes,Noisy,Hot,Yes,Yes,Poor,1,5/21/2024
+Yes,No,Yes,Noisy,Hot,Yes,Yes,Poor,1,5/22/2024
+Yes,Yes,Yes,Quiet,Warm,Yes,Yes,Poor,1,5/23/2024
+No,No,Yes,Quiet,Cool,Yes,Yes,Average,1,5/24/2024
+Yes,Yes,Yes,Moderately noisy,Warm,Yes,Yes,Poor,1,5/25/2024
+No,No,No,Quiet,Warm,No,Yes,Good,1,5/26/2024
+Yes,Yes,No,Moderately noisy,Warm,No,Yes,Poor,1,5/27/2024
+No,Yes,No,Moderately noisy,Cool,No,No,Good,1,5/28/2024
+No,No,No,Noisy,Warm,Yes,No,Average,1,5/29/2024
+Yes,No,No,Quiet,Hot,No,No,Average,1,5/30/2024
+No,Yes,No,Noisy,Hot,Yes,No,Poor,1,5/31/2024
+Yes,No,No,Quiet,Warm,No,No,Good,1,6/1/2024
+No,Yes,No,Noisy,Cool,Yes,Yes,Poor,1,6/2/2024
+Yes,No,Yes,Noisy,Warm,No,No,Average,1,6/3/2024
+No,Yes,Yes,Noisy,Warm,No,Yes,Poor,1,6/4/2024
+No,Yes,No,Quiet,Cool,Yes,No,Average,1,6/5/2024
+Yes,No,Yes,Moderately noisy,Warm,No,No,Average,1,6/6/2024
+No,No,Yes,Noisy,Cool,Yes,No,Average,2,5/8/2024
+Yes,Yes,Yes,Moderately noisy,Cool,Yes,No,Poor,2,5/9/2024
+No,No,No,Moderately noisy,Hot,Yes,Yes,Average,2,5/10/2024
+No,No,No,Quiet,Warm,Yes,Yes,Average,2,5/11/2024
+Yes,No,Yes,Quiet,Hot,No,Yes,Poor,2,5/12/2024
+Yes,No,No,Quiet,Warm,No,No,Good,2,5/13/2024
+Yes,Yes,Yes,Noisy,Cool,No,Yes,Poor,2,5/14/2024
+Yes,Yes,No,Moderately noisy,Warm,Yes,Yes,Poor,2,5/15/2024
+Yes,No,No,Noisy,Warm,Yes,No,Poor,2,5/16/2024
+No,No,Yes,Quiet,Hot,Yes,Yes,Poor,2,5/17/2024
+No,Yes,Yes,Moderately noisy,Hot,No,Yes,Poor,2,5/18/2024
+No,Yes,Yes,Moderately noisy,Cool,Yes,No,Average,2,5/19/2024
+Yes,No,No,Noisy,Hot,No,No,Average,2,5/20/2024
+Yes,No,Yes,Quiet,Hot,Yes,No,Poor,2,5/21/2024
+Yes,Yes,Yes,Quiet,Hot,Yes,No,Poor,2,5/22/2024
+No,Yes,Yes,Moderately noisy,Hot,Yes,Yes,Poor,2,5/23/2024
+Yes,No,No,Quiet,Warm,Yes,No,Average,2,5/24/2024
+No,No,Yes,Moderately noisy,Warm,No,No,Good,2,5/25/2024
+Yes,No,Yes,Moderately noisy,Hot,No,Yes,Poor,2,5/26/2024
+No,No,No,Noisy,Cool,No,No,Good,2,5/27/2024
+Yes,Yes,No,Moderately noisy,Warm,Yes,Yes,Poor,2,5/28/2024
+No,Yes,No,Noisy,Hot,Yes,Yes,Poor,2,5/29/2024
+Yes,Yes,No,Quiet,Warm,Yes,No,Poor,2,5/30/2024
+No,No,No,Moderately noisy,Warm,No,Yes,Good,2,5/31/2024
+No,Yes,No,Noisy,Cool,No,Yes,Average,2,6/1/2024
+Yes,Yes,Yes,Moderately noisy,Warm,No,No,Poor,2,6/2/2024
+No,Yes,Yes,Quiet,Warm,No,Yes,Average,2,6/3/2024
+No,No,Yes,Noisy,Hot,No,Yes,Average,2,6/4/2024
+Yes,No,Yes,Noisy,Cool,Yes,Yes,Poor,2,6/5/2024
+No,No,No,Moderately noisy,Cool,Yes,No,Good,2,6/6/2024
+Yes,Yes,Yes,Quiet,Warm,No,No,Average,3,5/8/2024
+No,No,No,Moderately noisy,Cool,No,No,Good,3,5/9/2024
+No,Yes,Yes,Noisy,Cool,No,No,Average,3,5/10/2024
+No,Yes,Yes,Quiet,Warm,No,Yes,Average,3,5/11/2024
+No,Yes,No,Noisy,Warm,Yes,Yes,Poor,3,5/12/2024
+No,Yes,No,Quiet,Warm,No,No,Good,3,5/13/2024
+Yes,No,No,Noisy,Hot,Yes,No,Poor,3,5/14/2024
+No,No,Yes,Quiet,Warm,Yes,Yes,Average,3,5/15/2024
+No,No,Yes,Noisy,Cool,Yes,Yes,Poor,3,5/16/2024
+Yes,No,Yes,Noisy,Hot,No,Yes,Poor,3,5/17/2024
+Yes,Yes,Yes,Noisy,Hot,No,No,Poor,3,5/18/2024
+No,Yes,No,Moderately noisy,Hot,No,No,Average,3,5/19/2024
+No,Yes,Yes,Quiet,Cool,No,No,Good,3,5/20/2024
+Yes,No,No,Quiet,Warm,No,No,Good,3,5/21/2024
+No,No,No,Noisy,Warm,No,Yes,Average,3,5/22/2024
+No,Yes,No,Noisy,Warm,No,Yes,Average,3,5/23/2024
+Yes,No,Yes,Moderately noisy,Hot,No,Yes,Poor,3,5/24/2024
+Yes,No,Yes,Noisy,Cool,No,Yes,Poor,3,5/25/2024
+Yes,No,Yes,Quiet,Hot,No,Yes,Poor,3,5/26/2024
+No,Yes,Yes,Quiet,Warm,No,Yes,Average,3,5/27/2024
+No,Yes,Yes,Moderately noisy,Cool,Yes,No,Average,3,5/28/2024
+No,No,Yes,Noisy,Warm,No,Yes,Average,3,5/29/2024
+No,No,No,Quiet,Hot,No,Yes,Good,3,5/30/2024
+No,Yes,No,Noisy,Cool,Yes,Yes,Poor,3,5/31/2024
+No,Yes,Yes,Moderately noisy,Cool,No,Yes,Average,3,6/1/2024
+Yes,Yes,Yes,Noisy,Cool,No,No,Poor,3,6/2/2024
+No,Yes,Yes,Quiet,Hot,No,No,Average,3,6/3/2024
+No,Yes,Yes,Quiet,Warm,No,No,Average,3,6/4/2024
+Yes,No,Yes,Quiet,Hot,No,No,Average,3,6/5/2024
+No,No,No,Noisy,Cool,Yes,No,Average,3,6/6/2024
+No,No,No,Moderately noisy,Hot,No,No,Good,4,5/8/2024
+No,Yes,No,Moderately noisy,Cool,Yes,No,Average,4,5/9/2024
+Yes,No,Yes,Noisy,Cool,No,No,Average,4,5/10/2024
+Yes,No,Yes,Moderately noisy,Cool,No,Yes,Average,4,5/11/2024
+No,No,No,Noisy,Hot,Yes,No,Average,4,5/12/2024
+No,No,No,Quiet,Warm,Yes,Yes,Average,4,5/13/2024
+No,No,Yes,Noisy,Warm,Yes,Yes,Poor,4,5/14/2024
+Yes,Yes,Yes,Noisy,Cool,No,Yes,Poor,4,5/15/2024
+No,No,Yes,Moderately noisy,Hot,Yes,No,Average,4,5/16/2024
+No,No,No,Quiet,Hot,Yes,No,Average,4,5/17/2024
+Yes,Yes,Yes,Quiet,Hot,No,No,Poor,4,5/18/2024
+No,No,Yes,Moderately noisy,Cool,Yes,No,Average,4,5/19/2024
+Yes,No,Yes,Quiet,Cool,Yes,Yes,Poor,4,5/20/2024
+Yes,Yes,Yes,Quiet,Cool,Yes,Yes,Poor,4,5/21/2024
+No,Yes,No,Moderately noisy,Hot,Yes,Yes,Poor,4,5/22/2024
+Yes,No,No,Moderately noisy,Hot,No,Yes,Average,4,5/23/2024
+No,No,No,Noisy,Warm,Yes,Yes,Average,4,5/24/2024
+No,Yes,Yes,Moderately noisy,Warm,No,Yes,Average,4,5/25/2024
+No,Yes,Yes,Moderately noisy,Warm,Yes,Yes,Poor,4,5/26/2024
+No,No,No,Quiet,Warm,Yes,Yes,Average,4,5/27/2024
+Yes,Yes,Yes,Noisy,Warm,No,Yes,Poor,4,5/28/2024
+No,Yes,No,Quiet,Hot,No,No,Good,4,5/29/2024
+Yes,No,No,Quiet,Cool,Yes,No,Average,4,5/30/2024
+No,Yes,Yes,Moderately noisy,Warm,No,No,Average,4,5/31/2024
+Yes,Yes,Yes,Moderately noisy,Warm,No,No,Poor,4,6/1/2024
+No,Yes,No,Noisy,Warm,No,Yes,Average,4,6/2/2024
+Yes,Yes,Yes,Quiet,Warm,No,No,Average,4,6/3/2024
+No,Yes,No,Quiet,Hot,Yes,No,Average,4,6/4/2024
+Yes,Yes,No,Moderately noisy,Hot,No,No,Average,4,6/5/2024
+No,No,No,Quiet,Cool,No,Yes,Good,4,6/6/2024
+Yes,No,No,Noisy,Cool,No,Yes,Average,5,5/8/2024
+Yes,No,Yes,Noisy,Cool,Yes,No,Poor,5,5/9/2024
+Yes,No,Yes,Moderately noisy,Hot,Yes,No,Poor,5,5/10/2024
+No,No,No,Noisy,Cool,No,No,Good,5,5/11/2024
+Yes,No,Yes,Moderately noisy,Cool,Yes,No,Poor,5,5/12/2024
+Yes,Yes,No,Noisy,Hot,Yes,No,Poor,5,5/13/2024
+No,Yes,Yes,Noisy,Warm,Yes,Yes,Poor,5,5/14/2024
+No,No,No,Noisy,Hot,No,No,Good,5,5/15/2024
+No,Yes,No,Moderately noisy,Warm,Yes,Yes,Poor,5,5/16/2024
+Yes,No,No,Moderately noisy,Hot,No,Yes,Average,5,5/17/2024
+Yes,Yes,Yes,Noisy,Warm,No,Yes,Poor,5,5/18/2024
+No,Yes,Yes,Noisy,Cool,Yes,Yes,Poor,5,5/19/2024
+Yes,No,Yes,Quiet,Cool,Yes,No,Average,5,5/20/2024
+Yes,No,No,Noisy,Hot,No,Yes,Poor,5,5/21/2024
+Yes,No,No,Moderately noisy,Hot,No,No,Average,5,5/22/2024
+Yes,Yes,No,Quiet,Cool,No,No,Average,5,5/23/2024
+Yes,Yes,Yes,Moderately noisy,Cool,Yes,No,Poor,5,5/24/2024
+No,No,No,Moderately noisy,Cool,Yes,Yes,Average,5,5/25/2024
+Yes,Yes,No,Moderately noisy,Warm,No,Yes,Poor,5,5/26/2024
+Yes,No,No,Moderately noisy,Hot,Yes,No,Poor,5,5/27/2024
+No,Yes,Yes,Noisy,Hot,Yes,No,Poor,5,5/28/2024
+No,Yes,Yes,Noisy,Warm,Yes,Yes,Poor,5,5/29/2024
+Yes,Yes,Yes,Noisy,Cool,Yes,No,Poor,5,5/30/2024
+Yes,Yes,Yes,Quiet,Cool,Yes,No,Poor,5,5/31/2024
+Yes,No,No,Quiet,Hot,No,No,Average,5,6/1/2024
+No,Yes,Yes,Moderately noisy,Hot,Yes,No,Poor,5,6/2/2024
+No,Yes,Yes,Noisy,Cool,No,Yes,Average,5,6/3/2024
+Yes,No,Yes,Quiet,Warm,Yes,Yes,Poor,5,6/4/2024
+Yes,No,Yes,Moderately noisy,Warm,Yes,No,Poor,5,6/5/2024
+No,No,Yes,Moderately noisy,Warm,No,Yes,Average,5,6/6/2024
+Yes,No,No,Quiet,Hot,Yes,No,Average,6,5/8/2024
+No,No,Yes,Moderately noisy,Warm,No,Yes,Average,6,5/9/2024
+Yes,No,No,Quiet,Hot,Yes,Yes,Poor,6,5/10/2024
+Yes,No,Yes,Moderately noisy,Warm,No,No,Average,6,5/11/2024
+Yes,No,No,Moderately noisy,Warm,Yes,No,Average,6,5/12/2024
+Yes,No,No,Quiet,Hot,No,No,Average,6,5/13/2024
+Yes,Yes,No,Quiet,Cool,No,No,Average,6,5/14/2024
+No,Yes,No,Noisy,Warm,No,Yes,Average,6,5/15/2024
+Yes,Yes,No,Moderately noisy,Cool,Yes,Yes,Poor,6,5/16/2024
+No,Yes,Yes,Moderately noisy,Cool,No,No,Average,6,5/17/2024
+No,Yes,Yes,Moderately noisy,Cool,Yes,No,Average,6,5/18/2024
+Yes,No,Yes,Moderately noisy,Hot,No,Yes,Poor,6,5/19/2024
+Yes,No,No,Noisy,Cool,No,No,Average,6,5/20/2024
+Yes,Yes,Yes,Moderately noisy,Cool,Yes,Yes,Poor,6,5/21/2024
+No,Yes,Yes,Quiet,Cool,No,No,Good,6,5/22/2024
+Yes,Yes,Yes,Quiet,Warm,No,No,Average,6,5/23/2024
+Yes,Yes,No,Moderately noisy,Cool,Yes,No,Poor,6,5/24/2024
+Yes,No,No,Moderately noisy,Hot,Yes,No,Poor,6,5/25/2024
+No,No,No,Quiet,Warm,No,No,Good,6,5/26/2024
+Yes,No,No,Noisy,Hot,No,Yes,Poor,6,5/27/2024
+No,Yes,Yes,Moderately noisy,Warm,No,Yes,Average,6,5/28/2024
+No,No,Yes,Noisy,Warm,No,No,Average,6,5/29/2024
+Yes,No,Yes,Quiet,Warm,Yes,Yes,Poor,6,5/30/2024
+No,Yes,No,Noisy,Warm,Yes,Yes,Poor,6,5/31/2024
+No,No,No,Quiet,Hot,Yes,No,Average,6,6/1/2024
+Yes,No,Yes,Moderately noisy,Cool,No,Yes,Average,6,6/2/2024
+No,Yes,No,Moderately noisy,Cool,No,Yes,Average,6,6/3/2024
+Yes,No,No,Noisy,Cool,No,No,Average,6,6/4/2024
+Yes,No,No,Moderately noisy,Warm,No,No,Average,6,6/5/2024
+Yes,Yes,Yes,Noisy,Warm,No,No,Poor,6,6/6/2024
+No,Yes,No,Moderately noisy,Cool,No,No,Good,7,5/8/2024
+No,No,Yes,Quiet,Cool,No,No,Good,7,5/9/2024
+No,No,No,Noisy,Warm,Yes,No,Average,7,5/10/2024
+Yes,No,No,Noisy,Cool,No,No,Average,7,5/11/2024
+Yes,Yes,No,Moderately noisy,Hot,Yes,Yes,Poor,7,5/12/2024
+No,No,Yes,Moderately noisy,Warm,No,Yes,Average,7,5/13/2024
+Yes,No,Yes,Quiet,Cool,No,No,Average,7,5/14/2024
+No,No,No,Quiet,Cool,No,No,Excellent,7,5/15/2024
+Yes,Yes,No,Moderately noisy,Hot,Yes,No,Poor,7,5/16/2024
+No,Yes,No,Moderately noisy,Cool,No,No,Good,7,5/17/2024
+No,Yes,No,Noisy,Cool,Yes,Yes,Poor,7,5/18/2024
+No,No,No,Noisy,Cool,No,No,Good,7,5/19/2024
+Yes,Yes,Yes,Moderately noisy,Cool,No,No,Average,7,5/20/2024
+Yes,No,No,Moderately noisy,Warm,No,Yes,Average,7,5/21/2024
+No,Yes,Yes,Noisy,Cool,No,Yes,Average,7,5/22/2024
+Yes,No,Yes,Noisy,Warm,No,Yes,Poor,7,5/23/2024
+No,Yes,Yes,Quiet,Hot,No,Yes,Average,7,5/24/2024
+Yes,Yes,Yes,Noisy,Warm,No,No,Poor,7,5/25/2024
+No,No,Yes,Noisy,Hot,Yes,Yes,Poor,7,5/26/2024
+No,Yes,Yes,Noisy,Hot,No,No,Average,7,5/27/2024
+No,Yes,No,Quiet,Hot,Yes,Yes,Poor,7,5/28/2024
+No,Yes,No,Quiet,Hot,Yes,Yes,Poor,7,5/29/2024
+No,Yes,Yes,Moderately noisy,Cool,Yes,Yes,Poor,7,5/30/2024
+Yes,Yes,No,Moderately noisy,Cool,No,No,Average,7,5/31/2024
+No,Yes,No,Moderately noisy,Hot,No,Yes,Average,7,6/1/2024
+Yes,Yes,No,Moderately noisy,Hot,Yes,Yes,Poor,7,6/2/2024
+Yes,No,Yes,Noisy,Hot,Yes,Yes,Poor,7,6/3/2024
+Yes,No,Yes,Moderately noisy,Hot,Yes,No,Poor,7,6/4/2024
+No,Yes,Yes,Quiet,Hot,Yes,No,Poor,7,6/5/2024
+No,No,Yes,Quiet,Warm,Yes,No,Average,7,6/6/2024
+No,No,Yes,Moderately noisy,Warm,Yes,No,Average,8,5/8/2024
+Yes,No,No,Quiet,Hot,Yes,Yes,Poor,8,5/9/2024
+Yes,Yes,Yes,Noisy,Warm,Yes,Yes,Poor,8,5/10/2024
+Yes,No,Yes,Moderately noisy,Warm,Yes,Yes,Poor,8,5/11/2024
+Yes,Yes,Yes,Quiet,Cool,Yes,Yes,Poor,8,5/12/2024
+No,No,Yes,Moderately noisy,Warm,No,Yes,Average,8,5/13/2024
+No,No,No,Noisy,Cool,No,Yes,Good,8,5/14/2024
+No,No,No,Noisy,Hot,No,Yes,Average,8,5/15/2024
+No,Yes,No,Noisy,Hot,Yes,Yes,Poor,8,5/16/2024
+No,Yes,Yes,Noisy,Cool,No,Yes,Average,8,5/17/2024
+Yes,No,Yes,Quiet,Warm,Yes,No,Poor,8,5/18/2024
+No,No,No,Noisy,Warm,Yes,No,Average,8,5/19/2024
+No,No,No,Noisy,Hot,Yes,No,Average,8,5/20/2024
+Yes,No,No,Quiet,Hot,No,Yes,Average,8,5/21/2024
+No,Yes,Yes,Noisy,Cool,Yes,No,Poor,8,5/22/2024
+No,No,Yes,Quiet,Cool,Yes,No,Average,8,5/23/2024
+No,No,No,Moderately noisy,Warm,No,Yes,Good,8,5/24/2024
+Yes,Yes,Yes,Noisy,Cool,No,No,Poor,8,5/25/2024
+Yes,No,Yes,Quiet,Hot,Yes,Yes,Poor,8,5/26/2024
+No,No,Yes,Noisy,Cool,No,Yes,Average,8,5/27/2024
+Yes,Yes,Yes,Moderately noisy,Hot,No,Yes,Poor,8,5/28/2024
+No,No,No,Quiet,Hot,No,No,Good,8,5/29/2024
+No,Yes,No,Noisy,Cool,Yes,Yes,Poor,8,5/30/2024
+Yes,No,Yes,Moderately noisy,Warm,No,No,Average,8,5/31/2024
+No,No,Yes,Noisy,Cool,No,Yes,Average,8,6/1/2024
+Yes,Yes,No,Quiet,Hot,Yes,No,Poor,8,6/2/2024
+No,Yes,No,Noisy,Hot,Yes,No,Poor,8,6/3/2024
+No,No,No,Quiet,Hot,Yes,Yes,Average,8,6/4/2024
+No,Yes,Yes,Quiet,Warm,Yes,Yes,Poor,8,6/5/2024
+No,Yes,No,Quiet,Cool,Yes,No,Average,8,6/6/2024
+No,No,Yes,Moderately noisy,Hot,No,Yes,Average,9,5/8/2024
+Yes,No,Yes,Quiet,Cool,No,Yes,Average,9,5/9/2024
+Yes,No,No,Moderately noisy,Warm,No,Yes,Average,9,5/10/2024
+Yes,Yes,Yes,Moderately noisy,Warm,Yes,No,Poor,9,5/11/2024
+No,No,No,Noisy,Hot,No,Yes,Average,9,5/12/2024
+No,No,Yes,Moderately noisy,Warm,No,Yes,Average,9,5/13/2024
+Yes,No,No,Noisy,Hot,Yes,Yes,Poor,9,5/14/2024
+No,Yes,Yes,Noisy,Warm,Yes,No,Poor,9,5/15/2024
+No,No,No,Moderately noisy,Hot,Yes,No,Average,9,5/16/2024
+No,No,Yes,Moderately noisy,Cool,No,Yes,Average,9,5/17/2024
+No,No,Yes,Quiet,Warm,No,No,Good,9,5/18/2024
+Yes,Yes,No,Moderately noisy,Cool,No,Yes,Average,9,5/19/2024
+No,No,No,Moderately noisy,Cool,No,No,Good,9,5/20/2024
+No,No,No,Noisy,Hot,No,No,Good,9,5/21/2024
+Yes,Yes,Yes,Noisy,Warm,Yes,No,Poor,9,5/22/2024
+No,Yes,No,Quiet,Warm,No,Yes,Average,9,5/23/2024
+No,No,Yes,Moderately noisy,Warm,Yes,Yes,Poor,9,5/24/2024
+No,Yes,No,Moderately noisy,Warm,Yes,Yes,Poor,9,5/25/2024
+No,No,Yes,Quiet,Cool,No,Yes,Good,9,5/26/2024
+Yes,No,No,Moderately noisy,Warm,No,No,Average,9,5/27/2024
+Yes,Yes,Yes,Moderately noisy,Warm,No,Yes,Poor,9,5/28/2024
+Yes,No,No,Moderately noisy,Hot,Yes,Yes,Poor,9,5/29/2024
+Yes,Yes,No,Noisy,Cool,No,No,Average,9,5/30/2024
+Yes,Yes,No,Noisy,Warm,Yes,No,Poor,9,5/31/2024
+Yes,No,Yes,Moderately noisy,Warm,No,No,Average,9,6/1/2024
+Yes,No,Yes,Moderately noisy,Hot,No,Yes,Poor,9,6/2/2024
+Yes,Yes,No,Moderately noisy,Cool,Yes,No,Poor,9,6/3/2024
+Yes,Yes,Yes,Noisy,Warm,Yes,Yes,Poor,9,6/4/2024
+No,No,No,Noisy,Cool,No,No,Good,9,6/5/2024
+No,No,No,Quiet,Warm,Yes,No,Good,9,6/6/2024
+Yes,No,No,Noisy,Cool,Yes,Yes,Poor,10,5/8/2024
+No,Yes,Yes,Quiet,Cool,Yes,No,Average,10,5/9/2024
+No,No,Yes,Noisy,Cool,Yes,No,Average,10,5/10/2024
+No,No,Yes,Quiet,Hot,No,No,Good,10,5/11/2024
+Yes,No,No,Quiet,Hot,Yes,No,Average,10,5/12/2024
+Yes,No,No,Noisy,Cool,No,No,Average,10,5/13/2024
+Yes,No,Yes,Noisy,Hot,No,No,Poor,10,5/14/2024
+Yes,No,No,Moderately noisy,Warm,No,No,Average,10,5/15/2024
+No,No,Yes,Quiet,Cool,Yes,No,Average,10,5/16/2024
+No,Yes,Yes,Noisy,Cool,No,No,Average,10,5/17/2024
+No,No,No,Noisy,Hot,No,No,Good,10,5/18/2024
+Yes,Yes,Yes,Moderately noisy,Hot,No,Yes,Poor,10,5/19/2024
+No,Yes,No,Quiet,Warm,No,Yes,Average,10,5/20/2024
+No,No,No,Noisy,Cool,No,No,Good,10,5/21/2024
+No,No,Yes,Noisy,Cool,No,No,Good,10,5/22/2024
+Yes,No,No,Quiet,Cool,Yes,Yes,Average,10,5/23/2024
+No,Yes,No,Noisy,Warm,No,Yes,Average,10,5/24/2024
+Yes,Yes,Yes,Moderately noisy,Cool,No,No,Average,10,5/25/2024
+Yes,Yes,Yes,Moderately noisy,Cool,Yes,Yes,Poor,10,5/26/2024
+Yes,Yes,Yes,Noisy,Hot,Yes,Yes,Poor,10,5/27/2024
+No,Yes,Yes,Noisy,Warm,No,No,Average,10,5/28/2024
+No,No,Yes,Moderately noisy,Hot,Yes,No,Average,10,5/29/2024
+Yes,Yes,Yes,Noisy,Hot,No,Yes,Poor,10,5/30/2024
+Yes,Yes,Yes,Noisy,Hot,Yes,No,Poor,10,5/31/2024
+No,No,No,Moderately noisy,Warm,Yes,Yes,Average,10,6/1/2024
+Yes,No,No,Quiet,Hot,Yes,Yes,Poor,10,6/2/2024
+No,No,Yes,Moderately noisy,Cool,Yes,No,Average,10,6/3/2024
+Yes,No,No,Moderately noisy,Warm,No,Yes,Average,10,6/4/2024
+Yes,Yes,No,Noisy,Hot,Yes,No,Poor,10,6/5/2024
+No,Yes,Yes,Quiet,Hot,Yes,No,Poor,10,6/6/2024
